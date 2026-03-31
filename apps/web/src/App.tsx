@@ -53,32 +53,77 @@ const CAPABILITIES = [
     title: "Case workspace",
     body: "Create and manage cases by template. Assign status, priority, severity, and ownership from a single timeline view.",
     accent: false,
+    num: "01",
   },
   {
     title: "Evidence library",
     body: "Upload PDFs, images, videos, and freeform notes. Preserve originals and maintain source linkage to every extracted field.",
     accent: true,
+    num: "02",
   },
   {
     title: "AI extraction",
     body: "Summarize documents into case briefs. Extract entities, dates, timelines, defects, and action items automatically.",
     accent: false,
+    num: "03",
   },
   {
     title: "Human review",
     body: "Inspect AI-generated fields before finalization. Edit structured outputs with explicit audit history and role-based approval.",
     accent: true,
+    num: "04",
   },
   {
     title: "Spatial annotation",
     body: "Review evidence in 360-degree or lightweight 3D scenes. Place pins and annotations directly on assets and environments.",
     accent: false,
+    num: "05",
   },
   {
     title: "Export and reporting",
     body: "Generate polished PDF reports and JSON bundles. Create shareable links for external stakeholders and downstream systems.",
     accent: true,
+    num: "06",
   },
+];
+
+const CAP_ICONS = [
+  /* 01 Case workspace — stacked layers */
+  <svg key="layers" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <rect x="3" y="13.5" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.35" />
+    <rect x="3" y="8.75" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.65" />
+    <rect x="3" y="4" width="14" height="2.5" rx="1.25" fill="currentColor" />
+  </svg>,
+  /* 02 Evidence library — 2×2 archive grid */
+  <svg key="grid" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+  </svg>,
+  /* 03 AI extraction — radiant spark */
+  <svg key="spark" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M10 2.5v3M10 14.5v3M2.5 10h3M14.5 10h3M4.7 4.7l2.12 2.12M13.18 13.18l2.12 2.12M15.3 4.7l-2.12 2.12M6.82 13.18l-2.12 2.12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="10" cy="10" r="2.25" fill="currentColor" />
+  </svg>,
+  /* 04 Human review — inspector's eye */
+  <svg key="eye" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M2 10c2.5-4.5 5-6.5 8-6.5s5.5 2 8 6.5c-2.5 4.5-5 6.5-8 6.5s-5.5-2-8-6.5z" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="10" cy="10" r="1" fill="currentColor" />
+  </svg>,
+  /* 05 Spatial annotation — crosshair with pin */
+  <svg key="crosshair" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="10" cy="10" r="2.5" fill="currentColor" />
+    <path d="M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>,
+  /* 06 Export and reporting — document with outbound arrow */
+  <svg key="export" width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 4h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M16 4 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>,
 ];
 
 const WORKFLOWS = [
@@ -358,8 +403,8 @@ export function App() {
       <section className="capabilities" id="capabilities">
         <div className="container">
           <div className="capabilities__header reveal">
-            <p className="section-label">Core capabilities</p>
-            <h2 className="display-lg">
+            <p className="section-label section-label--light">Core capabilities</p>
+            <h2 className="display-lg capabilities__title">
               Built for <em>structured review</em>
             </h2>
           </div>
@@ -367,33 +412,13 @@ export function App() {
             {CAPABILITIES.map((c, i) => (
               <div
                 key={c.title}
-                className={`capability__card reveal delay-${(i % 3) + 1}`}
+                className={`capability__card reveal delay-${(i % 3) + 1} ${c.accent ? "capability__card--forest" : "capability__card--copper"}`}
               >
+                <span className="capability__num">{c.num}</span>
                 <div
                   className={`capability__icon${c.accent ? " capability__icon--green" : ""}`}
                 >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                  >
-                    <rect
-                      x="3"
-                      y="3"
-                      width="14"
-                      height="14"
-                      rx="3"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M7 10h6M10 7v6"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                  {CAP_ICONS[i]}
                 </div>
                 <h3>{c.title}</h3>
                 <p>{c.body}</p>

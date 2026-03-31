@@ -605,25 +605,59 @@ section {
 /* ── Capabilities ──────────────────────── */
 
 .capabilities {
-  background: var(--bg-alt);
-  border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-deep);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle dot-grid atmosphere */
+.capabilities::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Warm vignette from center so dots fade toward edges */
+.capabilities::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, var(--bg-deep) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.capabilities .section-label {
+  color: rgba(212, 105, 58, 0.85);
 }
 
 .capabilities__header {
   text-align: center;
   max-width: 640px;
   margin: 0 auto 72px;
+  position: relative;
+  z-index: 1;
 }
 
-.capabilities__header .display-lg {
+.capabilities__title {
   margin-top: 16px;
+  color: var(--text-on-dark);
+}
+
+.capabilities__title em {
+  color: #d4693a;
 }
 
 .capabilities__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 /* Bento: alternating wide/narrow rows */
@@ -635,16 +669,54 @@ section {
 .capability__card:nth-child(6) { grid-column: span 2; }
 
 .capability__card {
+  position: relative;
   padding: 36px 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  background: var(--bg-deep-alt);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top-width: 2px;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
 }
 
-.capability__card:hover {
-  border-color: var(--border);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+/* Large ordinal watermark */
+.capability__num {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  font-family: var(--font-mono);
+  font-size: 4.5rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #ffffff;
+  opacity: 0.05;
+  pointer-events: none;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+/* Copper cards */
+.capability__card--copper {
+  border-top-color: rgba(184, 90, 48, 0.5);
+}
+
+.capability__card--copper:hover {
+  border-color: rgba(184, 90, 48, 0.55);
+  border-top-color: rgba(212, 105, 58, 0.95);
+  box-shadow: 0 24px 64px rgba(184, 90, 48, 0.12), 0 4px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+}
+
+/* Forest cards */
+.capability__card--forest {
+  border-top-color: rgba(42, 107, 74, 0.5);
+}
+
+.capability__card--forest:hover {
+  border-color: rgba(42, 107, 74, 0.55);
+  border-top-color: rgba(58, 155, 100, 0.95);
+  box-shadow: 0 24px 64px rgba(42, 107, 74, 0.12), 0 4px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
 }
 
 /* Wide cards: horizontal 2-column internal layout */
@@ -655,13 +727,15 @@ section {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;
   padding: 40px 44px;
-  border-left: 3px solid var(--copper);
-  padding-left: 41px;
 }
 
-.capability__card:nth-child(4),
-.capability__card:nth-child(6) {
-  border-left-color: var(--forest);
+.capability__card:nth-child(1) .capability__num,
+.capability__card:nth-child(4) .capability__num,
+.capability__card:nth-child(6) .capability__num {
+  font-size: 7rem;
+  top: 14px;
+  right: 30px;
+  opacity: 0.04;
 }
 
 .capability__card:nth-child(1) .capability__icon,
@@ -678,9 +752,10 @@ section {
   grid-column: 1;
   grid-row: 2;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-size: clamp(1.75rem, 2.2vw, 2.25rem);
   font-weight: 400;
   line-height: 1.15;
+  color: var(--text-on-dark);
   align-self: end;
   margin-bottom: 0;
 }
@@ -692,10 +767,10 @@ section {
   grid-row: 1 / span 2;
   align-self: center;
   padding-left: 36px;
-  border-left: 1px solid var(--border-light);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 15px;
   line-height: 1.72;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
 }
 
 .capability__icon {
@@ -706,13 +781,13 @@ section {
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
-  background: var(--copper-subtle);
-  color: var(--copper);
+  background: rgba(184, 90, 48, 0.13);
+  color: #d4693a;
 }
 
 .capability__icon--green {
-  background: var(--forest-light);
-  color: var(--forest);
+  background: rgba(42, 107, 74, 0.16);
+  color: #4dab77;
 }
 
 .capability__card h3 {
@@ -720,11 +795,12 @@ section {
   font-size: 17px;
   font-weight: 600;
   margin-bottom: 10px;
+  color: var(--text-on-dark);
 }
 
 .capability__card p {
   font-size: 15px;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   line-height: 1.6;
 }
 
@@ -754,13 +830,12 @@ section {
     grid-column: span 1;
     display: block;
     padding: 32px;
-    padding-left: 29px;
   }
   .capability__card:nth-child(1) h3,
   .capability__card:nth-child(4) h3,
   .capability__card:nth-child(6) h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
     align-self: auto;
   }
   .capability__card:nth-child(1) p,
