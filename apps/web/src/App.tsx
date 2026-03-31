@@ -303,17 +303,19 @@ export function App() {
               Decisions made from <em>scattered evidence</em>
             </h2>
           </div>
-          <div className="pain__grid">
+          <div className="pain__list">
             {PAIN_POINTS.map((p, i) => (
               <div
                 key={p.title}
-                className={`pain__card reveal delay-${i + 1}`}
+                className={`pain__row reveal delay-${i + 1}`}
               >
-                <div className="pain__card-number">
+                <div className="pain__row-number">
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
+                <div className="pain__row-content">
+                  <h3>{p.title}</h3>
+                  <p>{p.body}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -336,13 +338,14 @@ export function App() {
           </div>
 
           {/* Flow */}
-          <div className="flow__steps">
+          <div className="flow__timeline">
+            <div className="flow__connector-line" />
             {FLOW_STEPS.map((s, i) => (
               <div
                 key={s.num}
                 className={`flow__step reveal delay-${i + 1}`}
               >
-                <div className="flow__step-number">{s.num}</div>
+                <div className="flow__step-node">{s.num}</div>
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
               </div>
@@ -413,13 +416,13 @@ export function App() {
               insurance, fleet safety, quality, construction, and beyond.
             </p>
           </div>
-          <div className="workflows__grid">
+          <div className="workflows__table">
             {WORKFLOWS.map((w, i) => (
               <div
                 key={w.domain}
-                className={`workflow__card reveal delay-${i + 1}`}
+                className={`workflow__row reveal delay-${i + 1}`}
               >
-                <div className="workflow__card-domain">{w.domain}</div>
+                <span className="workflow__row-domain">{w.domain}</span>
                 <h3>{w.title}</h3>
                 <p>{w.body}</p>
               </div>

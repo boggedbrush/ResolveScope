@@ -428,58 +428,73 @@ section {
 /* ── Pain / Why section ────────────────── */
 
 .pain {
-  background: var(--bg-alt);
-  border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-deep);
 }
 
 .pain__header {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 64px;
+  margin: 0 auto 80px;
+}
+
+.pain__header .section-label {
+  color: rgba(243, 226, 213, 0.65);
 }
 
 .pain__header .display-lg {
+  color: var(--text-on-dark);
   margin-top: 16px;
 }
 
-.pain__grid {
+.pain__list {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pain__row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: 80px 1fr;
+  gap: 48px;
+  padding: 52px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  align-items: start;
 }
 
-.pain__card {
-  padding: 36px 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-}
-
-.pain__card-number {
+.pain__row-number {
   font-family: var(--font-display);
-  font-size: 48px;
-  color: var(--border);
-  line-height: 1;
-  margin-bottom: 20px;
+  font-size: 80px;
+  line-height: 0.85;
+  color: rgba(255, 255, 255, 0.05);
+  font-style: italic;
+  user-select: none;
+  text-align: right;
+  padding-top: 4px;
 }
 
-.pain__card h3 {
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
+.pain__row-content h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400;
+  color: var(--text-on-dark);
+  margin-bottom: 14px;
+  line-height: 1.2;
 }
 
-.pain__card p {
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--text-secondary);
+.pain__row-content p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-on-dark-secondary);
+  max-width: 680px;
 }
 
-@media (max-width: 768px) {
-  .pain__grid {
+@media (max-width: 640px) {
+  .pain__row {
     grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 40px 0;
+  }
+  .pain__row-number {
+    font-size: 48px;
+    text-align: left;
   }
 }
 
@@ -488,7 +503,7 @@ section {
 .platform__header {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 72px;
+  margin: 0 auto 80px;
 }
 
 .platform__header .display-lg {
@@ -501,39 +516,69 @@ section {
 
 /* ── Flow / How it works ───────────────── */
 
-.flow__steps {
+.flow__timeline {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  margin-top: 72px;
+  gap: 0;
+}
+
+.flow__connector-line {
+  position: absolute;
+  top: 18px;
+  left: 19px;
+  right: 19px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--copper) 0%,
+    var(--border-light) 50%
+  );
+  z-index: 0;
+  pointer-events: none;
 }
 
 .flow__step {
   position: relative;
-  padding: 32px 28px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  padding: 0 32px 0 0;
 }
 
-.flow__step-number {
+.flow__step-node {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--copper);
-  margin-bottom: 16px;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.flow__step:hover .flow__step-node {
+  border-color: var(--copper);
+  background: var(--copper-subtle);
 }
 
 .flow__step h3 {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: clamp(1.4rem, 1.8vw, 1.8rem);
+  font-weight: 400;
   margin-bottom: 12px;
+  line-height: 1.2;
 }
 
 .flow__step p {
   font-size: 15px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .flow__connector {
@@ -541,14 +586,19 @@ section {
 }
 
 @media (max-width: 960px) {
-  .flow__steps {
+  .flow__timeline {
     grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+  }
+  .flow__connector-line {
+    display: none;
   }
 }
 
 @media (max-width: 560px) {
-  .flow__steps {
+  .flow__timeline {
     grid-template-columns: 1fr;
+    gap: 40px;
   }
 }
 
@@ -563,7 +613,7 @@ section {
 .capabilities__header {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 64px;
+  margin: 0 auto 72px;
 }
 
 .capabilities__header .display-lg {
@@ -573,8 +623,16 @@ section {
 .capabilities__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 16px;
 }
+
+/* Bento: alternating wide/narrow rows */
+.capability__card:nth-child(1) { grid-column: span 2; }
+.capability__card:nth-child(2) { grid-column: span 1; }
+.capability__card:nth-child(3) { grid-column: span 1; }
+.capability__card:nth-child(4) { grid-column: span 2; }
+.capability__card:nth-child(5) { grid-column: span 1; }
+.capability__card:nth-child(6) { grid-column: span 2; }
 
 .capability__card {
   padding: 36px 32px;
@@ -587,6 +645,57 @@ section {
 .capability__card:hover {
   border-color: var(--border);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Wide cards: horizontal 2-column internal layout */
+.capability__card:nth-child(1),
+.capability__card:nth-child(4),
+.capability__card:nth-child(6) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  padding: 40px 44px;
+  border-left: 3px solid var(--copper);
+  padding-left: 41px;
+}
+
+.capability__card:nth-child(4),
+.capability__card:nth-child(6) {
+  border-left-color: var(--forest);
+}
+
+.capability__card:nth-child(1) .capability__icon,
+.capability__card:nth-child(4) .capability__icon,
+.capability__card:nth-child(6) .capability__icon {
+  grid-column: 1;
+  grid-row: 1;
+  margin-bottom: 20px;
+}
+
+.capability__card:nth-child(1) h3,
+.capability__card:nth-child(4) h3,
+.capability__card:nth-child(6) h3 {
+  grid-column: 1;
+  grid-row: 2;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  align-self: end;
+  margin-bottom: 0;
+}
+
+.capability__card:nth-child(1) p,
+.capability__card:nth-child(4) p,
+.capability__card:nth-child(6) p {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  padding-left: 36px;
+  border-left: 1px solid var(--border-light);
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--text-secondary);
 }
 
 .capability__icon {
@@ -619,9 +728,47 @@ section {
   line-height: 1.6;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
+  .capabilities__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .capability__card:nth-child(1),
+  .capability__card:nth-child(4),
+  .capability__card:nth-child(6) {
+    grid-column: span 2;
+  }
+  .capability__card:nth-child(2),
+  .capability__card:nth-child(3),
+  .capability__card:nth-child(5) {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
   .capabilities__grid {
     grid-template-columns: 1fr;
+  }
+  .capability__card:nth-child(1),
+  .capability__card:nth-child(4),
+  .capability__card:nth-child(6) {
+    grid-column: span 1;
+    display: block;
+    padding: 32px;
+    padding-left: 29px;
+  }
+  .capability__card:nth-child(1) h3,
+  .capability__card:nth-child(4) h3,
+  .capability__card:nth-child(6) h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    align-self: auto;
+  }
+  .capability__card:nth-child(1) p,
+  .capability__card:nth-child(4) p,
+  .capability__card:nth-child(6) p {
+    padding-left: 0;
+    border-left: none;
+    margin-top: 12px;
   }
 }
 
@@ -641,57 +788,62 @@ section {
   margin-top: 20px;
 }
 
-.workflows__grid {
+.workflows__table {
+  border-top: 1px solid var(--border-light);
+}
+
+.workflow__row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  grid-template-columns: 160px 220px 1fr;
+  gap: 40px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border-light);
+  align-items: center;
+  transition: background 0.2s var(--ease);
 }
 
-.workflow__card {
-  padding: 32px 24px;
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-  background: var(--bg-card);
-  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+.workflow__row:hover {
+  background: var(--bg-alt);
+  padding-left: 16px;
+  margin-left: -16px;
+  border-radius: 8px;
+  border-bottom-color: transparent;
 }
 
-.workflow__card:hover {
-  border-color: var(--copper-light);
-  transform: translateY(-2px);
-}
-
-.workflow__card-domain {
+.workflow__row-domain {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--copper);
-  margin-bottom: 16px;
 }
 
-.workflow__card h3 {
+.workflow__row h3 {
   font-family: var(--font-display);
-  font-size: 22px;
-  margin-bottom: 12px;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-weight: 400;
+  color: var(--text);
   line-height: 1.2;
 }
 
-.workflow__card p {
+.workflow__row p {
   font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-@media (max-width: 1024px) {
-  .workflows__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .workflows__grid {
+@media (max-width: 768px) {
+  .workflow__row {
     grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 24px 0;
+  }
+  .workflow__row:hover {
+    padding-left: 0;
+    margin-left: 0;
+    border-radius: 0;
+    border-bottom-color: var(--border-light);
   }
 }
 
