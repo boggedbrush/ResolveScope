@@ -67,4 +67,9 @@ export const autoClaimTemplate: CaseTemplate = {
   },
   summaryPlaceholder: "Add your summary or notes…",
   nextStepsPlaceholder: "Override or supplement recommended next steps…",
+  approvalConfig: {
+    requireExtraction: true,
+    requireAllChecklist: true,
+    overrideReasonRequiredFor: ["severity"],
+  },
 };

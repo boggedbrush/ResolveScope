@@ -9,6 +9,8 @@ export type EvidenceType = "document" | "image" | "note" | "video";
 export type AuditAction =
   | "extraction_run"
   | "field_edit"
+  | "field_override"
+  | "override_cleared"
   | "case_approved"
   | "report_exported"
   | "evidence_added";
@@ -73,6 +75,24 @@ export interface ReviewState {
   checklist: Record<string, boolean>;
 }
 
+/* ── Reviewer overrides ───────────────────── */
+
+/**
+ * A structured override record created when a reviewer changes an extracted
+ * or default field value. Stored keyed by fieldKey in OverrideMap.
+ */
+export interface ReviewOverride {
+  fieldKey: string;
+  originalValue: string;
+  currentValue: string;
+  actor: string;
+  timestamp: string;
+  /** Required before approval for severity overrides. */
+  reason: string;
+}
+
+export type OverrideMap = Record<string, ReviewOverride>;
+
 /* ── Audit ───────────────────────────────── */
 
 export interface AuditEntry {
@@ -100,6 +120,8 @@ export interface ExtractionSectionDef {
   type: ExtractionSectionType;
   /** Defaults to key if omitted */
   provenanceKey?: string;
+  /** Optional label shown in provenance UI (defaults to title) */
+  provenanceLabel?: string;
 }
 
 export interface ChecklistItemDef {
@@ -110,6 +132,20 @@ export interface ChecklistItemDef {
 export interface SeverityOptionDef {
   value: string;
   label: string;
+}
+
+/**
+ * Template-level approval gate configuration.
+ * Default logic (requireExtraction + requireAllChecklist) applies when omitted.
+ */
+export interface ApprovalConfig {
+  requireExtraction: boolean;
+  requireAllChecklist: boolean;
+  /**
+   * Field keys whose overrides must have a non-empty reason before approval.
+   * Defaults to ["severity"] if not specified.
+   */
+  overrideReasonRequiredFor?: string[];
 }
 
 export interface CaseTemplate {
@@ -128,6 +164,8 @@ export interface CaseTemplate {
   };
   summaryPlaceholder: string;
   nextStepsPlaceholder: string;
+  /** Approval gate rules for this template. Falls back to defaults if omitted. */
+  approvalConfig?: ApprovalConfig;
 }
 
 /* ── Seed case bundle (used to initialize demo state) ── */
@@ -149,6 +187,7 @@ export interface CaseBundle {
   evidence: EvidenceItem[];
   extraction: ExtractionResult | null;
   review: ReviewState;
+  overrides: OverrideMap;
   auditLog: AuditEntry[];
   exportedAt: string;
 }

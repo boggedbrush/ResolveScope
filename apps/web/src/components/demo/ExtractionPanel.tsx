@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { ProvenanceInspector } from "./ProvenanceInspector";
 import type {
   ExtractionResult,
   EvidenceItem,
@@ -26,9 +28,11 @@ function fmtRunAt(iso: string): string {
 function ProvenanceTags({
   ids,
   evidence,
+  onInspect,
 }: {
   ids: string[];
   evidence: EvidenceItem[];
+  onInspect: () => void;
 }) {
   const names = ids
     .map((id) => evidence.find((e) => e.id === id)?.name.split("—")[0].trim())
@@ -42,6 +46,18 @@ function ProvenanceTags({
           {n}
         </span>
       ))}
+      <button
+        className="extraction-provenance__inspect-btn"
+        onClick={onInspect}
+        aria-label={`Inspect ${ids.length} supporting evidence item${ids.length !== 1 ? "s" : ""}`}
+        title="Inspect supporting evidence"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.25" />
+          <path d="M8.5 8.5l2 2" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+        </svg>
+        Inspect
+      </button>
     </div>
   );
 }
@@ -135,10 +151,12 @@ function ExtractionSection({
   def,
   extraction,
   evidence,
+  onInspect,
 }: {
   def: ExtractionSectionDef;
   extraction: ExtractionResult;
   evidence: EvidenceItem[];
+  onInspect: (def: ExtractionSectionDef, ids: string[]) => void;
 }) {
   const data = extraction.sections[def.key];
   if (!data) return null;
@@ -150,7 +168,13 @@ function ExtractionSection({
     <section className="extraction-section">
       <h4 className="extraction-section__title">{def.title}</h4>
       {renderSectionBody(data)}
-      <ProvenanceTags ids={provenanceIds} evidence={evidence} />
+      {provenanceIds.length > 0 && (
+        <ProvenanceTags
+          ids={provenanceIds}
+          evidence={evidence}
+          onInspect={() => onInspect(def, provenanceIds)}
+        />
+      )}
     </section>
   );
 }
@@ -162,6 +186,11 @@ export function ExtractionPanel({
   evidence,
   template,
 }: Props) {
+  const [inspecting, setInspecting] = useState<{
+    def: ExtractionSectionDef;
+    ids: string[];
+  } | null>(null);
+
   if (isRunning) {
     return (
       <div className="demo-panel demo-panel--extraction">
@@ -224,24 +253,36 @@ export function ExtractionPanel({
   }
 
   return (
-    <div className="demo-panel demo-panel--extraction">
-      <div className="demo-panel__section-header">
-        <h3 className="demo-panel__section-title">Case Brief</h3>
-        <span className="extraction-run-meta">
-          Extracted {fmtRunAt(extraction.runAt)}
-        </span>
+    <>
+      <div className="demo-panel demo-panel--extraction">
+        <div className="demo-panel__section-header">
+          <h3 className="demo-panel__section-title">Case Brief</h3>
+          <span className="extraction-run-meta">
+            Extracted {fmtRunAt(extraction.runAt)}
+          </span>
+        </div>
+
+        <div className="extraction-sections">
+          {template.extractionSections.map((def) => (
+            <ExtractionSection
+              key={def.key}
+              def={def}
+              extraction={extraction}
+              evidence={evidence}
+              onInspect={(d, ids) => setInspecting({ def: d, ids })}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="extraction-sections">
-        {template.extractionSections.map((def) => (
-          <ExtractionSection
-            key={def.key}
-            def={def}
-            extraction={extraction}
-            evidence={evidence}
-          />
-        ))}
-      </div>
-    </div>
+      {inspecting && (
+        <ProvenanceInspector
+          section={inspecting.def}
+          evidenceIds={inspecting.ids}
+          evidence={evidence}
+          onClose={() => setInspecting(null)}
+        />
+      )}
+    </>
   );
 }

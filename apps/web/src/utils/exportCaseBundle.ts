@@ -7,6 +7,7 @@ import type {
   ReviewState,
   AuditEntry,
   SectionData,
+  OverrideMap,
 } from "../types/case";
 
 /** Download a JSON case bundle to the user's machine */
@@ -16,6 +17,7 @@ export function downloadCaseBundle(
   evidence: EvidenceItem[],
   extraction: ExtractionResult | null,
   review: ReviewState,
+  overrides: OverrideMap,
   auditLog: AuditEntry[]
 ): void {
   const bundle: CaseBundle = {
@@ -24,6 +26,7 @@ export function downloadCaseBundle(
     evidence: evidence.map((e) => ({ ...e, previewUrl: undefined })),
     extraction,
     review,
+    overrides,
     auditLog,
     exportedAt: new Date().toISOString(),
   };
@@ -45,9 +48,10 @@ export function printCaseReport(
   evidence: EvidenceItem[],
   extraction: ExtractionResult | null,
   review: ReviewState,
+  overrides: OverrideMap,
   auditLog: AuditEntry[]
 ): void {
-  const html = buildReportHtml(template, caseMeta, evidence, extraction, review, auditLog);
+  const html = buildReportHtml(template, caseMeta, evidence, extraction, review, overrides, auditLog);
   const blob = new Blob([html], { type: "text/html" });
   const url = URL.createObjectURL(blob);
   const win = window.open(url, "_blank");
@@ -103,18 +107,83 @@ function renderSectionHtml(data: SectionData): string {
   }
 }
 
+function buildProvenanceAppendix(
+  template: CaseTemplate,
+  extraction: ExtractionResult,
+  evidence: EvidenceItem[]
+): string {
+  const rows = template.extractionSections
+    .map((def) => {
+      const provenanceKey = def.provenanceKey ?? def.key;
+      const ids = extraction.provenance[provenanceKey] ?? [];
+      if (!ids.length) return "";
+      const names = ids
+        .map((id) => evidence.find((e) => e.id === id)?.name ?? id)
+        .join(", ");
+      return `<tr><td>${def.title}</td><td>${names}</td></tr>`;
+    })
+    .join("");
+
+  if (!rows) return "";
+
+  return `
+<h2>Provenance Appendix</h2>
+<p style="font-size:12px;color:#6b6962;margin-bottom:12px;">Maps each extracted section to the evidence items that supported it.</p>
+<table>
+<thead><tr><th>Section</th><th>Supporting evidence</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+}
+
+function buildOverridesSection(
+  overrides: OverrideMap,
+  fieldLabels: CaseTemplate["reviewFieldLabels"]
+): string {
+  const entries = Object.values(overrides);
+  if (!entries.length) return "";
+
+  const labelMap: Record<string, string> = {
+    severity: fieldLabels.severity,
+    summary: fieldLabels.summary,
+    nextSteps: fieldLabels.nextSteps,
+  };
+
+  const rows = entries
+    .map((o) => {
+      const label = labelMap[o.fieldKey] ?? o.fieldKey;
+      return `<tr>
+        <td>${label}</td>
+        <td>${o.originalValue || "<em>empty</em>"}</td>
+        <td><strong>${o.currentValue}</strong></td>
+        <td>${o.reason || "<em>no reason provided</em>"}</td>
+        <td>${o.actor}</td>
+        <td>${fmt(o.timestamp)}</td>
+      </tr>`;
+    })
+    .join("");
+
+  return `
+<h2>Reviewer Overrides</h2>
+<p style="font-size:12px;color:#6b6962;margin-bottom:12px;">Fields where the reviewer changed the extracted or default value.</p>
+<table>
+<thead><tr><th>Field</th><th>Original</th><th>Reviewer value</th><th>Reason</th><th>Actor</th><th>Timestamp</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+}
+
 function buildReportHtml(
   template: CaseTemplate,
   caseMeta: CaseMeta,
   evidence: EvidenceItem[],
   extraction: ExtractionResult | null,
   review: ReviewState,
+  overrides: OverrideMap,
   auditLog: AuditEntry[]
 ): string {
   const evidenceRows = evidence
     .map(
       (e) =>
-        `<tr><td>${e.type.toUpperCase()}</td><td>${e.name}</td><td>${e.uploadedBy}</td><td>${fmt(e.uploadedAt)}</td></tr>`
+        `<tr><td>${e.type.toUpperCase()}</td><td>${e.name}</td><td>${e.uploadedBy}</td><td>${fmt(e.uploadedAt)}</td><td>${e.description}</td></tr>`
     )
     .join("");
 
@@ -130,7 +199,14 @@ function buildReportHtml(
         .map((def) => {
           const data = extraction.sections[def.key];
           if (!data) return "";
-          return `<h2>${def.title}</h2>${renderSectionHtml(data)}`;
+          const provenanceKey = def.provenanceKey ?? def.key;
+          const provenanceIds = extraction.provenance[provenanceKey] ?? [];
+          const provenanceNote = provenanceIds.length
+            ? `<p class="prov-note">Supported by: ${provenanceIds
+                .map((id) => evidence.find((e) => e.id === id)?.name.split("—")[0].trim() ?? id)
+                .join(", ")}</p>`
+            : "";
+          return `<h2>${def.title}</h2>${renderSectionHtml(data)}${provenanceNote}`;
         })
         .join("")
     : "<p><em>Extraction not run.</em></p>";
@@ -149,6 +225,15 @@ function buildReportHtml(
     ? `<span>Unit/Vehicle: <strong>${caseMeta.unit}</strong></span>`
     : "";
 
+  const approvalLine = caseMeta.status === "approved"
+    ? `<div class="approval-stamp">✓ Approved</div>`
+    : `<div class="pending-stamp">Pending approval</div>`;
+
+  const overridesHtml = buildOverridesSection(overrides, template.reviewFieldLabels);
+  const provenanceAppendix = extraction
+    ? buildProvenanceAppendix(template, extraction, evidence)
+    : "";
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,7 +250,7 @@ function buildReportHtml(
   .template-tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #b85a30; font-weight: 600; margin-bottom: 16px; display: block; }
   table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
   th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #9c978e; padding: 6px 8px; border-bottom: 1px solid #e0ddd6; }
-  td { padding: 8px 8px; border-bottom: 1px solid #f2f0eb; vertical-align: top; }
+  td { padding: 8px 8px; border-bottom: 1px solid #f2f0eb; vertical-align: top; font-size: 12px; }
   .dl-grid { display: grid; grid-template-columns: 160px 1fr; gap: 4px 16px; margin-bottom: 12px; }
   dt { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #9c978e; padding-top: 2px; }
   dd { color: #1a1917; }
@@ -175,6 +260,9 @@ function buildReportHtml(
   .check { color: #2a6b4a; }
   .uncheck { color: #9c978e; }
   .meta-tag { font-size: 11px; color: #6b6962; margin-left: 8px; }
+  .prov-note { font-size: 11px; color: #9c978e; font-style: italic; margin-top: 4px; margin-bottom: 0; }
+  .approval-stamp { display: inline-block; background: #dceee4; color: #2a6b4a; font-weight: 700; font-size: 13px; padding: 6px 14px; border-radius: 6px; margin-bottom: 24px; }
+  .pending-stamp { display: inline-block; background: #f2f0eb; color: #6b6962; font-size: 13px; padding: 6px 14px; border-radius: 6px; margin-bottom: 24px; }
   @media print { body { padding: 20px; } }
 </style>
 </head>
@@ -191,6 +279,7 @@ function buildReportHtml(
   ${unitLine}
   <span>Created: <strong>${fmt(caseMeta.createdAt)}</strong></span>
 </div>
+${approvalLine}
 
 ${extractionSectionsHtml}
 
@@ -202,11 +291,15 @@ ${extractionSectionsHtml}
 ${review.summary ? `<h2>${template.reviewFieldLabels.summary}</h2><p>${review.summary}</p>` : ""}
 ${review.nextSteps ? `<h2>${template.reviewFieldLabels.nextSteps}</h2><p>${review.nextSteps}</p>` : ""}
 
+${overridesHtml}
+
 <h2>Evidence (${evidence.length} items)</h2>
 <table>
-<thead><tr><th>Type</th><th>Name</th><th>Uploaded by</th><th>Date</th></tr></thead>
+<thead><tr><th>Type</th><th>Name</th><th>Uploaded by</th><th>Date</th><th>Description</th></tr></thead>
 <tbody>${evidenceRows}</tbody>
 </table>
+
+${provenanceAppendix}
 
 <h2>Audit Log</h2>
 <table>

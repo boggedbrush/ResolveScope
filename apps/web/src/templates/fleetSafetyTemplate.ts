@@ -69,4 +69,9 @@ export const fleetSafetyTemplate: CaseTemplate = {
   },
   summaryPlaceholder: "Summarize contributing factors and safety officer findings…",
   nextStepsPlaceholder: "Add follow-up actions or override recommendations…",
+  approvalConfig: {
+    requireExtraction: true,
+    requireAllChecklist: true,
+    overrideReasonRequiredFor: ["severity"],
+  },
 };

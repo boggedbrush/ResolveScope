@@ -1,16 +1,24 @@
+import { ApprovalRequirements } from "./ApprovalRequirements";
+import { checkApproval } from "../../utils/approval";
 import type {
   ReviewState,
   AuditEntry,
   AuditAction,
   CaseTemplate,
+  ExtractionResult,
+  OverrideMap,
 } from "../../types/case";
 
 interface Props {
   review: ReviewState;
+  overrides: OverrideMap;
+  originalValues: Record<string, string>;
   auditLog: AuditEntry[];
   caseStatus: string;
+  extraction: ExtractionResult | null;
   template: CaseTemplate;
   onReviewChange: (r: ReviewState) => void;
+  onOverrideReasonChange: (fieldKey: string, reason: string) => void;
   onSave: () => void;
   onApprove: () => void;
   onExportJson: () => void;
@@ -20,6 +28,8 @@ interface Props {
 const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   extraction_run: "Extraction run",
   field_edit: "Fields saved",
+  field_override: "Override recorded",
+  override_cleared: "Override cleared",
   case_approved: "Case approved",
   report_exported: "Report exported",
   evidence_added: "Evidence added",
@@ -34,12 +44,27 @@ function fmtAudit(iso: string): string {
   });
 }
 
+function OverrideBadge({ reason }: { reason: string }) {
+  return (
+    <span
+      className={`override-badge ${!reason.trim() ? "override-badge--needs-reason" : ""}`}
+      title={reason || "Override reason required"}
+    >
+      {reason.trim() ? "Overridden" : "Override — reason required"}
+    </span>
+  );
+}
+
 export function ReviewPanel({
   review,
+  overrides,
+  originalValues,
   auditLog,
   caseStatus,
+  extraction,
   template,
   onReviewChange,
+  onOverrideReasonChange,
   onSave,
   onApprove,
   onExportJson,
@@ -48,6 +73,14 @@ export function ReviewPanel({
   const isApproved = caseStatus === "approved";
   const { reviewFieldLabels } = template;
 
+  const approvalStatus = checkApproval(
+    extraction,
+    template,
+    review,
+    overrides,
+    caseStatus
+  );
+
   function updateChecklist(key: string, value: boolean) {
     onReviewChange({
       ...review,
@@ -55,9 +88,13 @@ export function ReviewPanel({
     });
   }
 
+  const severityOverride = overrides["severity"];
+  const isSeverityOverridden =
+    review.severity !== originalValues.severity;
+
   return (
     <aside className="demo-panel demo-panel--review">
-      {/* Review fields */}
+      {/* Review header */}
       <div className="demo-panel__section-header">
         <h3 className="demo-panel__section-title">Review</h3>
         {isApproved && (
@@ -65,15 +102,21 @@ export function ReviewPanel({
         )}
       </div>
 
+      {/* Review fields */}
       <div className="review-fields">
         {/* Severity / Risk level */}
         <div className="review-field">
-          <label className="review-field__label" htmlFor="review-severity">
-            {reviewFieldLabels.severity}
-          </label>
+          <div className="review-field__label-row">
+            <label className="review-field__label" htmlFor="review-severity">
+              {reviewFieldLabels.severity}
+            </label>
+            {isSeverityOverridden && (
+              <OverrideBadge reason={severityOverride?.reason ?? ""} />
+            )}
+          </div>
           <select
             id="review-severity"
-            className="review-field__select"
+            className={`review-field__select ${isSeverityOverridden ? "review-field__select--overridden" : ""}`}
             value={review.severity}
             disabled={isApproved}
             onChange={(e) =>
@@ -87,6 +130,32 @@ export function ReviewPanel({
               </option>
             ))}
           </select>
+
+          {isSeverityOverridden && !isApproved && (
+            <div className="override-reason">
+              <label
+                className="override-reason__label"
+                htmlFor="override-reason-severity"
+              >
+                Override reason
+                <span className="override-reason__required" aria-hidden="true">
+                  *
+                </span>
+              </label>
+              <textarea
+                id="override-reason-severity"
+                className={`override-reason__input ${!severityOverride?.reason.trim() ? "override-reason__input--empty" : ""}`}
+                rows={2}
+                placeholder="Why was this assessment overridden?"
+                value={severityOverride?.reason ?? ""}
+                onChange={(e) =>
+                  onOverrideReasonChange("severity", e.target.value)
+                }
+                aria-label="Override reason for severity"
+                aria-required="true"
+              />
+            </div>
+          )}
         </div>
 
         {/* Summary */}
@@ -144,6 +213,11 @@ export function ReviewPanel({
         ))}
       </div>
 
+      {/* Approval requirements + trust summary */}
+      {!isApproved && (
+        <ApprovalRequirements status={approvalStatus} />
+      )}
+
       {/* Actions */}
       <div className="review-actions">
         {!isApproved && (
@@ -156,8 +230,15 @@ export function ReviewPanel({
         )}
         {!isApproved && (
           <button
-            className="btn btn--primary review-actions__approve"
+            className="btn review-actions__approve"
             onClick={onApprove}
+            disabled={!approvalStatus.allowed}
+            aria-disabled={!approvalStatus.allowed}
+            title={
+              approvalStatus.allowed
+                ? "Approve this case"
+                : approvalStatus.blockers.join("; ")
+            }
           >
             Approve case
           </button>
