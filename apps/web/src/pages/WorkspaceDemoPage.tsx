@@ -6,10 +6,7 @@ import { ReviewPanel } from "../components/demo/ReviewPanel";
 import { SpatialReviewPanel } from "../components/demo/SpatialReviewPanel";
 import { getTemplate } from "../templates/index";
 import { runMockExtraction } from "../utils/mockExtraction";
-import {
-  downloadCaseBundle,
-  printCaseReport,
-} from "../utils/exportCaseBundle";
+import { downloadCaseBundle } from "../utils/exportCaseBundle";
 import { applyOverride, updateOverrideReason, describeOverrides } from "../utils/reviewOverrides";
 import type {
   EvidenceItem,
@@ -23,13 +20,14 @@ import type {
 
 interface Props {
   seedData: SeedCaseData;
+  demoId: string;
 }
 
 function makeAuditId(): string {
   return `audit-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function WorkspaceDemoPage({ seedData }: Props) {
+export function WorkspaceDemoPage({ seedData, demoId }: Props) {
   const template = getTemplate(seedData.caseMeta.templateId);
 
   // Original values snapshot — used to detect overrides
@@ -134,11 +132,6 @@ export function WorkspaceDemoPage({ seedData }: Props) {
     downloadCaseBundle(template, caseMeta, evidence, extraction, review, overrides, log, seedData.spatialMarkers);
   }
 
-  function handleExportReport() {
-    const log = appendAudit("report_exported", "HTML report printed");
-    printCaseReport(template, caseMeta, evidence, extraction, review, overrides, log, seedData.spatialMarkers);
-  }
-
   const hasSpatial = (seedData.spatialMarkers ?? []).length > 0;
 
   return (
@@ -199,10 +192,10 @@ export function WorkspaceDemoPage({ seedData }: Props) {
           template={template}
           onReviewChange={handleReviewChange}
           onOverrideReasonChange={handleOverrideReasonChange}
+          reportPath={`/report/${demoId}`}
           onSave={handleSave}
           onApprove={handleApprove}
           onExportJson={handleExportJson}
-          onExportReport={handleExportReport}
         />
       </main>
     </div>

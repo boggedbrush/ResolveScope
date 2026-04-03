@@ -2,5 +2,5 @@ import { WorkspaceDemoPage } from "./WorkspaceDemoPage";
 import { autoClaimSeedData } from "../data/cases/autoClaimCase";
 
 export function AutoClaimDemoPage() {
-  return <WorkspaceDemoPage seedData={autoClaimSeedData} />;
+  return <WorkspaceDemoPage seedData={autoClaimSeedData} demoId="auto-claim" />;
 }

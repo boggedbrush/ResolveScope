@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ApprovalRequirements } from "./ApprovalRequirements";
 import { checkApproval } from "../../utils/approval";
 import type {
@@ -21,8 +22,8 @@ interface Props {
   onOverrideReasonChange: (fieldKey: string, reason: string) => void;
   onSave: () => void;
   onApprove: () => void;
+  reportPath: string;
   onExportJson: () => void;
-  onExportReport: () => void;
 }
 
 const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
@@ -65,10 +66,10 @@ export function ReviewPanel({
   template,
   onReviewChange,
   onOverrideReasonChange,
+  reportPath,
   onSave,
   onApprove,
   onExportJson,
-  onExportReport,
 }: Props) {
   const isApproved = caseStatus === "approved";
   const { reviewFieldLabels } = template;
@@ -251,13 +252,13 @@ export function ReviewPanel({
           >
             Export JSON
           </button>
-          <button
+          <Link
+            to={reportPath}
             className="btn btn--outline review-actions__export"
-            onClick={onExportReport}
-            aria-label="Print or save HTML report"
+            aria-label="View stakeholder report"
           >
-            Print report
-          </button>
+            View report
+          </Link>
         </div>
       </div>
 

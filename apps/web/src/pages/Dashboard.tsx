@@ -15,6 +15,8 @@ interface CaseRow {
   subject?: string;
   /** If set, links to this path instead of /cases/:id */
   demoPath?: string;
+  /** If set, shows a "View report" link */
+  reportPath?: string;
 }
 
 const DEMO_CASES: CaseRow[] = [
@@ -29,6 +31,7 @@ const DEMO_CASES: CaseRow[] = [
     evidenceCount: 6,
     subject: "Maria Rivera",
     demoPath: "/demo/auto-claim",
+    reportPath: "/report/auto-claim",
   },
   {
     id: "FSI-2024-00312",
@@ -41,6 +44,7 @@ const DEMO_CASES: CaseRow[] = [
     evidenceCount: 6,
     subject: "Darnell Hughes",
     demoPath: "/demo/fleet-safety",
+    reportPath: "/report/fleet-safety",
   },
   {
     id: "SIR-2024-00091",
@@ -53,6 +57,7 @@ const DEMO_CASES: CaseRow[] = [
     evidenceCount: 8,
     subject: "Hargrove Commercial Properties",
     demoPath: "/demo/site-inspection",
+    reportPath: "/report/site-inspection",
   },
 ];
 
@@ -105,6 +110,7 @@ export function Dashboard() {
               <th>Status</th>
               <th>Evidence</th>
               <th>Updated</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -154,6 +160,16 @@ export function Dashboard() {
                     {c.evidenceCount}
                   </td>
                   <td className="case-table__date">{c.updatedAt}</td>
+                  <td className="case-table__actions">
+                    {c.reportPath && (
+                      <Link
+                        to={c.reportPath}
+                        className="case-table__report-link"
+                      >
+                        View report
+                      </Link>
+                    )}
+                  </td>
                 </tr>
               );
             })}
