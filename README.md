@@ -2,7 +2,7 @@
 
 <br>
 
-<img src="https://raw.githubusercontent.com/boggedbrush/ResolveScope/main/apps/web/public/favicon.svg" width="64" height="64" alt="ResolveScope" />
+<img src="./apps/web/public/favicon.svg" width="64" height="64" alt="ResolveScope" />
 
 <br>
 
