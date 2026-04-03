@@ -201,6 +201,22 @@ export interface SeedCaseData {
   spatialMarkers?: SpatialMarker[];
 }
 
+/**
+ * Persisted demo case state used to keep workspace/report/dashboard in sync
+ * without a backend.
+ */
+export interface DemoCaseState {
+  demoId: string;
+  reviewer: string;
+  caseMeta: CaseMeta;
+  evidence: EvidenceItem[];
+  extraction: ExtractionResult | null;
+  review: ReviewState;
+  overrides: OverrideMap;
+  auditLog: AuditEntry[];
+  spatialMarkers?: SpatialMarker[];
+}
+
 /* ── Export bundle ───────────────────────── */
 
 export interface CaseBundle {

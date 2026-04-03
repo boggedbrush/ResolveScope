@@ -4,18 +4,18 @@ import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
 import { ReviewPanel } from "../components/demo/ReviewPanel";
 import { SpatialReviewPanel } from "../components/demo/SpatialReviewPanel";
+import { getDemoCaseState, resetDemoCaseState, updateDemoCaseState } from "../data/demoState";
 import { getTemplate } from "../templates/index";
 import { runMockExtraction } from "../utils/mockExtraction";
 import { downloadCaseBundle } from "../utils/exportCaseBundle";
 import { applyOverride, updateOverrideReason, describeOverrides } from "../utils/reviewOverrides";
 import type {
   EvidenceItem,
-  ExtractionResult,
   ReviewState,
   AuditEntry,
   CaseMeta,
   SeedCaseData,
-  OverrideMap,
+  DemoCaseState,
 } from "../types/case";
 
 interface Props {
@@ -37,18 +37,29 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
     nextSteps: seedData.initialReview.nextSteps,
   };
 
-  const [caseMeta, setCaseMeta] = useState<CaseMeta>(seedData.caseMeta);
-  const [evidence, setEvidence] = useState<EvidenceItem[]>(seedData.evidence);
-  const [extraction, setExtraction] = useState<ExtractionResult | null>(null);
+  const [demoState, setDemoState] = useState<DemoCaseState>(() =>
+    getDemoCaseState(demoId, seedData)
+  );
   const [isExtracting, setIsExtracting] = useState(false);
-  const [review, setReview] = useState<ReviewState>(seedData.initialReview);
-  const [overrides, setOverrides] = useState<OverrideMap>({});
-  const [auditLog, setAuditLog] = useState<AuditEntry[]>([]);
+
+  const { caseMeta, evidence, extraction, review, overrides, auditLog } = demoState;
+
+  function commitDemoState(updater: (prev: DemoCaseState) => DemoCaseState): DemoCaseState {
+    const nextState = updater(demoState);
+    setDemoState(nextState);
+    updateDemoCaseState(demoId, seedData, () => nextState);
+    return nextState;
+  }
+
+  function touchCaseMeta(caseMeta: CaseMeta): CaseMeta {
+    return { ...caseMeta, updatedAt: new Date().toISOString() };
+  }
 
   function appendAudit(
+    state: DemoCaseState,
     action: AuditEntry["action"],
     detail?: string
-  ): AuditEntry[] {
+  ): DemoCaseState {
     const entry: AuditEntry = {
       id: makeAuditId(),
       timestamp: new Date().toISOString(),
@@ -56,51 +67,74 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
       actor: seedData.reviewer,
       detail,
     };
-    const next = [...auditLog, entry];
-    setAuditLog(next);
-    return next;
+    return {
+      ...state,
+      auditLog: [...state.auditLog, entry],
+      caseMeta: touchCaseMeta(state.caseMeta),
+    };
   }
 
   async function handleRunExtraction() {
     setIsExtracting(true);
     try {
       const result = await runMockExtraction(seedData.extraction);
-      setExtraction(result);
-      appendAudit("extraction_run", "Extraction completed successfully");
+      commitDemoState((prev) =>
+        appendAudit(
+          {
+            ...prev,
+            extraction: result,
+          },
+          "extraction_run",
+          "Extraction completed successfully"
+        )
+      );
     } finally {
       setIsExtracting(false);
     }
   }
 
   function handleAddEvidence(items: EvidenceItem[]) {
-    setEvidence((prev) => [...prev, ...items]);
-    items.forEach((item) => {
-      appendAudit("evidence_added", `Added: ${item.name}`);
+    commitDemoState((prev) => {
+      const withEvidence: DemoCaseState = {
+        ...prev,
+        evidence: [...prev.evidence, ...items],
+      };
+
+      return items.reduce(
+        (acc, item) => appendAudit(acc, "evidence_added", `Added: ${item.name}`),
+        withEvidence
+      );
     });
   }
 
   /** Sync override state when a review field value changes. */
   function handleReviewChange(nextReview: ReviewState) {
-    setReview(nextReview);
+    commitDemoState((prev) => {
+      const nextOverrides = applyOverride(
+        prev.overrides,
+        "severity",
+        originalValues.severity,
+        nextReview.severity,
+        seedData.reviewer,
+        prev.overrides["severity"]?.reason
+      );
 
-    // Update override map for severity (the primary extracted field)
-    const prevOverrides = overrides;
-    const nextOverrides = applyOverride(
-      prevOverrides,
-      "severity",
-      originalValues.severity,
-      nextReview.severity,
-      seedData.reviewer,
-      prevOverrides["severity"]?.reason
-    );
-    if (nextOverrides !== prevOverrides) {
-      setOverrides(nextOverrides);
-    }
+      return {
+        ...prev,
+        review: nextReview,
+        overrides: nextOverrides,
+        caseMeta: touchCaseMeta({ ...prev.caseMeta, severity: nextReview.severity }),
+      };
+    });
   }
 
   /** Update just the reason for an existing override without changing the value. */
   function handleOverrideReasonChange(fieldKey: string, reason: string) {
-    setOverrides((prev) => updateOverrideReason(prev, fieldKey, reason));
+    commitDemoState((prev) => ({
+      ...prev,
+      overrides: updateOverrideReason(prev.overrides, fieldKey, reason),
+      caseMeta: touchCaseMeta(prev.caseMeta),
+    }));
   }
 
   function handleSave() {
@@ -112,27 +146,53 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
     const overrideKeys = Object.keys(overrides);
     if (overrideKeys.length > 0) {
       parts.push(`overrides: ${describeOverrides(overrides)}`);
-      appendAudit("field_override", parts.join("; "));
+      commitDemoState((prev) => appendAudit(prev, "field_override", parts.join("; ")));
     } else {
-      appendAudit("field_edit", parts.join("; "));
+      commitDemoState((prev) => appendAudit(prev, "field_edit", parts.join("; ")));
     }
   }
 
   function handleApprove() {
-    setCaseMeta((prev) => ({ ...prev, status: "approved" }));
-    const overrideCount = Object.keys(overrides).length;
+    const overrideCount = Object.keys(demoState.overrides).length;
     const detail = overrideCount > 0
       ? `Case approved with ${overrideCount} reviewer override${overrideCount > 1 ? "s" : ""}`
       : "Case approved and locked";
-    appendAudit("case_approved", detail);
+
+    commitDemoState((prev) =>
+      appendAudit(
+        {
+          ...prev,
+          caseMeta: touchCaseMeta({ ...prev.caseMeta, status: "approved" }),
+        },
+        "case_approved",
+        detail
+      )
+    );
   }
 
   function handleExportJson() {
-    const log = appendAudit("report_exported", "JSON bundle downloaded");
-    downloadCaseBundle(template, caseMeta, evidence, extraction, review, overrides, log, seedData.spatialMarkers);
+    const nextState = commitDemoState((prev) =>
+      appendAudit(prev, "report_exported", "JSON bundle downloaded")
+    );
+    downloadCaseBundle(
+      template,
+      nextState.caseMeta,
+      nextState.evidence,
+      nextState.extraction,
+      nextState.review,
+      nextState.overrides,
+      nextState.auditLog,
+      nextState.spatialMarkers
+    );
   }
 
-  const hasSpatial = (seedData.spatialMarkers ?? []).length > 0;
+  function handleResetDemo() {
+    const resetState = resetDemoCaseState(demoId, seedData);
+    setDemoState(resetState);
+    setIsExtracting(false);
+  }
+
+  const hasSpatial = (demoState.spatialMarkers ?? []).length > 0;
 
   return (
     <div className={`demo-page${hasSpatial ? " demo-page--with-spatial" : ""}`}>
@@ -145,6 +205,9 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
           <span className="demo-topbar__breadcrumb">Demo workspace</span>
         </div>
         <div className="demo-topbar__right">
+          <button className="btn btn--outline demo-topbar__back" onClick={handleResetDemo}>
+            Reset demo
+          </button>
           <span className="demo-topbar__badge section-label">
             {template.label}
           </span>
@@ -156,7 +219,7 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
 
       {hasSpatial && (
         <SpatialReviewPanel
-          markers={seedData.spatialMarkers!}
+          markers={demoState.spatialMarkers!}
           evidence={evidence}
         />
       )}

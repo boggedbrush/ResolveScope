@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { DEMO_SEED_MAP } from "../data/demoResolver";
+import { getDemoCaseState, resetAllDemoCaseStates, useDemoStateVersion } from "../data/demoState";
+import type { CaseStatus, Priority } from "../types/case";
 
-type CaseStatus = "open" | "in-review" | "approved" | "exported";
-type CasePriority = "critical" | "high" | "medium" | "low";
+type CasePriority = Priority;
 
 interface CaseRow {
   id: string;
@@ -82,9 +84,33 @@ const DOMAIN_COLORS: Record<string, string> = {
 };
 
 export function Dashboard() {
-  const activeCount = DEMO_CASES.filter(
+  useDemoStateVersion();
+
+  const rows = DEMO_CASES.map((row) => {
+    if (!row.demoPath) return row;
+    const demoId = row.demoPath.replace("/demo/", "");
+    const seedData = DEMO_SEED_MAP[demoId];
+    if (!seedData) return row;
+
+    const state = getDemoCaseState(demoId, seedData);
+    return {
+      ...row,
+      status: state.caseMeta.status,
+      updatedAt: state.caseMeta.updatedAt.slice(0, 10),
+      evidenceCount: state.evidence.length,
+      title: state.caseMeta.title,
+      subject: state.caseMeta.subject,
+      priority: state.caseMeta.priority,
+    };
+  });
+
+  const activeCount = rows.filter(
     (c) => c.status === "open" || c.status === "in-review"
   ).length;
+
+  function handleResetAllDemos() {
+    resetAllDemoCaseStates(DEMO_SEED_MAP);
+  }
 
   return (
     <div className="dashboard">
@@ -92,12 +118,17 @@ export function Dashboard() {
         <div>
           <h1 className="dashboard__title">Cases</h1>
           <p className="dashboard__subtitle">
-            {DEMO_CASES.length} cases · {activeCount} active
+            {rows.length} cases · {activeCount} active
           </p>
         </div>
-        <button className="btn btn--primary btn--sm" disabled>
-          New case
-        </button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button className="btn btn--outline btn--sm" onClick={handleResetAllDemos}>
+            Reset demos
+          </button>
+          <button className="btn btn--primary btn--sm" disabled>
+            New case
+          </button>
+        </div>
       </div>
 
       <div className="dashboard__table-wrap">
@@ -114,7 +145,7 @@ export function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {DEMO_CASES.map((c) => {
+            {rows.map((c) => {
               const domainColor = DOMAIN_COLORS[c.domain] ?? "copper";
               return (
                 <tr key={c.id}>

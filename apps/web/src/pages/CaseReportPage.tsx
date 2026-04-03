@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { resolveDemoCase } from "../data/demoResolver";
+import { getDemoCaseState, useDemoStateVersion } from "../data/demoState";
 import { getTemplate } from "../templates/index";
 import type {
   SectionData,
@@ -355,6 +356,7 @@ function ProvenanceAppendix({
 /* ── Main page ─────────────────────────────────────────────── */
 
 export function CaseReportPage() {
+  useDemoStateVersion();
   const { demoId } = useParams<{ demoId: string }>();
   const seedData = demoId ? resolveDemoCase(demoId) : null;
 
@@ -373,13 +375,18 @@ export function CaseReportPage() {
   }
 
   const template = getTemplate(seedData.caseMeta.templateId);
-  const { caseMeta, evidence, extraction, initialReview, reviewer, spatialMarkers } =
-    seedData;
+  const state = getDemoCaseState(demoId!, seedData);
+  const caseMeta = state.caseMeta;
+  const evidence = state.evidence;
+  const extraction = state.extraction ?? seedData.extraction;
+  const review = state.review;
+  const reviewer = state.reviewer;
+  const spatialMarkers = state.spatialMarkers ?? seedData.spatialMarkers;
 
   const hasSpatial = (spatialMarkers ?? []).length > 0;
   const isApproved = caseMeta.status === "approved";
 
-  const completedChecklist = Object.values(initialReview.checklist).filter(
+  const completedChecklist = Object.values(review.checklist).filter(
     Boolean
   ).length;
   const totalChecklist = template.checklistItems.length;
@@ -563,8 +570,8 @@ export function CaseReportPage() {
                 {template.reviewFieldLabels.severity}
               </span>
               <span className="report-review-field__value report-review-field__value--severity">
-                {initialReview.severity.charAt(0).toUpperCase() +
-                  initialReview.severity.slice(1)}
+                {review.severity.charAt(0).toUpperCase() +
+                  review.severity.slice(1)}
               </span>
             </div>
             <div className="report-review-field">
@@ -573,13 +580,13 @@ export function CaseReportPage() {
             </div>
           </div>
 
-          {initialReview.summary ? (
+          {review.summary ? (
             <div className="report-review-block">
               <h3 className="report-review-block__title">
                 {template.reviewFieldLabels.summary}
               </h3>
               <p className="report-review-block__content">
-                {initialReview.summary}
+                {review.summary}
               </p>
             </div>
           ) : (
@@ -588,13 +595,13 @@ export function CaseReportPage() {
             </p>
           )}
 
-          {initialReview.nextSteps && (
+          {review.nextSteps && (
             <div className="report-review-block">
               <h3 className="report-review-block__title">
                 {template.reviewFieldLabels.nextSteps}
               </h3>
               <p className="report-review-block__content">
-                {initialReview.nextSteps}
+                {review.nextSteps}
               </p>
             </div>
           )}
@@ -609,7 +616,7 @@ export function CaseReportPage() {
             </div>
             <div className="report-checklist__items">
               {template.checklistItems.map(({ key, label }) => {
-                const done = !!initialReview.checklist[key];
+                const done = !!review.checklist[key];
                 return (
                   <div
                     key={key}
