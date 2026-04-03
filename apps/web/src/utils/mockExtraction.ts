@@ -1,17 +1,16 @@
-import type { ExtractionResult } from "../types/demo";
-import { DEMO_EXTRACTION } from "../data/demo/autoClaimCase";
+import type { ExtractionResult } from "../types/case";
 
 /**
- * Simulates an AI extraction run.
- * Replace the body of this function with a real API call when ready.
- * Returns a deterministic result derived from the seeded case.
+ * Simulates an extraction run with a brief delay.
+ * Returns the seeded extraction result with a live runAt timestamp.
+ * Replace with a real API call when ready.
  */
-export async function runMockExtraction(): Promise<ExtractionResult> {
-  // Simulate network/processing latency
+export async function runMockExtraction(
+  seededExtraction: ExtractionResult
+): Promise<ExtractionResult> {
   await new Promise((resolve) => setTimeout(resolve, 1800));
-
   return {
-    ...DEMO_EXTRACTION,
+    ...seededExtraction,
     runAt: new Date().toISOString(),
   };
 }

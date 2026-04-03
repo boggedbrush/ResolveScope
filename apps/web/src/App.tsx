@@ -16,6 +16,11 @@ const AutoClaimDemoPage = lazy(() =>
     default: m.AutoClaimDemoPage,
   }))
 );
+const FleetSafetyDemoPage = lazy(() =>
+  import("./pages/FleetSafetyDemoPage").then((m) => ({
+    default: m.FleetSafetyDemoPage,
+  }))
+);
 
 export function App() {
   return (
@@ -23,6 +28,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
+        <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cases/:id" element={<CaseWorkspace />} />

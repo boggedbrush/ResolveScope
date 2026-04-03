@@ -2118,15 +2118,29 @@ section {
 }
 
 .extraction-vehicle {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 6px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-size: 13px;
+}
+
+.extraction-vehicle__row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0 16px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.extraction-vehicle__row:last-child {
+  border-bottom: none;
 }
 
 .extraction-vehicle dt {
   color: var(--text-tertiary);
   font-weight: 500;
+  font-size: 12px;
+  padding-top: 1px;
 }
 
 .extraction-vehicle dd {
@@ -2397,4 +2411,92 @@ section {
   font-size: 11px;
   color: var(--text-tertiary);
   line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════
+   Template-driven workspace additions
+   ═══════════════════════════════════════════ */
+
+/* Corrective actions section */
+.extraction-actions {
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.extraction-action {
+  padding: 10px 14px;
+  background: var(--bg-alt);
+  border-radius: 6px;
+  border-left: 3px solid var(--forest);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extraction-action__text {
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.extraction-action__meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.extraction-action__owner {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.extraction-action__due {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--copper);
+  background: var(--copper-subtle);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* Badge for critical severity */
+.badge--severity-critical {
+  background: #fce8e8;
+  color: #b91c1c;
+}
+
+/* Dashboard template column styles */
+.case-table__template {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.case-table__template-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.case-table__template-name--copper {
+  color: var(--copper);
+}
+
+.case-table__template-name--forest {
+  color: var(--forest);
+}
+
+.case-table__sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.case-table__subject {
+  color: var(--text-secondary);
+  font-family: var(--font-body, inherit);
 }

@@ -6,33 +6,49 @@ type CasePriority = "critical" | "high" | "medium" | "low";
 interface CaseRow {
   id: string;
   title: string;
+  template: string;
   domain: string;
   status: CaseStatus;
   priority: CasePriority;
   updatedAt: string;
   evidenceCount: number;
+  subject?: string;
   /** If set, links to this path instead of /cases/:id */
   demoPath?: string;
 }
 
 const DEMO_CASES: CaseRow[] = [
   {
-    id: "demo-auto-claim",
+    id: "CLM-2024-00847",
     title: "Parking lot collision — Rivera vehicle",
+    template: "Auto Claim Review",
     domain: "Insurance",
     status: "in-review",
     priority: "medium",
     updatedAt: "2024-11-13",
     evidenceCount: 6,
+    subject: "Maria Rivera",
     demoPath: "/demo/auto-claim",
+  },
+  {
+    id: "FSI-2024-00312",
+    title: "Loading dock rear contact — Unit V-183",
+    template: "Fleet Safety Incident",
+    domain: "Fleet Operations",
+    status: "in-review",
+    priority: "high",
+    updatedAt: "2024-10-29",
+    evidenceCount: 6,
+    subject: "Darnell Hughes",
+    demoPath: "/demo/fleet-safety",
   },
 ];
 
 const STATUS_LABELS: Record<CaseStatus, string> = {
-  "open": "Open",
+  open: "Open",
   "in-review": "In review",
-  "approved": "Approved",
-  "exported": "Exported",
+  approved: "Approved",
+  exported: "Exported",
 };
 
 const PRIORITY_LABELS: Record<CasePriority, string> = {
@@ -42,14 +58,23 @@ const PRIORITY_LABELS: Record<CasePriority, string> = {
   low: "Low",
 };
 
+const DOMAIN_COLORS: Record<string, string> = {
+  Insurance: "copper",
+  "Fleet Operations": "forest",
+};
+
 export function Dashboard() {
+  const activeCount = DEMO_CASES.filter(
+    (c) => c.status === "open" || c.status === "in-review"
+  ).length;
+
   return (
     <div className="dashboard">
       <div className="dashboard__header">
         <div>
           <h1 className="dashboard__title">Cases</h1>
           <p className="dashboard__subtitle">
-            {DEMO_CASES.length} cases · {DEMO_CASES.filter((c) => c.status === "open" || c.status === "in-review").length} active
+            {DEMO_CASES.length} cases · {activeCount} active
           </p>
         </div>
         <button className="btn btn--primary btn--sm" disabled>
@@ -62,7 +87,7 @@ export function Dashboard() {
           <thead>
             <tr>
               <th>Case</th>
-              <th>Domain</th>
+              <th>Template</th>
               <th>Priority</th>
               <th>Status</th>
               <th>Evidence</th>
@@ -70,36 +95,55 @@ export function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {DEMO_CASES.map((c) => (
-              <tr key={c.id}>
-                <td>
-                  <Link
-                    to={c.demoPath ?? `/cases/${c.id}`}
-                    className="case-table__title-link"
-                  >
-                    {c.title}
-                  </Link>
-                  {c.demoPath && (
-                    <span className="case-table__demo-tag">Live demo</span>
-                  )}
-                </td>
-                <td>
-                  <span className="case-table__domain">{c.domain}</span>
-                </td>
-                <td>
-                  <span className={`badge badge--priority-${c.priority}`}>
-                    {PRIORITY_LABELS[c.priority]}
-                  </span>
-                </td>
-                <td>
-                  <span className={`badge badge--status-${c.status}`}>
-                    {STATUS_LABELS[c.status]}
-                  </span>
-                </td>
-                <td className="case-table__evidence-count">{c.evidenceCount}</td>
-                <td className="case-table__date">{c.updatedAt}</td>
-              </tr>
-            ))}
+            {DEMO_CASES.map((c) => {
+              const domainColor = DOMAIN_COLORS[c.domain] ?? "copper";
+              return (
+                <tr key={c.id}>
+                  <td>
+                    <Link
+                      to={c.demoPath ?? `/cases/${c.id}`}
+                      className="case-table__title-link"
+                    >
+                      {c.title}
+                    </Link>
+                    <div className="case-table__sub">
+                      {c.id}
+                      {c.subject && (
+                        <span className="case-table__subject">
+                          · {c.subject}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="case-table__template">
+                      <span
+                        className={`case-table__template-name case-table__template-name--${domainColor}`}
+                      >
+                        {c.template}
+                      </span>
+                      <span className="case-table__domain">{c.domain}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`badge badge--priority-${c.priority}`}>
+                      {PRIORITY_LABELS[c.priority]}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`badge badge--status-${c.status.replace("-", "")}`}
+                    >
+                      {STATUS_LABELS[c.status]}
+                    </span>
+                  </td>
+                  <td className="case-table__evidence-count">
+                    {c.evidenceCount}
+                  </td>
+                  <td className="case-table__date">{c.updatedAt}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import type { EvidenceItem, EvidenceType } from "../../types/demo";
+import type { EvidenceItem, EvidenceType } from "../../types/case";
 
 interface Props {
   evidence: EvidenceItem[];
@@ -10,6 +10,7 @@ interface Props {
   status: string;
   priority: string;
   severity: string;
+  uploadedBy: string;
 }
 
 const TYPE_ICONS: Record<EvidenceType, string> = {
@@ -45,6 +46,7 @@ export function EvidencePanel({
   status,
   priority,
   severity,
+  uploadedBy,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,16 +54,12 @@ export function EvidencePanel({
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
     const newItems: EvidenceItem[] = files.map((f) => {
-      const type: EvidenceType = f.type.startsWith("image/")
-        ? "image"
-        : f.type === "application/pdf"
-        ? "document"
-        : "document";
+      const type: EvidenceType = f.type.startsWith("image/") ? "image" : "document";
       return {
         id: `ev-upload-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         type,
         name: f.name,
-        uploadedBy: "Alex Chen (adjuster)",
+        uploadedBy,
         uploadedAt: new Date().toISOString(),
         description: "Uploaded via file picker.",
         mimeType: f.type,
@@ -71,9 +69,12 @@ export function EvidencePanel({
       };
     });
     onAddEvidence(newItems);
-    // Reset input so same file can be re-added
     e.target.value = "";
   }
+
+  // Normalize CSS class: "in-review" → "inreview", "total-loss" → "totalloss"
+  const statusClass = status.replace(/-/g, "");
+  const severityClass = severity.replace(/-/g, "");
 
   return (
     <aside className="demo-panel demo-panel--evidence">
@@ -85,11 +86,11 @@ export function EvidencePanel({
         </div>
         <h2 className="demo-case-header__title">{caseTitle}</h2>
         <div className="demo-case-header__badges">
-          <span className={`badge badge--status-${status.replace("-", "")}`}>
-            {status.replace("-", " ")}
+          <span className={`badge badge--status-${statusClass}`}>
+            {status.replace(/-/g, " ")}
           </span>
           <span className={`badge badge--priority-${priority}`}>{priority}</span>
-          <span className={`badge badge--severity-${severity}`}>{severity}</span>
+          <span className={`badge badge--severity-${severityClass}`}>{severity.replace(/-/g, " ")}</span>
         </div>
       </div>
 

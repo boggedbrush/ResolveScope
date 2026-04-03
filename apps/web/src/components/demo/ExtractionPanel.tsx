@@ -1,10 +1,17 @@
-import type { ExtractionResult, EvidenceItem } from "../../types/demo";
+import type {
+  ExtractionResult,
+  EvidenceItem,
+  SectionData,
+  ExtractionSectionDef,
+  CaseTemplate,
+} from "../../types/case";
 
 interface Props {
   extraction: ExtractionResult | null;
   isRunning: boolean;
   onRunExtraction: () => void;
   evidence: EvidenceItem[];
+  template: CaseTemplate;
 }
 
 function fmtRunAt(iso: string): string {
@@ -39,11 +46,121 @@ function ProvenanceTags({
   );
 }
 
+function renderSectionBody(data: SectionData) {
+  switch (data.type) {
+    case "text":
+      return <p className="extraction-section__body">{data.content}</p>;
+
+    case "list":
+      return (
+        <ul className="extraction-list">
+          {data.items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      );
+
+    case "ordered-list":
+      return (
+        <ol className="extraction-list extraction-list--ordered">
+          {data.items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ol>
+      );
+
+    case "timeline":
+      return (
+        <ol className="extraction-timeline">
+          {data.entries.map((entry, i) => (
+            <li key={i} className="extraction-timeline__item">
+              <span className="extraction-timeline__time">{entry.time}</span>
+              <span className="extraction-timeline__event">{entry.event}</span>
+            </li>
+          ))}
+        </ol>
+      );
+
+    case "parties":
+      return (
+        <div className="extraction-parties">
+          {data.parties.map((p) => (
+            <div key={p.role} className="extraction-party">
+              <span className="extraction-party__role">{p.role}</span>
+              <span className="extraction-party__name">{p.name}</span>
+              {p.contact && (
+                <span className="extraction-party__contact">{p.contact}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+
+    case "unit-info":
+      return (
+        <dl className="extraction-vehicle">
+          {data.fields.map((f) => (
+            <div key={f.label} className="extraction-vehicle__row">
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      );
+
+    case "actions":
+      return (
+        <ol className="extraction-actions">
+          {data.items.map((item, i) => (
+            <li key={i} className="extraction-action">
+              <span className="extraction-action__text">{item.action}</span>
+              {(item.owner || item.due) && (
+                <div className="extraction-action__meta">
+                  {item.owner && (
+                    <span className="extraction-action__owner">{item.owner}</span>
+                  )}
+                  {item.due && (
+                    <span className="extraction-action__due">Due {item.due}</span>
+                  )}
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+      );
+  }
+}
+
+function ExtractionSection({
+  def,
+  extraction,
+  evidence,
+}: {
+  def: ExtractionSectionDef;
+  extraction: ExtractionResult;
+  evidence: EvidenceItem[];
+}) {
+  const data = extraction.sections[def.key];
+  if (!data) return null;
+
+  const provenanceKey = def.provenanceKey ?? def.key;
+  const provenanceIds = extraction.provenance[provenanceKey] ?? [];
+
+  return (
+    <section className="extraction-section">
+      <h4 className="extraction-section__title">{def.title}</h4>
+      {renderSectionBody(data)}
+      <ProvenanceTags ids={provenanceIds} evidence={evidence} />
+    </section>
+  );
+}
+
 export function ExtractionPanel({
   extraction,
   isRunning,
   onRunExtraction,
   evidence,
+  template,
 }: Props) {
   if (isRunning) {
     return (
@@ -65,21 +182,39 @@ export function ExtractionPanel({
         <div className="extraction-empty">
           <div className="extraction-empty__icon" aria-hidden="true">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="8" y="6" width="24" height="28" rx="3" stroke="#b85a30" strokeWidth="1.5" />
-              <path d="M14 14h12M14 20h12M14 26h8" stroke="#b85a30" strokeWidth="1.5" strokeLinecap="round" />
+              <rect
+                x="8"
+                y="6"
+                width="24"
+                height="28"
+                rx="3"
+                stroke="#b85a30"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M14 14h12M14 20h12M14 26h8"
+                stroke="#b85a30"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
               <circle cx="32" cy="32" r="6" fill="#b85a30" />
-              <path d="M32 29v3l2 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <path
+                d="M32 29v3l2 2"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
             </svg>
           </div>
           <h3 className="extraction-empty__title">Ready to extract</h3>
           <p className="extraction-empty__body">
-            Run AI extraction to generate a structured case brief — incident
-            summary, timeline, damage observations, and recommended next steps.
+            Run extraction to generate a structured case brief — incident
+            summary, timeline, findings, and recommended actions.
           </p>
           <button
             className="btn btn--primary"
             onClick={onRunExtraction}
-            aria-label="Run AI extraction on this case"
+            aria-label="Run extraction on this case"
           >
             Run Extraction
           </button>
@@ -90,7 +225,6 @@ export function ExtractionPanel({
 
   return (
     <div className="demo-panel demo-panel--extraction">
-      {/* Header */}
       <div className="demo-panel__section-header">
         <h3 className="demo-panel__section-title">Case Brief</h3>
         <span className="extraction-run-meta">
@@ -99,108 +233,14 @@ export function ExtractionPanel({
       </div>
 
       <div className="extraction-sections">
-        {/* Incident summary */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Incident Summary</h4>
-          <p className="extraction-section__body">{extraction.incidentSummary}</p>
-          <ProvenanceTags
-            ids={extraction.provenance["incidentSummary"] ?? []}
+        {template.extractionSections.map((def) => (
+          <ExtractionSection
+            key={def.key}
+            def={def}
+            extraction={extraction}
             evidence={evidence}
           />
-        </section>
-
-        {/* Timeline */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Timeline</h4>
-          <ol className="extraction-timeline">
-            {extraction.timeline.map((entry, i) => (
-              <li key={i} className="extraction-timeline__item">
-                <span className="extraction-timeline__time">{entry.time}</span>
-                <span className="extraction-timeline__event">{entry.event}</span>
-              </li>
-            ))}
-          </ol>
-          <ProvenanceTags
-            ids={extraction.provenance["timeline"] ?? []}
-            evidence={evidence}
-          />
-        </section>
-
-        {/* Parties */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Parties Involved</h4>
-          <div className="extraction-parties">
-            {extraction.parties.map((p) => (
-              <div key={p.role} className="extraction-party">
-                <span className="extraction-party__role">{p.role}</span>
-                <span className="extraction-party__name">{p.name}</span>
-                {p.contact && (
-                  <span className="extraction-party__contact">{p.contact}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Vehicle */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Vehicle Information</h4>
-          <dl className="extraction-vehicle">
-            <dt>Make / Model</dt>
-            <dd>
-              {extraction.vehicle.year} {extraction.vehicle.make}{" "}
-              {extraction.vehicle.model}
-            </dd>
-            <dt>Color</dt>
-            <dd>{extraction.vehicle.color}</dd>
-            <dt>Plate</dt>
-            <dd>{extraction.vehicle.plate}</dd>
-            {extraction.vehicle.vin && (
-              <>
-                <dt>VIN</dt>
-                <dd className="extraction-vehicle__vin">{extraction.vehicle.vin}</dd>
-              </>
-            )}
-          </dl>
-        </section>
-
-        {/* Damage */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Damage Observations</h4>
-          <ul className="extraction-list">
-            {extraction.damageObservations.map((d, i) => (
-              <li key={i}>{d}</li>
-            ))}
-          </ul>
-          <ProvenanceTags
-            ids={extraction.provenance["damageObservations"] ?? []}
-            evidence={evidence}
-          />
-        </section>
-
-        {/* Severity */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Severity Assessment</h4>
-          <p className="extraction-section__body">{extraction.severityAssessment}</p>
-          <ProvenanceTags
-            ids={extraction.provenance["severityAssessment"] ?? []}
-            evidence={evidence}
-          />
-        </section>
-
-        {/* Next steps */}
-        <section className="extraction-section">
-          <h4 className="extraction-section__title">Recommended Next Steps</h4>
-          <ol className="extraction-list extraction-list--ordered">
-            {extraction.recommendedNextSteps.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ol>
-          <ProvenanceTags
-            ids={extraction.provenance["recommendedNextSteps"] ?? []}
-            evidence={evidence}
-          />
-        </section>
+        ))}
       </div>
     </div>
   );

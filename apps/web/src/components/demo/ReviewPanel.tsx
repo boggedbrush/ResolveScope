@@ -1,22 +1,21 @@
-import type { ReviewState, AuditEntry, Severity, AuditAction } from "../../types/demo";
+import type {
+  ReviewState,
+  AuditEntry,
+  AuditAction,
+  CaseTemplate,
+} from "../../types/case";
 
 interface Props {
   review: ReviewState;
   auditLog: AuditEntry[];
   caseStatus: string;
+  template: CaseTemplate;
   onReviewChange: (r: ReviewState) => void;
   onSave: () => void;
   onApprove: () => void;
   onExportJson: () => void;
   onExportReport: () => void;
 }
-
-const SEVERITY_OPTIONS: { value: Severity; label: string }[] = [
-  { value: "minor", label: "Minor" },
-  { value: "moderate", label: "Moderate" },
-  { value: "major", label: "Major" },
-  { value: "total-loss", label: "Total Loss" },
-];
 
 const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   extraction_run: "Extraction run",
@@ -39,6 +38,7 @@ export function ReviewPanel({
   review,
   auditLog,
   caseStatus,
+  template,
   onReviewChange,
   onSave,
   onApprove,
@@ -46,8 +46,9 @@ export function ReviewPanel({
   onExportReport,
 }: Props) {
   const isApproved = caseStatus === "approved";
+  const { reviewFieldLabels } = template;
 
-  function updateChecklist(key: keyof ReviewState["checklist"], value: boolean) {
+  function updateChecklist(key: string, value: boolean) {
     onReviewChange({
       ...review,
       checklist: { ...review.checklist, [key]: value },
@@ -65,10 +66,10 @@ export function ReviewPanel({
       </div>
 
       <div className="review-fields">
-        {/* Severity */}
+        {/* Severity / Risk level */}
         <div className="review-field">
           <label className="review-field__label" htmlFor="review-severity">
-            Severity
+            {reviewFieldLabels.severity}
           </label>
           <select
             id="review-severity"
@@ -76,11 +77,11 @@ export function ReviewPanel({
             value={review.severity}
             disabled={isApproved}
             onChange={(e) =>
-              onReviewChange({ ...review, severity: e.target.value as Severity })
+              onReviewChange({ ...review, severity: e.target.value })
             }
-            aria-label="Severity assessment"
+            aria-label={reviewFieldLabels.severity}
           >
-            {SEVERITY_OPTIONS.map((o) => (
+            {template.severityOptions.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
               </option>
@@ -91,55 +92,50 @@ export function ReviewPanel({
         {/* Summary */}
         <div className="review-field">
           <label className="review-field__label" htmlFor="review-summary">
-            Reviewer summary
+            {reviewFieldLabels.summary}
           </label>
           <textarea
             id="review-summary"
             className="review-field__textarea"
             rows={4}
-            placeholder="Add your summary or notes…"
+            placeholder={template.summaryPlaceholder}
             value={review.summary}
             disabled={isApproved}
-            onChange={(e) => onReviewChange({ ...review, summary: e.target.value })}
-            aria-label="Reviewer summary"
+            onChange={(e) =>
+              onReviewChange({ ...review, summary: e.target.value })
+            }
+            aria-label={reviewFieldLabels.summary}
           />
         </div>
 
         {/* Next steps */}
         <div className="review-field">
           <label className="review-field__label" htmlFor="review-next-steps">
-            Next steps
+            {reviewFieldLabels.nextSteps}
           </label>
           <textarea
             id="review-next-steps"
             className="review-field__textarea"
             rows={3}
-            placeholder="Override or supplement recommended next steps…"
+            placeholder={template.nextStepsPlaceholder}
             value={review.nextSteps}
             disabled={isApproved}
             onChange={(e) =>
               onReviewChange({ ...review, nextSteps: e.target.value })
             }
-            aria-label="Reviewer next steps"
+            aria-label={reviewFieldLabels.nextSteps}
           />
         </div>
       </div>
 
-      {/* Checklist */}
+      {/* Checklist — driven by template */}
       <div className="review-checklist">
         <h4 className="review-checklist__title">Review checklist</h4>
-        {(
-          [
-            ["evidenceReviewed", "Evidence reviewed"],
-            ["timelineVerified", "Timeline verified"],
-            ["severityConfirmed", "Severity confirmed"],
-            ["actionsReviewed", "Recommended actions reviewed"],
-          ] as const
-        ).map(([key, label]) => (
+        {template.checklistItems.map(({ key, label }) => (
           <label key={key} className="review-check">
             <input
               type="checkbox"
-              checked={review.checklist[key]}
+              checked={!!review.checklist[key]}
               disabled={isApproved}
               onChange={(e) => updateChecklist(key, e.target.checked)}
             />
@@ -151,7 +147,10 @@ export function ReviewPanel({
       {/* Actions */}
       <div className="review-actions">
         {!isApproved && (
-          <button className="btn btn--outline review-actions__save" onClick={onSave}>
+          <button
+            className="btn btn--outline review-actions__save"
+            onClick={onSave}
+          >
             Save edits
           </button>
         )}
@@ -197,7 +196,9 @@ export function ReviewPanel({
                   <span className="audit-entry__action">
                     {AUDIT_ACTION_LABELS[entry.action]}
                   </span>
-                  <span className="audit-entry__time">{fmtAudit(entry.timestamp)}</span>
+                  <span className="audit-entry__time">
+                    {fmtAudit(entry.timestamp)}
+                  </span>
                 </div>
                 <div className="audit-entry__meta">
                   <span className="audit-entry__actor">{entry.actor}</span>
