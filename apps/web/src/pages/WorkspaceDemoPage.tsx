@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
 import { ReviewPanel } from "../components/demo/ReviewPanel";
+import { SpatialReviewPanel } from "../components/demo/SpatialReviewPanel";
 import { getTemplate } from "../templates/index";
 import { runMockExtraction } from "../utils/mockExtraction";
 import {
@@ -130,16 +131,18 @@ export function WorkspaceDemoPage({ seedData }: Props) {
 
   function handleExportJson() {
     const log = appendAudit("report_exported", "JSON bundle downloaded");
-    downloadCaseBundle(template, caseMeta, evidence, extraction, review, overrides, log);
+    downloadCaseBundle(template, caseMeta, evidence, extraction, review, overrides, log, seedData.spatialMarkers);
   }
 
   function handleExportReport() {
     const log = appendAudit("report_exported", "HTML report printed");
-    printCaseReport(template, caseMeta, evidence, extraction, review, overrides, log);
+    printCaseReport(template, caseMeta, evidence, extraction, review, overrides, log, seedData.spatialMarkers);
   }
 
+  const hasSpatial = (seedData.spatialMarkers ?? []).length > 0;
+
   return (
-    <div className="demo-page">
+    <div className={`demo-page${hasSpatial ? " demo-page--with-spatial" : ""}`}>
       <header className="demo-topbar">
         <div className="demo-topbar__left">
           <Link to="/" className="demo-topbar__logo">
@@ -157,6 +160,13 @@ export function WorkspaceDemoPage({ seedData }: Props) {
           </Link>
         </div>
       </header>
+
+      {hasSpatial && (
+        <SpatialReviewPanel
+          markers={seedData.spatialMarkers!}
+          evidence={evidence}
+        />
+      )}
 
       <main className="demo-workspace" aria-label="Case workspace">
         <EvidencePanel

@@ -42,6 +42,18 @@ const DEMO_CASES: CaseRow[] = [
     subject: "Darnell Hughes",
     demoPath: "/demo/fleet-safety",
   },
+  {
+    id: "SIR-2024-00091",
+    title: "Exterior facade inspection — Hargrove Building A",
+    template: "Site Inspection Report",
+    domain: "Property & Facilities",
+    status: "in-review",
+    priority: "high",
+    updatedAt: "2024-11-06",
+    evidenceCount: 8,
+    subject: "Hargrove Commercial Properties",
+    demoPath: "/demo/site-inspection",
+  },
 ];
 
 const STATUS_LABELS: Record<CaseStatus, string> = {
@@ -61,6 +73,7 @@ const PRIORITY_LABELS: Record<CasePriority, string> = {
 const DOMAIN_COLORS: Record<string, string> = {
   Insurance: "copper",
   "Fleet Operations": "forest",
+  "Property & Facilities": "slate",
 };
 
 export function Dashboard() {

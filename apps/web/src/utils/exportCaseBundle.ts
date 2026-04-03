@@ -8,6 +8,7 @@ import type {
   AuditEntry,
   SectionData,
   OverrideMap,
+  SpatialMarker,
 } from "../types/case";
 
 /** Download a JSON case bundle to the user's machine */
@@ -18,7 +19,8 @@ export function downloadCaseBundle(
   extraction: ExtractionResult | null,
   review: ReviewState,
   overrides: OverrideMap,
-  auditLog: AuditEntry[]
+  auditLog: AuditEntry[],
+  spatialMarkers?: SpatialMarker[]
 ): void {
   const bundle: CaseBundle = {
     case: caseMeta,
@@ -29,6 +31,7 @@ export function downloadCaseBundle(
     overrides,
     auditLog,
     exportedAt: new Date().toISOString(),
+    ...(spatialMarkers && spatialMarkers.length > 0 ? { spatialMarkers } : {}),
   };
 
   const json = JSON.stringify(bundle, null, 2);
@@ -49,9 +52,10 @@ export function printCaseReport(
   extraction: ExtractionResult | null,
   review: ReviewState,
   overrides: OverrideMap,
-  auditLog: AuditEntry[]
+  auditLog: AuditEntry[],
+  spatialMarkers?: SpatialMarker[]
 ): void {
-  const html = buildReportHtml(template, caseMeta, evidence, extraction, review, overrides, auditLog);
+  const html = buildReportHtml(template, caseMeta, evidence, extraction, review, overrides, auditLog, spatialMarkers);
   const blob = new Blob([html], { type: "text/html" });
   const url = URL.createObjectURL(blob);
   const win = window.open(url, "_blank");
@@ -171,6 +175,49 @@ function buildOverridesSection(
 </table>`;
 }
 
+function buildSpatialMarkersSection(
+  markers: SpatialMarker[],
+  evidence: EvidenceItem[]
+): string {
+  if (!markers.length) return "";
+
+  const SEVERITY_LABELS: Record<SpatialMarker["severity"], string> = {
+    low: "Low",
+    medium: "Medium",
+    high: "High",
+    critical: "Critical",
+  };
+  const STATUS_LABELS: Record<NonNullable<SpatialMarker["status"]>, string> = {
+    open: "Open",
+    resolved: "Resolved",
+    "needs-review": "Needs Review",
+  };
+
+  const rows = markers
+    .map((m) => {
+      const evidenceNames = m.relatedEvidenceIds
+        .map((id) => evidence.find((e) => e.id === id)?.name ?? id)
+        .join(", ");
+      const status = m.status ? STATUS_LABELS[m.status] : "—";
+      return `<tr>
+        <td><strong>${m.label}</strong></td>
+        <td>${SEVERITY_LABELS[m.severity]}</td>
+        <td>${status}</td>
+        <td>${m.note}</td>
+        <td>${evidenceNames || "—"}</td>
+      </tr>`;
+    })
+    .join("");
+
+  return `
+<h2>Spatial Annotations (${markers.length} markers)</h2>
+<p style="font-size:12px;color:#6b6962;margin-bottom:12px;">On-site findings linked to specific locations on the inspected structure.</p>
+<table>
+<thead><tr><th>Finding</th><th>Severity</th><th>Status</th><th>Note</th><th>Supporting evidence</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>`;
+}
+
 function buildReportHtml(
   template: CaseTemplate,
   caseMeta: CaseMeta,
@@ -178,7 +225,8 @@ function buildReportHtml(
   extraction: ExtractionResult | null,
   review: ReviewState,
   overrides: OverrideMap,
-  auditLog: AuditEntry[]
+  auditLog: AuditEntry[],
+  spatialMarkers?: SpatialMarker[]
 ): string {
   const evidenceRows = evidence
     .map(
@@ -233,6 +281,9 @@ function buildReportHtml(
   const provenanceAppendix = extraction
     ? buildProvenanceAppendix(template, extraction, evidence)
     : "";
+  const spatialMarkersHtml = spatialMarkers && spatialMarkers.length > 0
+    ? buildSpatialMarkersSection(spatialMarkers, evidence)
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -282,6 +333,8 @@ function buildReportHtml(
 ${approvalLine}
 
 ${extractionSectionsHtml}
+
+${spatialMarkersHtml}
 
 <h2>Review Checklist</h2>
 <table>

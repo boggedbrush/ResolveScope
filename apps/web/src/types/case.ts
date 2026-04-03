@@ -168,6 +168,26 @@ export interface CaseTemplate {
   approvalConfig?: ApprovalConfig;
 }
 
+/* ── Spatial markers (site inspection, field review) ── */
+
+export type SpatialMarkerSeverity = "low" | "medium" | "high" | "critical";
+export type SpatialMarkerStatus = "open" | "resolved" | "needs-review";
+
+export interface SpatialMarker {
+  id: string;
+  label: string;
+  /** Horizontal position as a percentage (0–100) of the image width */
+  x: number;
+  /** Vertical position as a percentage (0–100) of the image height */
+  y: number;
+  severity: SpatialMarkerSeverity;
+  note: string;
+  relatedEvidenceIds: string[];
+  /** Optional key into extraction.sections for cross-reference */
+  relatedExtractionSectionKey?: string;
+  status?: SpatialMarkerStatus;
+}
+
 /* ── Seed case bundle (used to initialize demo state) ── */
 
 export interface SeedCaseData {
@@ -177,6 +197,8 @@ export interface SeedCaseData {
   extraction: ExtractionResult;
   initialReview: ReviewState;
   reviewer: string;
+  /** Optional spatial markers for inspection-type workflows */
+  spatialMarkers?: SpatialMarker[];
 }
 
 /* ── Export bundle ───────────────────────── */
@@ -190,4 +212,6 @@ export interface CaseBundle {
   overrides: OverrideMap;
   auditLog: AuditEntry[];
   exportedAt: string;
+  /** Spatial annotation markers, present for inspection workflows */
+  spatialMarkers?: SpatialMarker[];
 }
