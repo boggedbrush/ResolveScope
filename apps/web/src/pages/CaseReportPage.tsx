@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { ThemeControl } from "../components/ThemeControl";
 import { resolveDemoCase } from "../data/demoResolver";
 import { getDemoCaseState, useDemoStateVersion } from "../data/demoState";
 import { getTemplate } from "../templates/index";
@@ -418,6 +419,7 @@ export function CaseReportPage() {
           >
             Print / Save PDF
           </button>
+          <ThemeControl className="report-topbar__theme" />
         </div>
       </header>
 

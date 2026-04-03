@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ThemeControl } from "../components/ThemeControl";
 
 /* ═══════════════════════════════════════════
    Scroll reveal hook (matches Landing.tsx)
@@ -365,7 +366,8 @@ export function ArchitecturePage() {
       <nav className="nav">
         <div className="container nav__inner">
           <Link to="/" className="nav__logo">
-            Resolve<span>Scope</span>
+            <span aria-hidden="true" className="nav__logo-mark" />
+            <span className="nav__logo-wordmark">Resolve<span>Scope</span></span>
           </Link>
           <ul className="nav__links">
             <li><a href="#overview">Overview</a></li>
@@ -374,9 +376,10 @@ export function ArchitecturePage() {
             <li><a href="#ai-trust">AI Trust</a></li>
             <li><a href="#codex">Codex</a></li>
           </ul>
-          <Link to="/dashboard" className="btn btn--primary nav__cta">
+          <Link to="/dashboard" className="btn btn--primary nav__cta nav__cta--middle">
             Try the Demo
           </Link>
+          <ThemeControl className="nav__theme" />
         </div>
       </nav>
 

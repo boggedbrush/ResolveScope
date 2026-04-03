@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ThemeControl } from "../components/ThemeControl";
 import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
 import { ReviewPanel } from "../components/demo/ReviewPanel";
@@ -214,6 +215,7 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
           <Link to="/dashboard" className="btn btn--outline demo-topbar__back">
             ← Dashboard
           </Link>
+          <ThemeControl className="demo-topbar__theme" />
         </div>
       </header>
 

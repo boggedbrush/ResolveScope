@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { ThemeControl } from "../components/ThemeControl";
 
 function LayersIcon() {
   return (
@@ -49,6 +50,7 @@ export function AppLayout() {
         </nav>
 
         <div className="app-sidebar__footer">
+          <ThemeControl className="app-sidebar__theme" />
           <button className="app-sidebar__nav-item app-sidebar__nav-item--muted">
             <GridIcon />
             Settings

@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { HeroDemo } from "../components/HeroDemo";
+import { ThemeControl } from "../components/ThemeControl";
 
 const SpatialPreview = lazy(() =>
   import("../components/SpatialPreview").then((m) => ({
@@ -270,35 +271,43 @@ export function Landing() {
   return (
     <>
       {/* ── Nav ─────────────────────────── */}
-      <nav className="nav">
+      <nav className="nav nav--landing">
         <div className="container nav__inner">
-          <a href="#" className="nav__logo">
-            Resolve<span>Scope</span>
-          </a>
-          <ul className="nav__links">
-            <li>
-              <a href="#problem">Problem</a>
-            </li>
-            <li>
-              <a href="#how">How it works</a>
-            </li>
-            <li>
-              <a href="#capabilities">Capabilities</a>
-            </li>
-            <li>
-              <a href="#workflows">Workflows</a>
-            </li>
-            <li>
-              <a href="#spatial">Spatial</a>
-            </li>
-            <li>
-              <Link to="/architecture">Architecture</Link>
-            </li>
-          </ul>
-          <div className="nav__actions">
-<Link to="/dashboard" className="btn btn--primary nav__cta">
-              Try the Demo
-            </Link>
+          <div className="nav__zone nav__zone--left">
+            <a href="#" className="nav__logo">
+              <img src="/logo-mark.svg" alt="" aria-hidden="true" className="nav__logo-mark" />
+              <span className="nav__logo-wordmark">Resolve<span>Scope</span></span>
+            </a>
+          </div>
+          <div className="nav__zone nav__zone--center">
+            <ul className="nav__links">
+              <li>
+                <a href="#problem">Problem</a>
+              </li>
+              <li>
+                <a href="#how">How it works</a>
+              </li>
+              <li>
+                <a href="#capabilities">Capabilities</a>
+              </li>
+              <li>
+                <a href="#workflows">Workflows</a>
+              </li>
+              <li>
+                <a href="#spatial">Spatial</a>
+              </li>
+              <li>
+                <Link to="/architecture">Architecture</Link>
+              </li>
+            </ul>
+          </div>
+          <div className="nav__zone nav__zone--right">
+            <div className="nav__actions" role="group" aria-label="Primary actions">
+              <Link to="/dashboard" className="btn btn--primary nav__cta">
+                Try the Demo
+              </Link>
+              <ThemeControl className="nav__theme" />
+            </div>
           </div>
         </div>
       </nav>
