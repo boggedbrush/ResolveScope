@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@resolvescope/text": "*",
     "@react-three/drei": "^10.0.6",
     "@react-three/fiber": "^9.1.2",
     "@types/react-router-dom": "^5.3.3",
