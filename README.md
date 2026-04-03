@@ -202,4 +202,4 @@ The Workers API, D1, R2, Queues, and Durable Objects layers are part of the arch
 
 ## License
 
-MIT
+[MIT](./LICENSE)
