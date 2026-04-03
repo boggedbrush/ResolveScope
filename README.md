@@ -169,6 +169,10 @@ The template layer makes it adaptable without making it generic.
 <td><a href="docs/screenshots.md"><strong>Screenshots</strong></a></td>
 <td>Capture checklist, recommended viewports, and guidance for adding screenshots to the repo.</td>
 </tr>
+<tr>
+<td><a href="docs/how-to-use-skills.md"><strong>How to use skills</strong></a></td>
+<td>How agent skills are discovered, installed, and invoked in this repo — when to let them trigger naturally vs. when to force them explicitly.</td>
+</tr>
 </table>
 
 </div>
