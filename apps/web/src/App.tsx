@@ -31,6 +31,11 @@ const CaseReportPage = lazy(() =>
     default: m.CaseReportPage,
   }))
 );
+const ArchitecturePage = lazy(() =>
+  import("./pages/ArchitecturePage").then((m) => ({
+    default: m.ArchitecturePage,
+  }))
+);
 
 export function App() {
   return (
@@ -41,6 +46,7 @@ export function App() {
         <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
         <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
         <Route path="/report/:demoId" element={<CaseReportPage />} />
+        <Route path="/architecture" element={<ArchitecturePage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cases/:id" element={<CaseWorkspace />} />

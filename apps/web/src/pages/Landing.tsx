@@ -275,6 +275,9 @@ export function Landing() {
             <li>
               <a href="#spatial">Spatial</a>
             </li>
+            <li>
+              <Link to="/architecture">Architecture</Link>
+            </li>
           </ul>
           <Link to="/dashboard" className="btn btn--primary nav__cta">
             Try the Demo

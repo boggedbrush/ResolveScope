@@ -1226,6 +1226,444 @@ section {
   }
 }
 
+/* ═══════════════════════════════════════════
+   Architecture Page
+   ═══════════════════════════════════════════ */
+
+/* ── Hero ──────────────────────────────── */
+
+.arch-hero {
+  padding-top: calc(80px + var(--section-pad));
+  padding-bottom: var(--section-pad);
+  position: relative;
+}
+
+.arch-hero__inner {
+  max-width: 720px;
+}
+
+.arch-hero__inner .section-label {
+  margin-bottom: 16px;
+}
+
+.arch-hero__sub {
+  margin-top: 24px;
+  max-width: 560px;
+}
+
+.arch-hero__links {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.arch-hero__rule {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-light);
+}
+
+/* ── Section header ────────────────────── */
+
+.arch-section-header {
+  margin-bottom: 56px;
+}
+
+.arch-section-header .section-label {
+  margin-bottom: 14px;
+}
+
+.arch-section-sub {
+  margin-top: 18px;
+  max-width: 600px;
+}
+
+.arch-label--forest {
+  color: var(--forest);
+}
+
+/* ── Diagram card ──────────────────────── */
+
+.arch-diagram-card {
+  background: var(--bg-deep-alt);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 32px 40px 40px;
+  margin-bottom: 56px;
+}
+
+.arch-diagram-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.arch-diagram-card__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+
+.arch-diagram-card__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #6b6962;
+  letter-spacing: 0.05em;
+}
+
+.arch-diagram-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Overview grid ─────────────────────── */
+
+.arch-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.arch-overview-item {
+  display: flex;
+  gap: 16px;
+  padding: 28px 24px;
+  background: var(--bg-card);
+}
+
+.arch-overview-item__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--copper);
+  letter-spacing: 0.08em;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+
+.arch-overview-item strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.arch-overview-item p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .arch-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .arch-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Components section ────────────────── */
+
+.arch-components {
+  background: var(--bg-alt);
+}
+
+.arch-components__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.arch-comp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.arch-comp-card:hover {
+  border-color: var(--copper);
+  box-shadow: 0 4px 20px rgba(184, 90, 48, 0.08);
+}
+
+.arch-comp-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.arch-comp-card__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+}
+
+.arch-comp-card__icon {
+  color: var(--copper);
+  opacity: 0.8;
+}
+
+.arch-comp-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.arch-comp-card__body {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .arch-components__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .arch-components__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Cloudflare infrastructure ─────────── */
+
+.arch-infra {
+  background: var(--bg-deep);
+}
+
+.arch-infra__heading {
+  color: var(--text-on-dark);
+}
+
+.arch-infra .arch-section-header .display-lg {
+  color: var(--text-on-dark);
+}
+
+.arch-cf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.arch-cf-card {
+  background: var(--bg-deep-alt);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 20px 18px;
+  transition: border-color 0.2s;
+}
+
+.arch-cf-card:hover {
+  border-color: rgba(42, 107, 74, 0.5);
+}
+
+.arch-cf-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.arch-cf-card__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-on-dark);
+}
+
+.arch-cf-card__tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: rgba(42, 107, 74, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.arch-cf-card__body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-on-dark-secondary);
+}
+
+@media (max-width: 1000px) {
+  .arch-cf-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .arch-cf-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .arch-cf-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── AI trust steps ────────────────────── */
+
+.arch-trust-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 760px;
+}
+
+.arch-trust-step {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.arch-trust-step__connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.arch-trust-step__node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--copper);
+  background: var(--copper-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--copper);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.arch-trust-step__line {
+  width: 1.5px;
+  flex: 1;
+  min-height: 48px;
+  background: var(--border);
+  margin: 8px 0;
+}
+
+.arch-trust-step__content {
+  padding-bottom: 48px;
+}
+
+.arch-trust-step__content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.arch-trust-step__content p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ── Built with Codex ──────────────────── */
+
+.arch-codex {
+  background: var(--bg-alt);
+}
+
+.arch-codex__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.arch-codex__left .display-lg {
+  margin-top: 14px;
+}
+
+.arch-codex__left .body-lg {
+  margin-top: 20px;
+}
+
+.arch-codex__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.arch-codex__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.arch-codex__list .mvp__check {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.arch-codex__note {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-tertiary);
+  font-style: italic;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+@media (max-width: 800px) {
+  .arch-codex__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .arch-diagram-card {
+    padding: 24px 20px 28px;
+  }
+}
+
+/* ── Delays (arch page) ────────────────── */
+
+.arch-infra .reveal.delay-1 { transition-delay: 0.1s; }
+.arch-infra .reveal.delay-2 { transition-delay: 0.2s; }
+.arch-infra .reveal.delay-3 { transition-delay: 0.3s; }
+
 /* ── Stagger delays ────────────────────── */
 
 .delay-1 { transition-delay: 0.1s; }
