@@ -314,6 +314,9 @@ export function Landing() {
       <section className="hero">
         <div className="container hero__grid">
           <div>
+            <p className="hero__challenge-banner">
+              OpenAI × Handshake Codex Creator Challenge — 2026 entry
+            </p>
             <h1 className="display-xl">
               Evidence
               <br />
@@ -325,9 +328,9 @@ export function Landing() {
               on.
             </p>
             <div className="hero__actions">
-              <a href="#how" className="btn btn--primary">
-                See how it works <ArrowIcon />
-              </a>
+              <Link to="/dashboard" className="btn btn--primary">
+                Try the Demo <ArrowIcon />
+              </Link>
               <a
                 href="https://github.com/boggedbrush/ResolveScope"
                 target="_blank"
@@ -585,7 +588,7 @@ export function Landing() {
             Resolve<span>Scope</span>
           </div>
           <p className="footer__text">
-            Evidence-to-action infrastructure. MIT License.
+            Evidence-to-action infrastructure. Built for the OpenAI × Handshake Codex Creator Challenge. MIT License.
           </p>
           <ul className="footer__links">
             <li>
@@ -595,6 +598,27 @@ export function Landing() {
                 rel="noopener noreferrer"
               >
                 GitHub
+              </a>
+            </li>
+            <li>
+              <Link to="/architecture">Architecture</Link>
+            </li>
+            <li>
+              <a
+                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/how-i-built-this.md"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                How I built this
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/prompting-guide.md"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Prompting guide
               </a>
             </li>
           </ul>

@@ -2,6 +2,8 @@
 
 <br>
 
+<img src="https://raw.githubusercontent.com/boggedbrush/ResolveScope/main/apps/web/public/favicon.svg" width="56" height="56" alt="ResolveScope" />
+
 # ResolveScope
 
 ### Evidence-to-action infrastructure for claims, safety, inspections, and quality workflows.
@@ -18,6 +20,12 @@
 <img alt="Stack" src="https://img.shields.io/badge/stack-React%2019%20%7C%20TypeScript%20%7C%20Cloudflare-111827?style=flat-square" />
 <img alt="AI" src="https://img.shields.io/badge/AI-gemini--flash--lite-5B21B6?style=flat-square" />
 <img alt="License" src="https://img.shields.io/badge/license-MIT-059669?style=flat-square" />
+
+<br><br>
+
+> **OpenAI × Handshake Codex Creator Challenge — 2026 entry**<br>
+> Built using Codex as the primary implementation agent,<br>
+> with `AGENTS.md` as the operating contract and skills as modular guidance.
 
 <br><br>
 
@@ -40,6 +48,8 @@
 | [`/report/fleet-safety`](https://resolvescope.pages.dev/report/fleet-safety) | Fleet safety stakeholder report |
 | [`/report/site-inspection`](https://resolvescope.pages.dev/report/site-inspection) | Site inspection stakeholder report |
 | [`/architecture`](https://resolvescope.pages.dev/architecture) | Architecture overview — system design, data model, stack |
+
+> **Note:** The frontend demo is live. Current demo surfaces run on seeded frontend data. The Workers API, D1, R2, and Durable Objects layers are part of the architectural direction.
 
 ---
 

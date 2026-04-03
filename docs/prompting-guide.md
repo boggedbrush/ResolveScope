@@ -6,15 +6,17 @@ How this project uses structured prompting and agent contracts to shape implemen
 
 ## Why prompting matters in this repo
 
-ResolveScope was built under challenge timeline pressure using Claude Code as the primary implementation agent. The quality of what gets built depends directly on how well the agent understands the product constraints, the design philosophy, and the scope limits.
+ResolveScope was built under challenge timeline pressure using Codex as the primary implementation agent. The quality of what gets built depends directly on how well the agent understands the product constraints, the design philosophy, and the scope limits.
 
 Prompting here is not about clever tricks. It is about operating a coding agent like a disciplined collaborator: give it clear scope, clear constraints, and a way to make judgment calls when the task is ambiguous.
+
+The result is a build system where prompting is part of the architecture — not a chat log.
 
 ---
 
 ## AGENTS.md as the default agent contract
 
-`AGENTS.md` (symlinked as `CLAUDE.md`) is the default operating contract for any coding agent working in this repo. It is read at the start of each session and defines:
+`AGENTS.md` is the default operating contract for any coding agent working in this repo. It is read at the start of each session and defines:
 
 - **Product understanding** — what ResolveScope is, what the strongest product story is, what the sponsor framing is
 - **Known truths** — established facts that should not be re-derived on every task
@@ -24,7 +26,9 @@ Prompting here is not about clever tricks. It is about operating a coding agent 
 - **Validation standards** — what counts as sufficient validation for frontend and implementation work
 - **Token-efficiency rules** — explicit prohibitions against over-reading, over-documenting, and over-generalizing
 
-The contract is intentionally opinionated. A vague AGENTS.md produces vague implementations. A specific one produces work that fits the product without constant correction.
+The contract is intentionally opinionated. A vague `AGENTS.md` produces vague implementations. A specific one produces work that fits the product without constant correction.
+
+The contract also prevents well-intentioned scope creep. Without explicit constraints, an agent will add features that "seem helpful," embellish claims that "seem plausible," and generalize abstractions that "seem reusable." The rules exist to stop each of these failure modes before they accumulate.
 
 ---
 
@@ -34,7 +38,9 @@ The `frontend-design` skill is declared mandatory in `AGENTS.md` for all landing
 
 Other skills (like `simplify`, `loop`, `schedule`) are used when the specific task warrants them — not by default.
 
-The skill system keeps specialized guidance modular. Rather than cramming everything into `AGENTS.md`, specialized concerns live in invocable skills that are only loaded when relevant.
+The skill system keeps specialized guidance modular. Rather than cramming everything into `AGENTS.md`, specialized concerns live in invocable skills that are only loaded when relevant. This matters for token efficiency: a skill that is not relevant to the current task should not consume context.
+
+The principle: load guidance at the granularity of the task, not the granularity of the repo.
 
 ---
 
@@ -51,6 +57,8 @@ The default approach is bounded slices:
 7. Validate with the narrowest useful check
 
 Large tasks are split into phases. Each phase has clear acceptance criteria. Dependencies between phases are surfaced before implementation starts, not discovered mid-task.
+
+This approach keeps each implementation increment reviewable. A 500-line change to the wrong area is worse than a 50-line change to the right one.
 
 ---
 
@@ -77,6 +85,7 @@ Several rules in `AGENTS.md` exist specifically to prevent context bloat:
 - **Skip README for implementation** — the README is for product context, not implementation guidance; don't load it on every task
 - **No broad scans** — do not explore the full repo to "understand architecture" unless the task genuinely requires architecture work
 - **Bounded read budget** — 5 files for small tasks, 8 for medium, 12 for large; hard limit unless blocked
+- **Known truths section** — product facts that are established and stable live in `AGENTS.md` so the agent doesn't re-derive them from scratch on each session
 
 These rules exist because token-inefficiency compounds: one extra file read leads to another, leads to a longer context, leads to less accurate work and slower iteration.
 
@@ -90,9 +99,10 @@ Not everything is delegated. The following stays under direct human control:
 - Design direction and visual hierarchy choices
 - What to keep vs. cut when scope needs to shrink
 - Truthfulness review — checking that copy does not overclaim
-- Final review of any change to AGENTS.md or system-level config
+- Final review of any change to `AGENTS.md` or system-level config
+- Deciding which tasks are worth doing at all
 
-The agent handles implementation. The human handles product judgment.
+The agent handles implementation. The human handles product judgment. This division is explicit and intentional — it is not a limitation, it is the design.
 
 ---
 
@@ -103,6 +113,9 @@ The agent handles implementation. The human handles product judgment.
 
 **Medium feature slice:**
 > Add an override reason field to the review panel. When a reviewer changes a field value, prompt them for a one-line reason. Log it to the audit array using the existing `makeAuditId` utility. The override map already exists in `reviewOverrides.ts` — use it. No new dependencies.
+
+**Frontend design pass:**
+> Make the hero section feel more cinematic. Add a subtle radial gradient glow behind the mockup. Add a challenge eyebrow badge above the headline. Keep "Try the Demo" as the primary CTA. Do not change the layout grid. Acceptance criteria: challenge framing is visible above the fold, GitHub is visible above the fold, page does not feel cluttered.
 
 **Documentation task:**
 > Refactor README.md to be a showcase landing page and docs hub. Move longer-form material into a new `docs/` directory. Keep the hero, live demo, reviewer flow, differentiation table, and local setup in the README. Create six docs files: architecture, how-it-works, how-i-built-this, prompting-guide, demo-surfaces, screenshots. Use relative links. Do not add broken links or invented content.
@@ -116,3 +129,5 @@ The agent handles implementation. The human handles product judgment.
 - **Named known truths reduce drift.** The "Known truths" section in `AGENTS.md` means the agent does not re-derive product positioning on every task. This keeps implementations coherent across sessions.
 - **Honesty constraints must be explicit.** Without explicit rules against overclaiming (fake metrics, fake production claims, fake testimonials), AI agents will optimistically embellish. The rules work.
 - **Validation must be prescribed.** Without an explicit validation step in the task, the agent will declare success based on the appearance of correctness, not confirmed correctness. Always name the check.
+- **Skills keep context lean.** Loading the `frontend-design` skill only for frontend-facing work — not for every task — keeps the contract from becoming a monolith that slows every session.
+- **Prompting is a build artifact.** `AGENTS.md`, the skills directory, and the structured task patterns in this guide are part of the system architecture. They should be maintained with the same discipline as the code they shape.

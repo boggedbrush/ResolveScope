@@ -8,6 +8,22 @@ The working approach: build the smallest version of the real thing, seed it with
 
 ---
 
+## The build system
+
+This project was built using **Codex** as the primary implementation agent for the OpenAI × Handshake Codex Creator Challenge.
+
+The build system is structured around three layers:
+
+**`AGENTS.md` as the operating contract** — every agent session reads this file first. It defines the product understanding, known truths, task classes, core rules, and token-efficiency constraints that keep implementations coherent across sessions without constant correction.
+
+**Skills as modular guidance** — the `frontend-design` skill is declared mandatory for all landing pages and design-system work. Other skills (`simplify`, `loop`, `schedule`) are used when the specific task warrants them. This keeps specialized guidance modular and out of the main contract.
+
+**Bounded implementation slices** — tasks are structured with explicit scope limits, acceptance criteria, and honesty constraints. The agent handles implementation. Product judgment stays human-directed.
+
+See [prompting-guide.md](./prompting-guide.md) for the full breakdown of prompt patterns, token-efficiency tactics, and how the agent contract shapes each session.
+
+---
+
 ## Shaping decisions
 
 **One platform, not five sponsor demos.**
