@@ -1,5 +1,6 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
+import { HeroDemo } from "../components/HeroDemo";
 
 const SpatialPreview = lazy(() =>
   import("../components/SpatialPreview").then((m) => ({
@@ -334,36 +335,7 @@ export function Landing() {
             </div>
           </div>
           <div className="hero__visual">
-            <div className="hero__mockup">
-              <div className="hero__mockup-bar">
-                <div className="hero__mockup-dot" />
-                <div className="hero__mockup-dot" />
-                <div className="hero__mockup-dot" />
-              </div>
-              <div className="hero__mockup-body">
-                <div className="hero__mockup-sidebar">
-                  <div className="hero__mockup-nav-item" />
-                  <div className="hero__mockup-nav-item--active hero__mockup-nav-item" />
-                  <div className="hero__mockup-nav-item" />
-                  <div className="hero__mockup-nav-item" />
-                  <div className="hero__mockup-nav-item" />
-                </div>
-                <div className="hero__mockup-content">
-                  <div className="hero__mockup-line hero__mockup-line--accent" />
-                  <div className="hero__mockup-line" />
-                  <div className="hero__mockup-line hero__mockup-line--short" />
-                  <div className="hero__mockup-card">
-                    <div className="hero__mockup-badge" />
-                    <div className="hero__mockup-line" />
-                    <div className="hero__mockup-line hero__mockup-line--short" />
-                  </div>
-                  <div className="hero__mockup-card">
-                    <div className="hero__mockup-badge" />
-                    <div className="hero__mockup-line" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <HeroDemo />
           </div>
         </div>
       </section>
