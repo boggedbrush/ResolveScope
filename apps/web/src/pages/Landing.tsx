@@ -295,15 +295,7 @@ export function Landing() {
             </li>
           </ul>
           <div className="nav__actions">
-            <a
-              href="https://github.com/boggedbrush/ResolveScope"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--github nav__cta"
-            >
-              <GitHubIcon /> View the Code
-            </a>
-            <Link to="/dashboard" className="btn btn--primary nav__cta">
+<Link to="/dashboard" className="btn btn--primary nav__cta">
               Try the Demo
             </Link>
           </div>
