@@ -11,53 +11,20 @@ interface CaseRow {
   priority: CasePriority;
   updatedAt: string;
   evidenceCount: number;
+  /** If set, links to this path instead of /cases/:id */
+  demoPath?: string;
 }
 
 const DEMO_CASES: CaseRow[] = [
   {
-    id: "case-001",
-    title: "Fleet incident — Vehicle 4821, I-94 westbound",
-    domain: "Fleet & Safety",
-    status: "in-review",
-    priority: "high",
-    updatedAt: "2026-03-31",
-    evidenceCount: 7,
-  },
-  {
-    id: "case-002",
-    title: "Claims triage — Policy #TXA-2291-B",
+    id: "demo-auto-claim",
+    title: "Parking lot collision — Rivera vehicle",
     domain: "Insurance",
-    status: "open",
-    priority: "critical",
-    updatedAt: "2026-03-30",
-    evidenceCount: 3,
-  },
-  {
-    id: "case-003",
-    title: "Defect report — Batch QC-0398 seam failure",
-    domain: "Quality",
-    status: "approved",
+    status: "in-review",
     priority: "medium",
-    updatedAt: "2026-03-28",
-    evidenceCount: 12,
-  },
-  {
-    id: "case-004",
-    title: "Site inspection — Tower B, Level 7",
-    domain: "Construction",
-    status: "open",
-    priority: "high",
-    updatedAt: "2026-03-27",
-    evidenceCount: 9,
-  },
-  {
-    id: "case-005",
-    title: "Incident review — Warehouse loading dock",
-    domain: "Operations",
-    status: "exported",
-    priority: "low",
-    updatedAt: "2026-03-20",
-    evidenceCount: 5,
+    updatedAt: "2024-11-13",
+    evidenceCount: 6,
+    demoPath: "/demo/auto-claim",
   },
 ];
 
@@ -106,9 +73,15 @@ export function Dashboard() {
             {DEMO_CASES.map((c) => (
               <tr key={c.id}>
                 <td>
-                  <Link to={`/cases/${c.id}`} className="case-table__title-link">
+                  <Link
+                    to={c.demoPath ?? `/cases/${c.id}`}
+                    className="case-table__title-link"
+                  >
                     {c.title}
                   </Link>
+                  {c.demoPath && (
+                    <span className="case-table__demo-tag">Live demo</span>
+                  )}
                 </td>
                 <td>
                   <span className="case-table__domain">{c.domain}</span>

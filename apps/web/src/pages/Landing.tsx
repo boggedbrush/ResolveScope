@@ -277,7 +277,7 @@ export function Landing() {
             </li>
           </ul>
           <Link to="/dashboard" className="btn btn--primary nav__cta">
-            See the Demo
+            Try the Demo
           </Link>
         </div>
       </nav>
@@ -536,7 +536,7 @@ export function Landing() {
           </p>
           <div className="cta-final__actions reveal delay-3">
             <Link to="/dashboard" className="btn btn--primary">
-              See the Demo <ArrowIcon />
+              Try the Demo <ArrowIcon />
             </Link>
             <a href="#how" className="btn btn--outline">
               See how it works

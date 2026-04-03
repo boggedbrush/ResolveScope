@@ -11,12 +11,18 @@ const Dashboard = lazy(() =>
 const CaseWorkspace = lazy(() =>
   import("./pages/CaseWorkspace").then((m) => ({ default: m.CaseWorkspace }))
 );
+const AutoClaimDemoPage = lazy(() =>
+  import("./pages/AutoClaimDemoPage").then((m) => ({
+    default: m.AutoClaimDemoPage,
+  }))
+);
 
 export function App() {
   return (
     <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cases/:id" element={<CaseWorkspace />} />
