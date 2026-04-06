@@ -1,0 +1,470 @@
+<div class="codex-banner" id="codexBanner">
+  <!-- Gradient orbs -->
+  <div class="orb orb--left"></div>
+  <div class="orb orb--right"></div>
+
+  <!-- Binary rain layer -->
+  <div class="binary-layer" id="bannerBinary"></div>
+
+  <!-- Center fade mask -->
+  <div class="center-fade"></div>
+
+  <!-- Content -->
+  <div class="banner-content">
+    <div class="brand-row">
+      <span class="brand">OpenAI</span>
+      <span class="brand-divider"></span>
+      <em class="brand brand--italic">Handshake</em>
+    </div>
+
+    <h2 class="banner-title">Codex Creator Challenge</h2>
+
+    <p class="banner-desc">
+      Build something real, enter the challenge, and put your AI skills
+      in front of employers across the country.
+    </p>
+
+    <div class="cta-group">
+      <a href="https://chatgpt.com/codex/students?partner_id=handshake"
+         target="_blank" rel="noopener"
+         class="btn btn-primary">
+        Claim $100 in Codex credits
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </a>
+      <a href="https://joinhandshake.com/students/codex-creator-challenge/"
+         target="_blank" rel="noopener"
+         class="btn btn-secondary">Learn more</a>
+    </div>
+
+    <div class="sponsors">
+      <span class="sponsors-label">Get seen by:</span>
+      <div class="sponsors-list">
+        <span>ZS</span>·<span>GEICO</span>·<span>L'Oréal</span>·<span>KPFF</span>·<span>Uber</span>
+      </div>
+    </div>
+
+    <p class="fine-print">
+      Available to currently enrolled university students in the United States and Canada.
+    </p>
+  </div>
+</div>
+
+<style>
+/* ── Banner Container ── */
+.codex-banner {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0a0a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+  border-radius: 16px;
+}
+
+/* ── Gradient Orbs ── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+  z-index: 1;
+  transition: opacity 1.2s ease, transform 0.8s ease;
+}
+
+.orb--left {
+  top: -12%;
+  left: -18%;
+  width: 55%;
+  height: 120%;
+  background: linear-gradient(160deg, #1e3a8a 0%, #4c1d95 42%, #7c3aed 72%, #dc2626 100%);
+  opacity: 0.45;
+  transform: rotate(-10deg);
+}
+
+.orb--right {
+  bottom: -18%;
+  right: -12%;
+  width: 52%;
+  height: 115%;
+  background: linear-gradient(140deg, #ea580c 0%, #f59e0b 38%, #fbbf24 68%, #d97706 100%);
+  opacity: 0.48;
+  transform: rotate(-6deg);
+}
+
+.codex-banner.is-animated .orb--left {
+  opacity: 0.55;
+  animation: driftLeft 14s ease-in-out infinite alternate;
+}
+
+.codex-banner.is-animated .orb--right {
+  opacity: 0.60;
+  animation: driftRight 17s ease-in-out infinite alternate;
+}
+
+@keyframes driftLeft {
+  0%   { transform: rotate(-10deg) translate(0, 0); }
+  100% { transform: rotate(-7deg) translate(24px, 14px); }
+}
+
+@keyframes driftRight {
+  0%   { transform: rotate(-6deg) translate(0, 0); }
+  100% { transform: rotate(-3deg) translate(-20px, -16px); }
+}
+
+/* ── Binary Layer ── */
+.binary-layer {
+  position: absolute;
+  inset: 0;
+  font-family: 'Courier New', 'SF Mono', Consolas, monospace;
+  font-size: 14px;
+  line-height: 2;
+  letter-spacing: 5px;
+  color: rgba(255, 255, 255, 0.13);
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  z-index: 2;
+  transition: opacity 0.8s ease;
+}
+
+.codex-banner.is-animated .binary-layer {
+  opacity: 0.20;
+  animation: binaryDrift 22s linear infinite;
+}
+
+@keyframes binaryDrift {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-16px); }
+}
+
+/* ── Center Fade Mask ── */
+.center-fade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 50% 55% at 50% 48%,
+    rgba(10, 10, 10, 0.94) 0%,
+    rgba(10, 10, 10, 0.65) 38%,
+    rgba(10, 10, 10, 0.25) 62%,
+    transparent 82%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── Content ── */
+.banner-content {
+  position: relative;
+  z-index: 10;
+  max-width: 640px;
+  width: 100%;
+  padding: 56px 28px;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Brand Row */
+.brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.70);
+}
+
+.brand-divider {
+  width: 1px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.brand--italic {
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Title */
+.banner-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+  color: #ffffff;
+}
+
+/* Description */
+.banner-desc {
+  font-size: clamp(14.5px, 2vw, 17px);
+  line-height: 1.58;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 500px;
+  margin: 0 auto 36px;
+}
+
+/* CTAs */
+.cta-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 13px 24px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
+  line-height: 1.4;
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: #ffffff;
+  color: #111827;
+  border-color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #f4f4f5;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.12);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+/* ── Sponsors (updated for better visibility) ── */
+.sponsors {
+  margin-bottom: 28px;
+}
+
+.sponsors-label {
+  display: block;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
+
+.sponsors-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.6;
+}
+
+/* Separator dots — keep subtle */
+.sponsors-list span:not(:first-child):nth-child(even) {
+  color: rgba(255, 255, 255, 0.20);
+  user-select: none;
+  font-size: 9px;
+}
+
+/* Sponsor names — bumped visibility for GEICO, KPFF and all others */
+.sponsors-list span:first-child,
+.sponsors-list span:nth-child(3),
+.sponsors-list span:nth-child(5),
+.sponsors-list span:nth-child(7),
+.sponsors-list span:nth-child(9) {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0 6px;
+  transition: color 0.2s ease;
+}
+
+.sponsors-list span:first-child:hover,
+.sponsors-list span:nth-child(3):hover,
+.sponsors-list span:nth-child(5):hover,
+.sponsors-list span:nth-child(7):hover,
+.sponsors-list span:nth-child(9):hover {
+  color: #ffffff;
+}
+
+/* Fine Print */
+.fine-print {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.34);
+  line-height: 1.55;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .codex-banner.is-animated .binary-layer,
+  .codex-banner.is-animated .orb {
+    animation: none !important;
+  }
+  .binary-layer, .orb {
+    transition: none !important;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .codex-banner {
+    min-height: 480px;
+    border-radius: 12px;
+  }
+
+  .banner-content {
+    padding: 40px 20px;
+  }
+
+  .banner-title {
+    margin-bottom: 14px;
+  }
+
+  .banner-desc {
+    margin-bottom: 30px;
+  }
+
+  .cta-group {
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 36px;
+    gap: 10px;
+  }
+
+  .btn {
+    justify-content: center;
+    width: 100%;
+    max-width: 320px;
+    padding: 13px 22px;
+  }
+
+  .orb {
+    filter: blur(75px);
+  }
+
+  .orb--left { opacity: 0.36; }
+  .orb--right { opacity: 0.40; }
+
+  .binary-layer {
+    font-size: 12px;
+    letter-spacing: 4px;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.11);
+  }
+}
+</style>
+
+<script>
+(function() {
+  var banner = document.getElementById('codexBanner');
+  var binaryLayer = document.getElementById('bannerBinary');
+
+  // ── Hover-gated animations ──
+  var hovering = false;
+  var leaveTimer = null;
+
+  function activate() {
+    if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+    hovering = true;
+    banner.classList.add('is-animated');
+  }
+
+  function deactivate() {
+    hovering = false;
+    leaveTimer = setTimeout(function() {
+      if (!hovering) banner.classList.remove('is-animated');
+    }, 400);
+  }
+
+  if (window.matchMedia('(hover: hover)').matches) {
+    banner.addEventListener('mouseenter', activate);
+    banner.addEventListener('mouseleave', deactivate);
+  } else {
+    // Touch devices: animate immediately after load
+    setTimeout(activate, 600);
+  }
+
+  // ── Binary generation ──
+  function generate(rows, cols) {
+    var out = '';
+    for (var r = 0; r < rows; r++) {
+      var line = '';
+      for (var c = 0; c < cols; c++) {
+        var roll = Math.random();
+        if (roll > 0.86) line += ' ';
+        else if (roll > 0.43) line += '1';
+        else line += '0';
+        line += ' ';
+      }
+      out += line.trimEnd() + '\n';
+    }
+    return out.trimEnd();
+  }
+
+  function populate() {
+    var rect = banner.getBoundingClientRect();
+    var cols = Math.max(Math.ceil(rect.width / 26), 40);
+    var rows = Math.max(Math.ceil(rect.height / 30), 16);
+    binaryLayer.textContent = generate(rows, cols);
+  }
+
+  populate();
+
+  // ── Refresh loop ──
+  var HOVER_INTERVAL = 4500;
+  var IDLE_INTERVAL = 22000;
+
+  function tick() {
+    if (!document.hidden && (hovering || Math.random() > 0.72)) {
+      populate();
+    }
+    setTimeout(tick, hovering ? HOVER_INTERVAL : IDLE_INTERVAL);
+  }
+
+  setTimeout(tick, IDLE_INTERVAL);
+
+  // ── Resize ──
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(populate, 200);
+  });
+})();
+</script>

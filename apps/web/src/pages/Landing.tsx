@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { HeroDemo } from "../components/HeroDemo";
+import { CodexBanner } from "../components/CodexBanner";
 import { ThemeControl } from "../components/ThemeControl";
 
 const SpatialPreview = lazy(() =>
@@ -316,9 +317,7 @@ export function Landing() {
       <section className="hero">
         <div className="container hero__grid">
           <div>
-            <p className="hero__challenge-banner">
-              OpenAI × Handshake Codex Creator Challenge — 2026 entry
-            </p>
+            <CodexBanner />
             <h1 className="display-xl">
               Evidence
               <br />
