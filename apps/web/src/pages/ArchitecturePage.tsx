@@ -363,23 +363,34 @@ export function ArchitecturePage() {
   return (
     <>
       {/* ── Nav ─────────────────────────── */}
-      <nav className="nav">
+      <nav className="nav nav--landing">
         <div className="container nav__inner">
-          <Link to="/" className="nav__logo">
-            <span aria-hidden="true" className="nav__logo-mark" />
-            <span className="nav__logo-wordmark">Resolve<span>Scope</span></span>
-          </Link>
-          <ul className="nav__links">
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#components">Components</a></li>
-            <li><a href="#infrastructure">Infrastructure</a></li>
-            <li><a href="#ai-trust">AI Trust</a></li>
-            <li><a href="#codex">Codex</a></li>
-          </ul>
-          <Link to="/dashboard" className="btn btn--primary nav__cta nav__cta--middle">
-            Try the Demo
-          </Link>
-          <ThemeControl className="nav__theme" />
+          <div className="nav__zone nav__zone--left">
+            <a href="/" className="nav__logo">
+              <img src="/logo-mark.svg" alt="" aria-hidden="true" className="nav__logo-mark" />
+              <span className="nav__logo-wordmark">Resolve<span>Scope</span></span>
+            </a>
+          </div>
+          <div className="nav__zone nav__zone--center">
+            <div className="nav__item--active">
+              <span className="nav__link-label">Architecture</span>
+              <ul className="nav__subnav">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#components">Components</a></li>
+                <li><a href="#infrastructure">Infrastructure</a></li>
+                <li><a href="#ai-trust">AI Trust</a></li>
+                <li><a href="#codex">Codex</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="nav__zone nav__zone--right">
+            <div className="nav__actions" role="group" aria-label="Primary actions">
+              <Link to="/dashboard" className="btn btn--primary nav__cta">
+                Try the Demo
+              </Link>
+              <ThemeControl className="nav__theme" />
+            </div>
+          </div>
         </div>
       </nav>
 

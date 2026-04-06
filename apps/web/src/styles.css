@@ -446,6 +446,40 @@ section {
   color: var(--text);
 }
 
+.nav__item--active > .nav__link-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--copper);
+  cursor: default;
+}
+
+.nav__subnav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav__item--active {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.nav__subnav a {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.nav__subnav a:hover {
+  color: var(--text);
+}
+
 .nav__actions {
   display: flex;
   align-items: center;
