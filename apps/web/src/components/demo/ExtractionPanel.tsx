@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { ProvenanceInspector } from "./ProvenanceInspector";
 import type {
   ExtractionResult,
@@ -62,89 +62,321 @@ function ProvenanceTags({
   );
 }
 
-function renderSectionBody(data: SectionData) {
+// Returns a flat string representation of section content for streaming purposes
+function getSectionText(data: SectionData): string {
   switch (data.type) {
     case "text":
-      return <p className="extraction-section__body">{data.content}</p>;
+      return data.content;
+    case "list":
+    case "ordered-list":
+      return data.items.join("\n");
+    case "timeline":
+      return data.entries.map((e) => `${e.time} — ${e.event}`).join("\n");
+    case "parties":
+      return data.parties
+        .map((p) => [p.role, p.name, p.contact].filter(Boolean).join(" · "))
+        .join("\n");
+    case "unit-info":
+      return data.fields.map((f) => `${f.label}: ${f.value}`).join("\n");
+    case "actions":
+      return data.items
+        .map((item) => {
+          const meta = [item.owner, item.due ? `Due ${item.due}` : null]
+            .filter(Boolean)
+            .join(" · ");
+          return meta ? `${item.action} (${meta})` : item.action;
+        })
+        .join("\n");
+  }
+}
+
+// Render section body with streaming progress applied
+function renderSectionBody(data: SectionData, progress: number, showCursor: boolean) {
+  // progress: 0.0–1.0 fraction of content revealed
+  switch (data.type) {
+    case "text": {
+      const total = data.content.length;
+      const chars = Math.floor(total * progress);
+      const visible = data.content.slice(0, chars);
+      return (
+        <p className="extraction-section__body">
+          {visible}
+          {showCursor && progress < 1 && (
+            <span className="stream-cursor" aria-hidden="true" />
+          )}
+        </p>
+      );
+    }
 
     case "list":
+    case "ordered-list": {
+      const total = data.items.length;
+      const visibleCount = Math.max(1, Math.ceil(total * progress));
+      const Tag = data.type === "ordered-list" ? "ol" : "ul";
+      const cls =
+        data.type === "ordered-list"
+          ? "extraction-list extraction-list--ordered"
+          : "extraction-list";
       return (
-        <ul className="extraction-list">
-          {data.items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
+        <Tag className={cls}>
+          {data.items.slice(0, visibleCount).map((item, i) => {
+            const isLast = i === visibleCount - 1 && progress < 1;
+            const itemProgress = isLast
+              ? ((total * progress) % 1 || 1)
+              : 1;
+            const chars = Math.floor(item.length * itemProgress);
+            return (
+              <li key={i}>
+                {item.slice(0, chars)}
+                {isLast && showCursor && (
+                  <span className="stream-cursor" aria-hidden="true" />
+                )}
+              </li>
+            );
+          })}
+        </Tag>
       );
+    }
 
-    case "ordered-list":
-      return (
-        <ol className="extraction-list extraction-list--ordered">
-          {data.items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ol>
-      );
-
-    case "timeline":
+    case "timeline": {
+      const total = data.entries.length;
+      const visibleCount = Math.max(1, Math.ceil(total * progress));
       return (
         <ol className="extraction-timeline">
-          {data.entries.map((entry, i) => (
-            <li key={i} className="extraction-timeline__item">
-              <span className="extraction-timeline__time">{entry.time}</span>
-              <span className="extraction-timeline__event">{entry.event}</span>
-            </li>
-          ))}
+          {data.entries.slice(0, visibleCount).map((entry, i) => {
+            const isLast = i === visibleCount - 1 && progress < 1;
+            const fullEvent = entry.event;
+            const itemProgress = isLast
+              ? ((total * progress) % 1 || 1)
+              : 1;
+            const chars = Math.floor(fullEvent.length * itemProgress);
+            return (
+              <li key={i} className="extraction-timeline__item">
+                <span className="extraction-timeline__time">{entry.time}</span>
+                <span className="extraction-timeline__event">
+                  {fullEvent.slice(0, chars)}
+                  {isLast && showCursor && (
+                    <span className="stream-cursor" aria-hidden="true" />
+                  )}
+                </span>
+              </li>
+            );
+          })}
         </ol>
       );
+    }
 
-    case "parties":
+    case "parties": {
+      const total = data.parties.length;
+      const visibleCount = Math.max(1, Math.ceil(total * progress));
       return (
         <div className="extraction-parties">
-          {data.parties.map((p) => (
-            <div key={p.role} className="extraction-party">
-              <span className="extraction-party__role">{p.role}</span>
-              <span className="extraction-party__name">{p.name}</span>
-              {p.contact && (
-                <span className="extraction-party__contact">{p.contact}</span>
-              )}
-            </div>
-          ))}
+          {data.parties.slice(0, visibleCount).map((p, i) => {
+            const isLast = i === visibleCount - 1 && progress < 1;
+            const itemProgress = isLast
+              ? ((total * progress) % 1 || 1)
+              : 1;
+            const fullName = p.name;
+            const chars = Math.floor(fullName.length * itemProgress);
+            return (
+              <div key={p.role} className="extraction-party">
+                <span className="extraction-party__role">{p.role}</span>
+                <span className="extraction-party__name">
+                  {fullName.slice(0, chars)}
+                  {isLast && showCursor && !p.contact && (
+                    <span className="stream-cursor" aria-hidden="true" />
+                  )}
+                </span>
+                {p.contact && itemProgress >= 1 && (
+                  <span className="extraction-party__contact">{p.contact}</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       );
+    }
 
-    case "unit-info":
+    case "unit-info": {
+      const total = data.fields.length;
+      const visibleCount = Math.max(1, Math.ceil(total * progress));
       return (
         <dl className="extraction-vehicle">
-          {data.fields.map((f) => (
-            <div key={f.label} className="extraction-vehicle__row">
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
-          ))}
+          {data.fields.slice(0, visibleCount).map((f, i) => {
+            const isLast = i === visibleCount - 1 && progress < 1;
+            const itemProgress = isLast
+              ? ((total * progress) % 1 || 1)
+              : 1;
+            const chars = Math.floor(f.value.length * itemProgress);
+            return (
+              <div key={f.label} className="extraction-vehicle__row">
+                <dt>{f.label}</dt>
+                <dd>
+                  {f.value.slice(0, chars)}
+                  {isLast && showCursor && (
+                    <span className="stream-cursor" aria-hidden="true" />
+                  )}
+                </dd>
+              </div>
+            );
+          })}
         </dl>
       );
+    }
 
-    case "actions":
+    case "actions": {
+      const total = data.items.length;
+      const visibleCount = Math.max(1, Math.ceil(total * progress));
       return (
         <ol className="extraction-actions">
-          {data.items.map((item, i) => (
-            <li key={i} className="extraction-action">
-              <span className="extraction-action__text">{item.action}</span>
-              {(item.owner || item.due) && (
-                <div className="extraction-action__meta">
-                  {item.owner && (
-                    <span className="extraction-action__owner">{item.owner}</span>
+          {data.items.slice(0, visibleCount).map((item, i) => {
+            const isLast = i === visibleCount - 1 && progress < 1;
+            const itemProgress = isLast
+              ? ((total * progress) % 1 || 1)
+              : 1;
+            const chars = Math.floor(item.action.length * itemProgress);
+            return (
+              <li key={i} className="extraction-action">
+                <span className="extraction-action__text">
+                  {item.action.slice(0, chars)}
+                  {isLast && showCursor && (
+                    <span className="stream-cursor" aria-hidden="true" />
                   )}
-                  {item.due && (
-                    <span className="extraction-action__due">Due {item.due}</span>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
+                </span>
+                {!isLast && (item.owner || item.due) && (
+                  <div className="extraction-action__meta">
+                    {item.owner && (
+                      <span className="extraction-action__owner">{item.owner}</span>
+                    )}
+                    {item.due && (
+                      <span className="extraction-action__due">Due {item.due}</span>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ol>
       );
+    }
   }
+}
+
+// Hook: manages per-section streaming progress once extraction arrives
+function useStreamingReveal(
+  extraction: ExtractionResult | null,
+  sectionDefs: ExtractionSectionDef[],
+  skipAnimation: boolean
+) {
+  // sectionProgress[i] = 0.0–1.0
+  const [sectionProgress, setSectionProgress] = useState<number[]>([]);
+  const [activeSectionIdx, setActiveSectionIdx] = useState(-1);
+  const [streamDone, setStreamDone] = useState(false);
+  const rafRef = useRef<number | null>(null);
+  const stateRef = useRef({ activeSectionIdx: -1, progress: [] as number[] });
+  const extractionRef = useRef<ExtractionResult | null>(null);
+
+  useEffect(() => {
+    if (!extraction) {
+      setSectionProgress([]);
+      setActiveSectionIdx(-1);
+      setStreamDone(false);
+      extractionRef.current = null;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      return;
+    }
+
+    // Only restart stream if extraction identity changed
+    if (extractionRef.current === extraction) return;
+    extractionRef.current = extraction;
+
+    // Already-generated content: reveal instantly, no animation
+    if (skipAnimation) {
+      const n = sectionDefs.filter((def) => extraction.sections[def.key]).length;
+      setSectionProgress(new Array(n).fill(1));
+      setActiveSectionIdx(n);
+      setStreamDone(true);
+      return;
+    }
+
+    const sections = sectionDefs.filter((def) => extraction.sections[def.key]);
+    const n = sections.length;
+    const initial = new Array(n).fill(0);
+    setSectionProgress(initial);
+    setActiveSectionIdx(0);
+    setStreamDone(false);
+    stateRef.current = { activeSectionIdx: 0, progress: initial };
+
+    // Base speed: chars per second across all section text, targeting ~3s total
+    const allText = sections.map((def) => {
+      const data = extraction.sections[def.key];
+      return data ? getSectionText(data) : "";
+    });
+    const totalChars = allText.reduce((s, t) => s + t.length, 0);
+    // Target: stream all content in ~2.5s, min 80 chars/s
+    const charsPerSec = Math.max(120, totalChars / 2.5);
+
+    let lastTime: number | null = null;
+    let currentSection = 0;
+
+    function tick(now: number) {
+      if (lastTime === null) {
+        lastTime = now;
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      if (currentSection >= n) {
+        setStreamDone(true);
+        return;
+      }
+
+      const data = extraction!.sections[sections[currentSection].key];
+      if (!data) {
+        currentSection++;
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const sectionLen = allText[currentSection].length;
+      // Slight jitter: ±20% speed variation to feel organic
+      const jitter = 0.8 + Math.random() * 0.4;
+      const charsThisFrame = charsPerSec * jitter * dt;
+      const delta = sectionLen > 0 ? charsThisFrame / sectionLen : 1;
+
+      setSectionProgress((prev) => {
+        const next = [...prev];
+        const newProg = Math.min(1, (next[currentSection] ?? 0) + delta);
+        next[currentSection] = newProg;
+        if (newProg >= 1) {
+          // Small pause between sections (~120ms) achieved by advancing immediately
+          currentSection++;
+          setActiveSectionIdx(currentSection);
+        }
+        return next;
+      });
+
+      if (currentSection < n) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setStreamDone(true);
+      }
+    }
+
+    // Brief initial delay to feel like the model is "thinking"
+    const startTimer = setTimeout(() => {
+      rafRef.current = requestAnimationFrame(tick);
+    }, 150);
+
+    return () => {
+      clearTimeout(startTimer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [extraction, sectionDefs, skipAnimation]);
+
+  return { sectionProgress, activeSectionIdx, streamDone };
 }
 
 function ExtractionSection({
@@ -152,23 +384,31 @@ function ExtractionSection({
   extraction,
   evidence,
   onInspect,
+  progress,
+  isCurrent,
+  streamDone,
 }: {
   def: ExtractionSectionDef;
   extraction: ExtractionResult;
   evidence: EvidenceItem[];
   onInspect: (def: ExtractionSectionDef, ids: string[]) => void;
+  progress: number;
+  isCurrent: boolean;
+  streamDone: boolean;
 }) {
   const data = extraction.sections[def.key];
-  if (!data) return null;
+  if (!data || progress === 0) return null;
 
   const provenanceKey = def.provenanceKey ?? def.key;
   const provenanceIds = extraction.provenance[provenanceKey] ?? [];
+  const showCursor = isCurrent && !streamDone;
+  const isDone = progress >= 1;
 
   return (
-    <section className="extraction-section">
+    <section className={`extraction-section${isCurrent && !streamDone ? " extraction-section--streaming" : ""}`}>
       <h4 className="extraction-section__title">{def.title}</h4>
-      {renderSectionBody(data)}
-      {provenanceIds.length > 0 && (
+      {renderSectionBody(data, progress, showCursor)}
+      {isDone && provenanceIds.length > 0 && (
         <ProvenanceTags
           ids={provenanceIds}
           evidence={evidence}
@@ -176,6 +416,25 @@ function ExtractionSection({
         />
       )}
     </section>
+  );
+}
+
+// Streaming loading state — shows a mock "thinking" animation before content arrives
+function StreamingLoader({ label }: { label: string }) {
+  const [dots, setDots] = useState(".");
+  useEffect(() => {
+    const id = setInterval(() => setDots((d) => (d.length >= 3 ? "." : d + ".")), 400);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="extraction-loading" aria-live="polite" aria-busy="true">
+      <div className="extraction-loading__spinner" aria-hidden="true" />
+      <p className="extraction-loading__label">{label}{dots}</p>
+      <p className="extraction-loading__sub">
+        Analyzing evidence and structuring case brief
+      </p>
+    </div>
   );
 }
 
@@ -191,16 +450,34 @@ export function ExtractionPanel({
     ids: string[];
   } | null>(null);
 
+  // Track whether extraction arrived fresh from a run in this session.
+  // If extraction is already present on mount (returning to a completed demo),
+  // skip the streaming animation and reveal content instantly.
+  const ranInSessionRef = useRef(false);
+  useEffect(() => {
+    if (isRunning) ranInSessionRef.current = true;
+  }, [isRunning]);
+  const skipAnimation = extraction !== null && !ranInSessionRef.current;
+
+  const visibleSectionDefs = useMemo(
+    () =>
+      extraction
+        ? template.extractionSections.filter((def) => extraction.sections[def.key])
+        : template.extractionSections,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [extraction, template.extractionSections]
+  );
+
+  const { sectionProgress, activeSectionIdx, streamDone } = useStreamingReveal(
+    extraction,
+    visibleSectionDefs,
+    skipAnimation
+  );
+
   if (isRunning) {
     return (
       <div className="demo-panel demo-panel--extraction">
-        <div className="extraction-loading" aria-live="polite" aria-busy="true">
-          <div className="extraction-loading__spinner" aria-hidden="true" />
-          <p className="extraction-loading__label">Running extraction…</p>
-          <p className="extraction-loading__sub">
-            Analyzing evidence and structuring case brief
-          </p>
-        </div>
+        <StreamingLoader label="Running extraction" />
       </div>
     );
   }
@@ -257,19 +534,30 @@ export function ExtractionPanel({
       <div className="demo-panel demo-panel--extraction">
         <div className="demo-panel__section-header">
           <h3 className="demo-panel__section-title">Case Brief</h3>
-          <span className="extraction-run-meta">
-            Extracted {fmtRunAt(extraction.runAt)}
-          </span>
+          {streamDone && (
+            <span className="extraction-run-meta">
+              Extracted {fmtRunAt(extraction.runAt)}
+            </span>
+          )}
+          {!streamDone && (
+            <span className="extraction-run-meta extraction-run-meta--streaming" aria-live="polite">
+              Generating
+              <span className="stream-indicator" aria-hidden="true" />
+            </span>
+          )}
         </div>
 
         <div className="extraction-sections">
-          {template.extractionSections.map((def) => (
+          {visibleSectionDefs.map((def, i) => (
             <ExtractionSection
               key={def.key}
               def={def}
               extraction={extraction}
               evidence={evidence}
               onInspect={(d, ids) => setInspecting({ def: d, ids })}
+              progress={sectionProgress[i] ?? 0}
+              isCurrent={i === activeSectionIdx}
+              streamDone={streamDone}
             />
           ))}
         </div>

@@ -3710,6 +3710,49 @@ section {
   font-family: var(--font-mono);
 }
 
+.extraction-run-meta--streaming {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--copper);
+}
+
+.stream-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper);
+  animation: stream-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes stream-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Blinking text cursor appended to streaming content */
+.stream-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--copper);
+  vertical-align: text-bottom;
+  margin-left: 1px;
+  animation: blink-cursor 0.55s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.extraction-section--streaming .extraction-section__body,
+.extraction-section--streaming li,
+.extraction-section--streaming dd {
+  /* Subtle highlight on the actively streaming section */
+}
+
 .extraction-sections {
   padding: 0 0 32px;
   flex: 1;
