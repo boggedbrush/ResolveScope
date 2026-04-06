@@ -295,7 +295,7 @@ export function Landing() {
                 <a href="#workflows">Workflows</a>
               </li>
               <li>
-                <a href="#spatial">Spatial</a>
+                <a href="#spatial">Spatial Review</a>
               </li>
               <li>
                 <Link to="/architecture">Architecture</Link>

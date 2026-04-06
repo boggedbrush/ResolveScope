@@ -205,7 +205,7 @@ function ReportStage() {
 /* ── HeroDemo ────────────────────────────── */
 
 export function HeroDemo() {
-  const [stage, setStage] = useState(0);
+  const [stage, setStage] = useState(2);
   const [panelKey, setPanelKey] = useState(0);
   const [isReduced, setIsReduced] = useState(false);
 
