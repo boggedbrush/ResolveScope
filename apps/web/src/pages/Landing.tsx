@@ -222,9 +222,9 @@ export function Landing() {
           <div>
             <CodexBanner />
             <h1 className="display-xl">
-              Evidence
+              AI case management.
               <br />
-              becomes <em>action.</em>
+              Evidence becomes <em>action.</em>
             </h1>
             <p className="body-lg hero__subtitle">
               ResolveScope turns scattered documents, photos, and field notes
