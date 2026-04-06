@@ -436,7 +436,7 @@ export function Landing() {
             <Link to="/dashboard" className="btn btn--primary">
               Try the Demo <ArrowIcon />
             </Link>
-            <a href="#how" className="btn btn--outline">
+            <a href="#proof" className="btn btn--outline">
               See how it works
             </a>
           </div>

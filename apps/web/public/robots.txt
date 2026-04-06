@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://resolvescope.pages.dev/sitemap.xml

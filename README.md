@@ -8,6 +8,8 @@
 
 # ResolveScope
 
+**ResolveScope is open-source case management software for insurance claims, fleet safety incidents, site inspections, and quality workflows** — turning scattered evidence into structured, reviewable, AI-assisted case files.
+
 ### Evidence-to-action infrastructure for claims, safety, inspections, and quality workflows.
 
 <p>
