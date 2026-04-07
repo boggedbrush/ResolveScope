@@ -535,7 +535,7 @@ section {
 /* ── Hero ──────────────────────────────── */
 
 .hero {
-  padding-top: calc(80px + var(--section-pad));
+  padding-top: clamp(100px, 9vw, 130px);
   padding-bottom: var(--section-pad);
   position: relative;
   overflow: hidden;
@@ -608,6 +608,39 @@ section {
   100% { transform: rotate(-3deg) translate(-20px, -16px); }
 }
 
+/* Orb swap: left (purple) swings clockwise to right side */
+@keyframes swapLeftCW {
+  0%   { left: -10%; right: auto; transform: rotate(-10deg) translate(0, 0); }
+  100% { left: 60%;  right: auto; transform: rotate(170deg) translate(0, 0); }
+}
+/* Orb swap: right (yellow) swings clockwise to left side */
+@keyframes swapRightCW {
+  0%   { right: -10%; left: auto; transform: rotate(-6deg) translate(0, 0); }
+  100% { right: 60%;  left: auto; transform: rotate(170deg) translate(0, 0); }
+}
+/* Unswap: reverse counter-clockwise */
+@keyframes swapLeftCCW {
+  0%   { left: 60%;  right: auto; transform: rotate(170deg) translate(0, 0); }
+  100% { left: -10%; right: auto; transform: rotate(-10deg) translate(0, 0); }
+}
+@keyframes swapRightCCW {
+  0%   { right: 60%;  left: auto; transform: rotate(170deg) translate(0, 0); }
+  100% { right: -10%; left: auto; transform: rotate(-6deg) translate(0, 0); }
+}
+
+.codex-banner.is-swapping .orb--left {
+  animation: swapLeftCW 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+.codex-banner.is-swapping .orb--right {
+  animation: swapRightCW 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+.codex-banner.is-unswapping .orb--left {
+  animation: swapLeftCCW 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+.codex-banner.is-unswapping .orb--right {
+  animation: swapRightCCW 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
 .binary-layer {
   position: absolute;
   inset: 0;
@@ -615,7 +648,7 @@ section {
   font-size: 14px;
   line-height: 2;
   letter-spacing: 5px;
-  color: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.28);
   pointer-events: none;
   user-select: none;
   overflow: hidden;
@@ -626,7 +659,7 @@ section {
 }
 
 .codex-banner.is-animated .binary-layer {
-  opacity: 0.20;
+  opacity: 0.38;
   animation: binaryDrift 22s linear infinite;
 }
 
@@ -776,9 +809,12 @@ section {
 
 .hero__grid {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 48px;
+  grid-template-columns: minmax(0, 580px) 1fr;
+  gap: 56px;
   align-items: center;
+  max-width: unset;
+  padding-left: clamp(20px, 4vw, 64px);
+  padding-right: 0;
 }
 
 .hero__subtitle {
@@ -796,7 +832,7 @@ section {
 .hero__visual {
   position: relative;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
 }
 
@@ -900,6 +936,11 @@ section {
   .hero__grid {
     grid-template-columns: 1fr;
     gap: 40px;
+    padding-inline: clamp(20px, 4vw, 48px);
+  }
+  .hero__grid > :first-child {
+    padding-left: 0;
+    padding-right: 0;
   }
   .hero__visual {
     order: -1;

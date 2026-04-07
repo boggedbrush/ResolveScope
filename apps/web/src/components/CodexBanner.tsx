@@ -16,13 +16,19 @@ export function CodexBanner() {
       if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
       hovering = true;
       banner!.classList.add("is-animated");
+      banner!.classList.remove("is-unswapping");
+      banner!.classList.add("is-swapping");
     }
 
     function deactivate() {
       hovering = false;
+      banner!.classList.remove("is-swapping");
+      banner!.classList.add("is-unswapping");
       leaveTimer = setTimeout(() => {
-        if (!hovering) banner!.classList.remove("is-animated");
-      }, 400);
+        if (!hovering) {
+          banner!.classList.remove("is-animated", "is-unswapping");
+        }
+      }, 700);
     }
 
     function generate(rows: number, cols: number): string {
