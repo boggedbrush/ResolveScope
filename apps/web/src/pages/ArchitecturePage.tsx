@@ -60,20 +60,6 @@ function ArrowIcon() {
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg viewBox="0 0 12 12" fill="none">
-      <path
-        d="M2.5 6L5 8.5L9.5 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /* ═══════════════════════════════════════════
    Section data
    ═══════════════════════════════════════════ */
@@ -212,13 +198,6 @@ const TRUST_STEPS = [
     title: "Audit History",
     body: "Every state change, approval, and edit is recorded with actor identity and timestamp. The case file is a complete chain of custody.",
   },
-];
-
-const CODEX_ITEMS = [
-  "Scaffolded evidence lifecycle types and case state machines from spec",
-  "Generated component variants from existing design patterns without drift",
-  "Explored architectural trade-offs for Cloudflare edge data routing",
-  "Maintained consistency across extraction, review, and export surfaces",
 ];
 
 /* ═══════════════════════════════════════════
@@ -379,7 +358,6 @@ export function ArchitecturePage() {
                 <li><a href="#components">Components</a></li>
                 <li><a href="#infrastructure">Infrastructure</a></li>
                 <li><a href="#ai-trust">AI Trust</a></li>
-                <li><a href="#codex">Codex</a></li>
               </ul>
             </div>
           </div>
@@ -441,51 +419,13 @@ export function ArchitecturePage() {
             </div>
             <ArchDiagram />
           </div>
-
-          <div className="arch-overview-grid reveal delay-1">
-            <div className="arch-overview-item">
-              <div className="arch-overview-item__num">01</div>
-              <div>
-                <strong>Evidence Intake</strong>
-                <p>Documents, photos, video, and notes ingested into a structured case workspace. Originals preserved without modification.</p>
-              </div>
-            </div>
-            <div className="arch-overview-item">
-              <div className="arch-overview-item__num">02</div>
-              <div>
-                <strong>Extraction</strong>
-                <p>AI reads evidence and produces structured fields. Summaries, timelines, entities, and severity assessments generated but not committed.</p>
-              </div>
-            </div>
-            <div className="arch-overview-item">
-              <div className="arch-overview-item__num">03</div>
-              <div>
-                <strong>Human Review</strong>
-                <p>Reviewers inspect and approve every AI output before it enters the case record. No field is finalized without explicit human action.</p>
-              </div>
-            </div>
-            <div className="arch-overview-item">
-              <div className="arch-overview-item__num">04</div>
-              <div>
-                <strong>Audit & Provenance</strong>
-                <p>All approvals, edits, and state changes are recorded with actor and timestamp. Source linkage preserved for every derived field.</p>
-              </div>
-            </div>
-            <div className="arch-overview-item">
-              <div className="arch-overview-item__num">05</div>
-              <div>
-                <strong>Export / Case Bundle</strong>
-                <p>PDF stakeholder reports, shareable read-only views, and structured JSON bundles — all traceable to the evidence that produced them.</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* ── Platform Components ──────────── */}
       <section className="arch-components" id="components">
         <div className="container">
-          <div className="arch-section-header reveal">
+          <div className="arch-section-header arch-section-header--compact reveal">
             <p className="section-label">Platform components</p>
             <h2 className="display-lg">
               Six surfaces, <em>one system</em>
@@ -563,40 +503,6 @@ export function ArchitecturePage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Built with Codex ─────────────── */}
-      <section className="arch-codex" id="codex">
-        <div className="container">
-          <div className="arch-codex__grid reveal">
-            <div className="arch-codex__left">
-              <p className="section-label">Implementation</p>
-              <h2 className="display-lg">
-                Built with <em>Codex</em>
-              </h2>
-              <p className="body-lg">
-                Codex served as an implementation multiplier throughout the build —
-                not a gimmick, but a practical way to hold systems-level design in
-                mind while shipping working code fast.
-              </p>
-            </div>
-            <div className="arch-codex__right">
-              <ul className="arch-codex__list">
-                {CODEX_ITEMS.map((item) => (
-                  <li key={item}>
-                    <span className="mvp__check"><CheckIcon /></span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="arch-codex__note">
-                Every output was reviewed, edited, and approved by the builder before
-                merge — the same human-review model ResolveScope enforces for
-                AI-generated case data.
-              </p>
-            </div>
           </div>
         </div>
       </section>

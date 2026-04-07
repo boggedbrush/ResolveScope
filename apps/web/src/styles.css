@@ -2962,6 +2962,10 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
   margin-bottom: 56px;
 }
 
+.arch-section-header--compact {
+  margin-bottom: 32px;
+}
+
 .arch-section-header .section-label {
   margin-bottom: 14px;
 }
@@ -3025,48 +3029,6 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
   overflow: hidden;
 }
 
-.arch-overview-item {
-  display: flex;
-  gap: 16px;
-  padding: 28px 24px;
-  background: var(--bg-card);
-}
-
-.arch-overview-item__num {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--copper);
-  letter-spacing: 0.08em;
-  padding-top: 3px;
-  flex-shrink: 0;
-}
-
-.arch-overview-item strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.arch-overview-item p {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-
-@media (max-width: 900px) {
-  .arch-overview-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .arch-overview-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* ── Components section ────────────────── */
 
@@ -3278,62 +3240,7 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
 
 /* ── Built with Codex ──────────────────── */
 
-.arch-codex {
-  background: var(--bg-alt);
-}
-
-.arch-codex__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-
-.arch-codex__left .display-lg {
-  margin-top: 14px;
-}
-
-.arch-codex__left .body-lg {
-  margin-top: 20px;
-}
-
-.arch-codex__list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-bottom: 32px;
-}
-
-.arch-codex__list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-
-.arch-codex__list .mvp__check {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.arch-codex__note {
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--text-tertiary);
-  font-style: italic;
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
-}
-
 @media (max-width: 800px) {
-  .arch-codex__grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
-
   .arch-diagram-card {
     padding: 24px 20px 28px;
   }
