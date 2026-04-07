@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function CodexBanner() {
+export function CodexBanner({ variant }: { variant?: "arch" } = {}) {
   const bannerRef = useRef<HTMLDivElement>(null);
   const binaryRef = useRef<HTMLDivElement>(null);
 
@@ -103,52 +103,93 @@ export function CodexBanner() {
       <div className="center-fade" />
 
       <div className="banner-content">
-        <div className="brand-row">
-          <span className="brand">OpenAI</span>
-          <span className="brand-divider" />
-          <em className="brand brand--italic">Handshake</em>
-        </div>
-        <h2 className="banner-title">Codex Creator Challenge — 2026 Entry</h2>
+        {variant === "arch" ? (
+          <>
+            <div className="brand-row">
+              <span className="brand">Built with Codex</span>
+            </div>
+            <p className="banner-desc">
+              Codex was used as an implementation multiplier across ResolveScope's
+              architecture and product system.
+            </p>
 
-        <p className="banner-desc">
-          Build something real, enter the challenge, and put your AI skills
-          in front of employers across the country.
-        </p>
+            <ul className="banner-codex-list">
+              <li>Translated the evidence lifecycle into a structured application flow</li>
+              <li>Accelerated reusable patterns across case intake, review, and export</li>
+              <li>Helped turn product decisions into working interfaces and workflows</li>
+              <li>Increased iteration speed while keeping final judgment human-owned</li>
+            </ul>
 
-        <div className="cta-group">
-          <a
-            href="https://chatgpt.com/codex/students?partner_id=handshake"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary"
-          >
-            Claim $100 in Codex credits
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-          </a>
-          <a
-            href="https://joinhandshake.com/students/codex-creator-challenge/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-secondary"
-          >
-            Learn more
-          </a>
-        </div>
+            <div className="cta-group">
+              <a
+                href="https://openai.com/codex/?ref=resolvescope.pages.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                Explore Codex
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </a>
+            </div>
 
-        <div className="sponsors">
-          <span className="sponsors-label">Get seen by:</span>
-          <div className="sponsors-list">
-            <span>ZS</span>·<span>GEICO</span>·<span>L'Oréal</span>·<span>KPFF</span>·<span>Uber</span>
-          </div>
-        </div>
+            <p className="banner-codex-footnote">
+              Every output was reviewed, revised, and approved before release.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="brand-row">
+              <span className="brand">OpenAI</span>
+              <span className="brand-divider" />
+              <em className="brand brand--italic">Handshake</em>
+            </div>
+            <h2 className="banner-title">Codex Creator Challenge — 2026 Entry</h2>
 
-        <p className="fine-print">
-          Available to currently enrolled university students in the United States and Canada.
-        </p>
+            <p className="banner-desc">
+              Build something real, enter the challenge, and put your AI skills
+              in front of employers across the country.
+            </p>
+
+            <div className="cta-group">
+              <a
+                href="https://chatgpt.com/codex/students?partner_id=handshake"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                Claim $100 in Codex credits
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </a>
+              <a
+                href="https://joinhandshake.com/students/codex-creator-challenge/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+              >
+                Learn more
+              </a>
+            </div>
+
+            <div className="sponsors">
+              <span className="sponsors-label">Get seen by:</span>
+              <div className="sponsors-list">
+                <span>ZS</span>·<span>GEICO</span>·<span>L'Oréal</span>·<span>KPFF</span>·<span>Uber</span>
+              </div>
+            </div>
+
+            <p className="fine-print">
+              Available to currently enrolled university students in the United States and Canada.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

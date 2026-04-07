@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeControl } from "../components/ThemeControl";
+import { CodexBanner } from "../components/CodexBanner";
 
 /* ═══════════════════════════════════════════
    Scroll reveal hook (matches Landing.tsx)
@@ -504,6 +505,13 @@ export function ArchitecturePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Codex Banner ────────────────── */}
+      <section className="arch-codex-banner">
+        <div className="container">
+          <CodexBanner variant="arch" />
         </div>
       </section>
 
