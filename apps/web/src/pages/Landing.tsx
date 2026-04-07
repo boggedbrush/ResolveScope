@@ -67,16 +67,6 @@ const CAP_ICONS = [
   </svg>,
 ];
 
-const MVP_ITEMS = [
-  "Case workspace with template-driven structure",
-  "Evidence upload and organization across file types",
-  "AI-assisted summarization and extraction",
-  "Structured fields with human review and approval",
-  "Spatial annotation for visual evidence",
-  "PDF and JSON export for stakeholders",
-  "Seeded demo cases for evaluation",
-];
-
 /* ═══════════════════════════════════════════
    Scroll reveal hook
    ═══════════════════════════════════════════ */
@@ -121,20 +111,6 @@ function useScrollReveal() {
 /* ═══════════════════════════════════════════
    Icons (inline SVG)
    ═══════════════════════════════════════════ */
-
-function CheckIcon() {
-  return (
-    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M2.5 6L5 8.5L9.5 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function GitHubIcon() {
   return (
@@ -392,30 +368,23 @@ export function Landing() {
         </div>
       </section>
 
-      {/* ── MVP ─────────────────────────── */}
-      <section className="mvp">
-        <div className="container mvp__grid">
-          <div className="mvp__content reveal">
-            <p className="section-label">First release</p>
+      {/* ── Architecture CTA ─────────────── */}
+      <section className="arch-cta">
+        <div className="container arch-cta__inner reveal">
+          <div className="arch-cta__text">
+            <p className="section-label">Under the hood</p>
             <h2 className="display-lg">
-              What we're <em>building first</em>
+              Built for <em>real workflows</em>
             </h2>
             <p className="body-lg">
-              A focused first version that delivers the full
-              evidence-to-action loop — intake, extraction, review, and export —
-              for one strong case workspace.
+              ResolveScope is designed around a structured evidence pipeline —
+              intake, extraction, review, and export — with a system architecture
+              built to support it end to end.
             </p>
           </div>
-          <ul className="mvp__list reveal delay-1">
-            {MVP_ITEMS.map((item) => (
-              <li key={item}>
-                <span className="mvp__check">
-                  <CheckIcon />
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+          <Link to="/architecture" className="btn btn--primary arch-cta__btn">
+            View the architecture
+          </Link>
         </div>
       </section>
 
@@ -436,8 +405,13 @@ export function Landing() {
             <Link to="/dashboard" className="btn btn--primary">
               Try the Demo <ArrowIcon />
             </Link>
-            <a href="#proof" className="btn btn--outline">
-              See how it works
+            <a
+              href="https://github.com/boggedbrush/ResolveScope"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--github"
+            >
+              <GitHubIcon /> Explore the Repo
             </a>
           </div>
         </div>
