@@ -1,7 +1,10 @@
-import { useRef, useMemo, useState, useCallback } from "react";
+import { useRef, useMemo, useState, useCallback, useEffect } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Html, Edges, ContactShadows } from "@react-three/drei";
+import { OrbitControls, Edges, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+
+/* ── Camera ──────────────────────────── */
+const INITIAL_CAM: [number, number, number] = [24, 18, 24];
 
 /* ── Palette ─────────────────────────── */
 const COPPER = "#b85a30";
@@ -41,6 +44,9 @@ interface AnnotationDef {
   status: string;
   label: string;
   detail: string;
+  notes: string;
+  reviewer: string;
+  image: string;
   align: "left" | "center" | "right";
 }
 
@@ -93,7 +99,10 @@ const ANNOTATIONS: AnnotationDef[] = [
     color: FOREST,
     status: "Cleared",
     label: "Inspection passed",
-    detail: "Wing B -- reviewed 2h ago",
+    detail: "Wing B · reviewed 2h ago",
+    notes: "All structural elements within tolerance. No remediation required. Field photos attached to case file.",
+    reviewer: "J. Morales",
+    image: "/assets/pin1.png",
     align: "left",
   },
   {
@@ -101,7 +110,10 @@ const ANNOTATIONS: AnnotationDef[] = [
     color: COPPER,
     status: "Flagged",
     label: "Structural crack detected",
-    detail: "East facade -- severity high",
+    detail: "East facade · severity high",
+    notes: "Hairline fracture 14cm running vertically from parapet. Requires engineering sign-off before occupancy clearance.",
+    reviewer: "A. Chen",
+    image: "/assets/pin2.png",
     align: "right",
   },
   {
@@ -109,7 +121,10 @@ const ANNOTATIONS: AnnotationDef[] = [
     color: COPPER,
     status: "Review",
     label: "Surface erosion noted",
-    detail: "Zone C -- pending reviewer",
+    detail: "Zone C · pending reviewer",
+    notes: "Mortar joint degradation on south-facing wall. Estimated 30% loss. Assign to masonry specialist for severity rating.",
+    reviewer: "Unassigned",
+    image: "/assets/pin3.png",
     align: "right",
   },
   {
@@ -117,7 +132,10 @@ const ANNOTATIONS: AnnotationDef[] = [
     color: AMBER,
     status: "Noted",
     label: "Access point documented",
-    detail: "Annex entry -- routine",
+    detail: "Annex entry · routine",
+    notes: "Secondary access door logged for site record. No defect observed. Confirm with facilities team before final report.",
+    reviewer: "T. Park",
+    image: "/assets/pin4.png",
     align: "left",
   },
 ];
@@ -167,10 +185,10 @@ const _v3 = new THREE.Vector3();
 function Annotation({
   pin,
   color,
-  status,
-  label,
-  detail,
-  align,
+  status: _status,
+  label: _label,
+  detail: _detail,
+  align: _align,
   isActive,
   isAnyActive,
   onSelect,
@@ -190,10 +208,10 @@ function Annotation({
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
-    // Bobbing
+    // Bobbing — stop when active
     if (headRef.current) {
-      headRef.current.position.y =
-        pin[1] + Math.sin(t * 0.9 + offset) * 0.04;
+      const bob = isActive ? 0 : Math.sin(t * 0.9 + offset) * 0.04;
+      headRef.current.position.y = pin[1] + bob;
     }
 
     // Sphere hover / active scale
@@ -231,14 +249,6 @@ function Annotation({
   );
 
   const stemLen = pin[1] - 0.08;
-
-  const labelTransform =
-    align === "left"
-      ? "translateX(-100%) translateX(-10px)"
-      : align === "right"
-        ? "translateX(10px)"
-        : "translateX(-50%)";
-
   const sphereEmissive = isActive ? 0.9 : dimmed ? 0.15 : 0.5;
   const stemOpacity = dimmed ? 0.1 : 0.3;
 
@@ -257,7 +267,7 @@ function Annotation({
 
       {/* Floating head */}
       <group ref={headRef} position={[pin[0], pin[1], pin[2]]}>
-        {/* Clickable sphere — slightly larger for easier click target */}
+        {/* Clickable sphere */}
         <mesh
           ref={sphereRef}
           onClick={handleClick}
@@ -286,60 +296,6 @@ function Annotation({
             depthWrite={false}
           />
         </mesh>
-
-        {/* Label — always mounted, visibility animated */}
-        <Html
-          position={[0, 0.45, 0]}
-          distanceFactor={18}
-          occlude={false}
-          style={{
-            pointerEvents: isActive ? "auto" : "none",
-            userSelect: "none",
-          }}
-        >
-          <div
-            style={{
-              background: "rgba(250,250,247,0.96)",
-              backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-              borderRadius: "7px",
-              padding: "8px 12px",
-              borderLeft: `3px solid ${color}`,
-              fontFamily: "Outfit, system-ui, sans-serif",
-              lineHeight: 1.45,
-              color: "#1a1917",
-              boxShadow:
-                "0 4px 24px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)",
-              whiteSpace: "nowrap",
-              transform: `${labelTransform} scale(${isActive ? 1 : 0.9})`,
-              opacity: isActive ? 1 : 0,
-              transition: "opacity 0.25s ease, transform 0.25s ease",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "8px",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase" as const,
-                color,
-                marginBottom: "2px",
-              }}
-            >
-              {status}
-            </div>
-            <div style={{ fontWeight: 500, fontSize: "11px" }}>{label}</div>
-            <div
-              style={{
-                color: "#9c978e",
-                fontSize: "9px",
-                marginTop: "1px",
-              }}
-            >
-              {detail}
-            </div>
-          </div>
-        </Html>
       </group>
     </group>
   );
@@ -467,42 +423,249 @@ function CameraZoom({ target }: { target: number }) {
   return null;
 }
 
+/* ── Smooth camera return to home ────── */
+
+const HOME_POS = new THREE.Vector3(...INITIAL_CAM);
+const HOME_TARGET = new THREE.Vector3(0, 0, 0);
+const _pos = new THREE.Vector3();
+const _tgt = new THREE.Vector3();
+
+function CameraReturn({
+  returning,
+  orbitRef,
+  onComplete,
+}: {
+  returning: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  orbitRef: React.RefObject<any>;
+  onComplete: () => void;
+}) {
+  const camera = useThree((s) => s.camera);
+
+  useFrame(() => {
+    if (!returning || !orbitRef.current) return;
+
+    _pos.copy(camera.position);
+    _tgt.copy(orbitRef.current.target);
+
+    camera.position.lerp(HOME_POS, 0.04);
+    orbitRef.current.target.lerp(HOME_TARGET, 0.04);
+    orbitRef.current.update();
+
+    const posClose = camera.position.distanceTo(HOME_POS) < 0.05;
+    const tgtClose = orbitRef.current.target.distanceTo(HOME_TARGET) < 0.02;
+    if (posClose && tgtClose) {
+      camera.position.copy(HOME_POS);
+      orbitRef.current.target.copy(HOME_TARGET);
+      orbitRef.current.update();
+      onComplete();
+    }
+  });
+
+  return null;
+}
+
 /* ── Exported component ──────────────── */
+
+/* ── Annotation sidebar ──────────────── */
+
+const STATUS_COLORS: Record<string, string> = {
+  Flagged: "#b85a30",
+  Review: "#c49a3c",
+  Cleared: "#2a6b4a",
+  Noted: "#c49a3c",
+};
+
+function AnnotationSidebar({
+  annotation,
+  onClose,
+}: {
+  annotation: AnnotationDef | null;
+  onClose: () => void;
+}) {
+  const visible = annotation !== null;
+  const color = annotation ? STATUS_COLORS[annotation.status] ?? annotation.color : "#888";
+  const [lightbox, setLightbox] = useState(false);
+
+  useEffect(() => { setLightbox(false); }, [annotation]);
+
+  useEffect(() => {
+    document.body.style.overflow = lightbox ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [lightbox]);
+
+  return (
+    <>
+      <div className={`spatial__sidebar${visible ? " spatial__sidebar--open" : ""}`}>
+        {annotation && (
+          <>
+            <div className="spatial__sidebar-header">
+              <div className="spatial__sidebar-status" style={{ color }}>
+                {annotation.status}
+              </div>
+              <button
+                className="spatial__sidebar-close"
+                onClick={onClose}
+                aria-label="Close"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <div className="spatial__sidebar-label">{annotation.label}</div>
+            <div className="spatial__sidebar-detail">{annotation.detail}</div>
+            <button
+              className="spatial__sidebar-image-wrap"
+              onClick={() => setLightbox(true)}
+              aria-label="Expand image"
+            >
+              <img
+                src={annotation.image}
+                alt={annotation.label}
+                className="spatial__sidebar-image"
+              />
+              <div className="spatial__sidebar-image-overlay">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 3h5M3 3v5M15 3h-5M15 3v5M3 15h5M3 15v-5M15 15h-5M15 15v-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <span>Expand</span>
+              </div>
+            </button>
+            <div className="spatial__sidebar-notes">{annotation.notes}</div>
+            <div className="spatial__sidebar-meta">
+              <span className="spatial__sidebar-meta-key">Reviewer</span>
+              <span className="spatial__sidebar-meta-val">{annotation.reviewer}</span>
+            </div>
+            <div
+              className="spatial__sidebar-accent"
+              style={{ background: color }}
+            />
+          </>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      {lightbox && annotation && (
+        <div
+          className="spatial__lightbox"
+          onClick={() => setLightbox(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={annotation.label}
+        >
+          <button
+            className="spatial__lightbox-close"
+            onClick={() => setLightbox(false)}
+            aria-label="Close"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+          <img
+            src={annotation.image}
+            alt={annotation.label}
+            className="spatial__lightbox-image"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ── Exported component ──────────────── */
+
+const RESUME_DELAY = 4_000;
 
 export function SpatialPreview() {
   const [activePin, setActivePin] = useState<number | null>(null);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(1.4);
+  const [hovered, setHovered] = useState(false);
+  const [userInteracting, setUserInteracting] = useState(false);
+  const [returning, setReturning] = useState(false);
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orbitRef = useRef<any>(null);
+
+  const scheduleResume = useCallback(() => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    resumeTimer.current = setTimeout(() => {
+      setUserInteracting(false);
+      setReturning(true);
+    }, RESUME_DELAY);
+  }, []);
+
+  const handleInteractStart = useCallback(() => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    setReturning(false);
+    setUserInteracting(true);
+  }, []);
+
+  const handleInteractEnd = useCallback(() => {
+    scheduleResume();
+  }, [scheduleResume]);
+
+  // Pause while hovered, resume timer on leave
+  const handleMouseEnter = useCallback(() => {
+    setHovered(true);
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setHovered(false);
+    if (userInteracting) scheduleResume();
+  }, [userInteracting, scheduleResume]);
 
   const zoomIn = useCallback(
-    () => setZoom((z) => Math.min(z + 0.3, 2.5)),
-    []
+    () => { handleInteractStart(); setZoom((z) => Math.min(z + 0.3, 2.5)); handleInteractEnd(); },
+    [handleInteractStart, handleInteractEnd]
   );
   const zoomOut = useCallback(
-    () => setZoom((z) => Math.max(z - 0.3, 0.4)),
-    []
+    () => { handleInteractStart(); setZoom((z) => Math.max(z - 0.3, 0.4)); handleInteractEnd(); },
+    [handleInteractStart, handleInteractEnd]
   );
+
+  const activeAnnotation = activePin !== null ? ANNOTATIONS[activePin] : null;
+  const autoRotate = activePin === null && !userInteracting && !hovered;
 
   return (
     <>
       <Canvas
-        camera={{ position: [24, 18, 24], fov: 26, near: 0.1, far: 120 }}
+        camera={{ position: INITIAL_CAM, fov: 26, near: 0.1, far: 120 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false }}
         style={{ background: "#1a1918" }}
         onPointerMissed={() => setActivePin(null)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <fog attach="fog" args={["#1a1918", 30, 60]} />
         <CameraZoom target={zoom} />
+        <CameraReturn
+          returning={returning}
+          orbitRef={orbitRef}
+          onComplete={() => setReturning(false)}
+        />
         <Scene activePin={activePin} onSelectPin={setActivePin} />
         <OrbitControls
+          ref={orbitRef}
           enableZoom={false}
           enablePan={false}
-          autoRotate
+          autoRotate={autoRotate}
           autoRotateSpeed={0.25}
           maxPolarAngle={Math.PI / 2.3}
           minPolarAngle={Math.PI / 6}
+          onStart={handleInteractStart}
+          onEnd={handleInteractEnd}
         />
       </Canvas>
+
+      <AnnotationSidebar
+        annotation={activeAnnotation}
+        onClose={() => setActivePin(null)}
+      />
 
       <div className="spatial__zoom">
         <button
