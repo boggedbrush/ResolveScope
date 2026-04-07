@@ -28,7 +28,8 @@ export function AppLayout() {
       <aside className="app-sidebar">
         <div className="app-sidebar__logo">
           <NavLink to="/" className="app-sidebar__wordmark">
-            Resolve<span>Scope</span>
+            <img src="/logo-mark.svg" alt="" aria-hidden="true" className="app-sidebar__logo-mark" />
+            <span className="app-sidebar__wordmark-text">Resolve<span>Scope</span></span>
           </NavLink>
         </div>
 

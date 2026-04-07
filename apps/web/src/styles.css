@@ -3335,6 +3335,9 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
 }
 
 .app-sidebar__wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 15px;
@@ -3343,7 +3346,13 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
   letter-spacing: -0.01em;
 }
 
-.app-sidebar__wordmark span {
+.app-sidebar__logo-mark {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.app-sidebar__wordmark-text span {
   color: var(--copper);
 }
 
