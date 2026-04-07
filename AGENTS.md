@@ -245,6 +245,7 @@ Default behavior:
 - Do not overclaim maturity, adoption, security, or performance.
 - Treat the README and project docs as the boundary for what can be claimed directly.
 - Frame forward-looking ideas honestly: `designed for`, `can support`, `example workflow`, `possible direction`, `illustrative`.
+- Do not use em-dashes in any copy or writing.
 
 ### Frontend
 - Optimize for:
@@ -320,6 +321,7 @@ Default behavior:
 - When the task involves current APIs, model names, framework behavior, vendor guidance, or challenge details, verify them before relying on memory.
 
 ### Repository hygiene
+- Do not commit without explicit permission from the user.
 - Do not commit secrets.
 - Do not track generated artifacts unless intentionally part of the repo.
 - Keep the worktree clean when the environment supports git workflows.
