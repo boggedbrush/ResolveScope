@@ -346,10 +346,10 @@ export function ArchitecturePage() {
       <nav className="nav nav--landing">
         <div className="container nav__inner">
           <div className="nav__zone nav__zone--left">
-            <a href="/" className="nav__logo">
+            <Link to="/" className="nav__logo">
               <img src="/logo-mark.svg" alt="" aria-hidden="true" className="nav__logo-mark" />
               <span className="nav__logo-wordmark">Resolve<span>Scope</span></span>
-            </a>
+            </Link>
           </div>
           <div className="nav__zone nav__zone--center">
             <div className="nav__item--active">

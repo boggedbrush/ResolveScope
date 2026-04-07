@@ -485,9 +485,19 @@ function AnnotationSidebar({
 }) {
   const visible = annotation !== null;
   const color = annotation ? STATUS_COLORS[annotation.status] ?? annotation.color : "#888";
+  const [sidebarLoaded, setSidebarLoaded] = useState(false);
   const [lightbox, setLightbox] = useState(false);
+  const [lightboxLoaded, setLightboxLoaded] = useState(false);
 
-  useEffect(() => { setLightbox(false); }, [annotation]);
+  useEffect(() => {
+    setLightbox(false);
+    setSidebarLoaded(false);
+    setLightboxLoaded(false);
+  }, [annotation]);
+
+  useEffect(() => {
+    if (lightbox) setLightboxLoaded(false);
+  }, [lightbox]);
 
   useEffect(() => {
     document.body.style.overflow = lightbox ? "hidden" : "";
@@ -520,10 +530,17 @@ function AnnotationSidebar({
               onClick={() => setLightbox(true)}
               aria-label="Expand image"
             >
+              {!sidebarLoaded && (
+                <div className="spatial__image-loading" aria-hidden="true">
+                  <div className="spatial__image-spinner" />
+                </div>
+              )}
               <img
                 src={annotation.image}
                 alt={annotation.label}
                 className="spatial__sidebar-image"
+                onLoad={() => setSidebarLoaded(true)}
+                onError={() => setSidebarLoaded(true)}
               />
               <div className="spatial__sidebar-image-overlay">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -563,11 +580,18 @@ function AnnotationSidebar({
               <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
+          {!lightboxLoaded && (
+            <div className="spatial__image-loading spatial__image-loading--lightbox" aria-hidden="true">
+              <div className="spatial__image-spinner" />
+            </div>
+          )}
           <img
             src={annotation.image}
             alt={annotation.label}
             className="spatial__lightbox-image"
             onClick={(e) => e.stopPropagation()}
+            onLoad={() => setLightboxLoaded(true)}
+            onError={() => setLightboxLoaded(true)}
           />
         </div>
       )}
