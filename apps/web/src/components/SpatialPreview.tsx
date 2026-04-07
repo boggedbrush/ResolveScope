@@ -208,7 +208,7 @@ function Annotation({
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
-    // Bobbing — stop when active
+    // Bobbing : stop when active
     if (headRef.current) {
       const bob = isActive ? 0 : Math.sin(t * 0.9 + offset) * 0.04;
       headRef.current.position.y = pin[1] + bob;
@@ -341,7 +341,7 @@ function Scene({
   return (
     <>
       <group>
-        {/* Ground — click to deselect */}
+        {/* Ground : click to deselect */}
         <mesh
           position={[0, -0.06, 0]}
           onClick={() => onSelectPin(null)}

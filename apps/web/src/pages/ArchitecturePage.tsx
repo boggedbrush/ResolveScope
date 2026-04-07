@@ -159,7 +159,7 @@ const CF_SERVICES = [
   {
     name: "R2",
     tag: "Storage",
-    body: "Object storage for raw evidence files — documents, images, and video originals.",
+    body: "Object storage for raw evidence files : documents, images, and video originals.",
   },
   {
     name: "Queues",
@@ -182,7 +182,7 @@ const TRUST_STEPS = [
   {
     num: "01",
     title: "Summarize / Extract / Classify",
-    body: "AI reads evidence and produces structured fields — summaries, timelines, severity scores, entity extractions. Never writes directly to the case record.",
+    body: "AI reads evidence and produces structured fields : summaries, timelines, severity scores, entity extractions. Never writes directly to the case record.",
   },
   {
     num: "02",
@@ -192,7 +192,7 @@ const TRUST_STEPS = [
   {
     num: "03",
     title: "Provenance Linking",
-    body: "Each approved field carries a source reference — the exact evidence item, page, or timestamp it was derived from. Nothing is orphaned.",
+    body: "Each approved field carries a source reference : the exact evidence item, page, or timestamp it was derived from. Nothing is orphaned.",
   },
   {
     num: "04",
@@ -407,7 +407,7 @@ export function ArchitecturePage() {
               Evidence lifecycle, <em>end to end</em>
             </h2>
             <p className="body-lg arch-section-sub">
-              Every piece of evidence passes through a defined, traceable lifecycle —
+              Every piece of evidence passes through a defined, traceable lifecycle :
               from initial intake through structured extraction, human review,
               provenance recording, and final export.
             </p>
@@ -456,7 +456,7 @@ export function ArchitecturePage() {
               Cloudflare-native, <em>edge-first</em>
             </h2>
             <p className="body-lg arch-section-sub">
-              ResolveScope is designed around Cloudflare's edge platform — stateless
+              ResolveScope is designed around Cloudflare's edge platform : stateless
               compute, distributed storage, and coordinated state running close to users.
             </p>
           </div>
@@ -485,7 +485,7 @@ export function ArchitecturePage() {
             </h2>
             <p className="body-lg arch-section-sub">
               Every AI output is provisional until a human approves it. The trust model
-              is a four-step gate — not a setting, not a toggle.
+              is a four-step gate : not a setting, not a toggle.
             </p>
           </div>
 

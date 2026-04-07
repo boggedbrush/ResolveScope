@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   ResolveScope — Design System & Page Styles
+   ResolveScope : Design System & Page Styles
    ═══════════════════════════════════════════ */
 
 *,
@@ -1289,7 +1289,7 @@ section {
   font-style: italic;
 }
 
-/* Extraction — summary card, field grid, timeline chip */
+/* Extraction : summary card, field grid, timeline chip */
 
 .hd-summary-card {
   border: 1px solid var(--border-light);
@@ -1431,7 +1431,7 @@ section {
   padding: 4px 12px;
 }
 
-/* Review — divider, reviewer block, approval */
+/* Review : divider, reviewer block, approval */
 
 .hd-review-divider {
   height: 1px;
@@ -3721,7 +3721,7 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
 }
 
 /* ═══════════════════════════════════════════
-   Demo workspace — /demo/auto-claim
+   Demo workspace : /demo/auto-claim
    ═══════════════════════════════════════════ */
 
 /* ── Page shell ────────────────────────────── */
@@ -5041,7 +5041,7 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
 }
 
 /* ═══════════════════════════════════════════
-   Spatial Review Panel — Site Inspection
+   Spatial Review Panel : Site Inspection
    ═══════════════════════════════════════════ */
 
 /* demo-page with spatial panel: allow scrolling for the spatial section */

@@ -5,7 +5,7 @@ export const siteInspectionTemplate: CaseTemplate = {
   label: "Site Inspection Report",
   domain: "Property & Facilities",
   description:
-    "Structured field inspection workflow for commercial and industrial property assessments — findings, hazards, structural observations, and remediation actions",
+    "Structured field inspection workflow for commercial and industrial property assessments : findings, hazards, structural observations, and remediation actions",
   defaultOwner: "Alex Reyes",
   extractionSections: [
     {
@@ -65,10 +65,10 @@ export const siteInspectionTemplate: CaseTemplate = {
     { key: "reportDrafted", label: "Inspection report drafted and reviewed" },
   ],
   severityOptions: [
-    { value: "low", label: "Low — Minor cosmetic findings only" },
-    { value: "moderate", label: "Moderate — Maintenance required, no immediate risk" },
-    { value: "elevated", label: "Elevated — Structural or safety concerns identified" },
-    { value: "critical", label: "Critical — Immediate remediation required" },
+    { value: "low", label: "Low : Minor cosmetic findings only" },
+    { value: "moderate", label: "Moderate : Maintenance required, no immediate risk" },
+    { value: "elevated", label: "Elevated : Structural or safety concerns identified" },
+    { value: "critical", label: "Critical : Immediate remediation required" },
   ],
   reviewFieldLabels: {
     severity: "Inspection Severity",

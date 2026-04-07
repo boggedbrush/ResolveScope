@@ -5,9 +5,9 @@
  * without triggering DOM layout reflow (no getBoundingClientRect, no offsetHeight).
  *
  * Pretext works in two phases:
- *   1. `prepare()` — one-time work: normalize whitespace, segment the text,
+ *   1. `prepare()` : one-time work: normalize whitespace, segment the text,
  *      measure segments via Canvas. Returns an opaque handle. ~19ms per 500 texts.
- *   2. `layout()` — pure arithmetic over cached widths. ~0.09ms per 500 texts.
+ *   2. `layout()` : pure arithmetic over cached widths. ~0.09ms per 500 texts.
  *
  * Rule: call `prepare()` once per unique (text, font) pair and cache the result.
  *       Only re-run `layout()` on resize or width changes.
@@ -54,13 +54,13 @@ export const FONT_BODY = "17px Outfit" as const;
 /** Smaller body variant used in tables, sidebars, and secondary UI. */
 export const FONT_BODY_SM = "15px Outfit" as const;
 
-/** Annotation label title — used in SpatialPreview 3D scene labels. */
+/** Annotation label title : used in SpatialPreview 3D scene labels. */
 export const FONT_LABEL = "500 11px Outfit" as const;
 
-/** Annotation label status chip — small all-caps tag above the label title. */
+/** Annotation label status chip : small all-caps tag above the label title. */
 export const FONT_LABEL_STATUS = "600 8px Outfit" as const;
 
-/** Annotation label detail line — muted supporting text beneath the title. */
+/** Annotation label detail line : muted supporting text beneath the title. */
 export const FONT_LABEL_DETAIL = "9px Outfit" as const;
 
 /** Section labels and monospaced badges. */
@@ -92,7 +92,7 @@ import type { PreparedText } from "@chenglou/pretext";
  * container width, without touching the DOM.
  *
  * @example
- * // On resize, only re-call this — no re-prepare needed.
+ * // On resize, only re-call this : no re-prepare needed.
  * const height = measureBodyHeight(caseDescription, containerWidth);
  *
  * @param text       The text content to measure.
@@ -132,9 +132,9 @@ export function measureBodySmHeight(
  * Prepare an annotation label for the SpatialPreview 3D scene.
  *
  * Annotation labels have three text rows:
- *   - `status`  — 8px 600 Outfit, all-caps chip
- *   - `label`   — 11px 500 Outfit, primary title
- *   - `detail`  — 9px Outfit, muted supporting text
+ *   - `status`  : 8px 600 Outfit, all-caps chip
+ *   - `label`   : 11px 500 Outfit, primary title
+ *   - `detail`  : 9px Outfit, muted supporting text
  *
  * Returns prepared handles for all three rows. Pass these to
  * `layoutAnnotationLabel()` when the label container width is known or changes.
@@ -166,7 +166,7 @@ type AnnotationHandles = ReturnType<typeof prepareAnnotationLabel>;
  * rows without wrapping, using `walkLineRanges` shrink-wrap.
  *
  * Because annotation labels use `whiteSpace: nowrap` in the DOM, this gives
- * the exact pixel width to size the label container — no DOM measurement needed.
+ * the exact pixel width to size the label container : no DOM measurement needed.
  *
  * @example
  * const handles = prepareAnnotationLabel(status, label, detail);

@@ -6,14 +6,14 @@ import type {
 } from "../../types/demo";
 
 /* ═══════════════════════════════════════════
-   Seeded demo case — Auto Claim Review
+   Seeded demo case : Auto Claim Review
    Scenario: low-speed parking-lot collision,
    front-right bumper scrape + cracked headlight
    ═══════════════════════════════════════════ */
 
 export const DEMO_CASE_META: CaseMeta = {
   id: "CLM-2024-00847",
-  title: "Parking Lot Collision — Rivera Vehicle",
+  title: "Parking Lot Collision : Rivera Vehicle",
   template: "Auto Claim Review",
   status: "in-review",
   priority: "medium",
@@ -29,7 +29,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-001",
     type: "document",
-    name: "Intake Form — CLM-2024-00847.pdf",
+    name: "Intake Form : CLM-2024-00847.pdf",
     uploadedBy: "Maria Rivera (claimant portal)",
     uploadedAt: "2024-11-12T09:14:00Z",
     description:
@@ -39,7 +39,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-002",
     type: "image",
-    name: "Damage Photo 1 — Front Bumper.jpg",
+    name: "Damage Photo 1 : Front Bumper.jpg",
     uploadedBy: "Maria Rivera (claimant portal)",
     uploadedAt: "2024-11-12T09:17:00Z",
     description:
@@ -49,7 +49,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-003",
     type: "image",
-    name: "Damage Photo 2 — Headlight Assembly.jpg",
+    name: "Damage Photo 2 : Headlight Assembly.jpg",
     uploadedBy: "Maria Rivera (claimant portal)",
     uploadedAt: "2024-11-12T09:18:00Z",
     description:
@@ -59,7 +59,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-004",
     type: "image",
-    name: "Scene Photo — Parking Lot Overview.jpg",
+    name: "Scene Photo : Parking Lot Overview.jpg",
     uploadedBy: "Maria Rivera (claimant portal)",
     uploadedAt: "2024-11-12T09:20:00Z",
     description:
@@ -69,7 +69,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-005",
     type: "note",
-    name: "Adjuster Note — Initial Review",
+    name: "Adjuster Note : Initial Review",
     uploadedBy: "Alex Chen (adjuster)",
     uploadedAt: "2024-11-13T10:05:00Z",
     description:
@@ -79,7 +79,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
   {
     id: "ev-006",
     type: "document",
-    name: "Repair Estimate — AutoBody Plus.pdf",
+    name: "Repair Estimate : AutoBody Plus.pdf",
     uploadedBy: "Alex Chen (adjuster)",
     uploadedAt: "2024-11-13T14:32:00Z",
     description:
@@ -90,7 +90,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
 
 /* ─── Deterministic extraction output ─────
    This is what "Run extraction" produces.
-   Derived from the seed case above — not random.
+   Derived from the seed case above : not random.
    ─────────────────────────────────────────── */
 
 export const DEMO_EXTRACTION: ExtractionResult = {
@@ -98,7 +98,7 @@ export const DEMO_EXTRACTION: ExtractionResult = {
   incidentSummary:
     "On November 11, 2024 at approximately 2:15 PM, claimant Maria Rivera's 2021 Honda CR-V sustained cosmetic damage to the front-right bumper fascia and headlight assembly in the Westfield Plaza Lot C. The incident was a low-speed, unwitnessed parking lot contact with an unknown vehicle. No injuries were reported. No police report was filed, consistent with the state's $1,000 non-reportable threshold. The vehicle remained operable. A third-party repair estimate of $1,070 has been received.",
   timeline: [
-    { time: "2024-11-11 14:15", event: "Incident occurs — Westfield Plaza Lot C" },
+    { time: "2024-11-11 14:15", event: "Incident occurs : Westfield Plaza Lot C" },
     { time: "2024-11-11 14:45", event: "Claimant discovers damage upon returning to vehicle" },
     { time: "2024-11-11 15:02", event: "Claimant photographs damage on-site" },
     { time: "2024-11-12 09:14", event: "Claim submitted via claimant portal" },
@@ -140,11 +140,11 @@ export const DEMO_EXTRACTION: ExtractionResult = {
   recommendedNextSteps: [
     "Approve repair estimate from AutoBody Plus ($1,070) subject to applicable $500 deductible.",
     "Confirm claimant's preferred repair scheduling and arrange direct payment to shop.",
-    "Close unwitnessed-party portion of claim — no subrogation avenue identified.",
+    "Close unwitnessed-party portion of claim : no subrogation avenue identified.",
     "Issue settlement summary to claimant within 5 business days per policy SLA.",
   ],
   severityAssessment:
-    "Moderate — cosmetic damage only. No structural, mechanical, or safety systems affected. Repair cost within typical range for low-speed parking contact. No rental authorization required based on vehicle operability.",
+    "Moderate : cosmetic damage only. No structural, mechanical, or safety systems affected. Repair cost within typical range for low-speed parking contact. No rental authorization required based on vehicle operability.",
   provenance: {
     incidentSummary: ["ev-001", "ev-005"],
     timeline: ["ev-001", "ev-002", "ev-003", "ev-004", "ev-006"],

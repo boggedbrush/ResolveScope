@@ -1,4 +1,4 @@
-# Spatial Review — Evidence Image Prompts
+# Spatial Review : Evidence Image Prompts
 
 AI image prompts for the four annotation samples shown in the spatial review demo. These serve as field evidence photos attached to each case pin.
 
@@ -6,7 +6,7 @@ Images are stored at `apps/web/public/assets/` and served at `/assets/pinN.png`.
 
 ---
 
-## Pin 1 — Inspection Passed (Wing B)
+## Pin 1 : Inspection Passed (Wing B)
 
 [![pin1](../apps/web/public/assets/pin1.png)](../apps/web/public/assets/pin1.png)
 
@@ -14,7 +14,7 @@ Images are stored at `apps/web/public/assets/` and served at `/assets/pinN.png`.
 
 ---
 
-## Pin 2 — Structural Crack Detected (East Facade)
+## Pin 2 : Structural Crack Detected (East Facade)
 
 [![pin2](../apps/web/public/assets/pin2.png)](../apps/web/public/assets/pin2.png)
 
@@ -22,7 +22,7 @@ Images are stored at `apps/web/public/assets/` and served at `/assets/pinN.png`.
 
 ---
 
-## Pin 3 — Surface Erosion Noted (Zone C)
+## Pin 3 : Surface Erosion Noted (Zone C)
 
 **Image:** [![pin3](../apps/web/public/assets/pin3.png)](../apps/web/public/assets/pin3.png)
 
@@ -30,7 +30,7 @@ Images are stored at `apps/web/public/assets/` and served at `/assets/pinN.png`.
 
 ---
 
-## Pin 4 — Access Point Documented (Annex Entry)
+## Pin 4 : Access Point Documented (Annex Entry)
 
 **Image:** [![pin4](../apps/web/public/assets/pin4.png)](../apps/web/public/assets/pin4.png)
 

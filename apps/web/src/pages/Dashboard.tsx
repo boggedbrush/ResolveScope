@@ -24,7 +24,7 @@ interface CaseRow {
 const DEMO_CASES: CaseRow[] = [
   {
     id: "CLM-2024-00847",
-    title: "Parking lot collision — Rivera vehicle",
+    title: "Parking lot collision : Rivera vehicle",
     template: "Auto Claim Review",
     domain: "Insurance",
     status: "in-review",
@@ -37,7 +37,7 @@ const DEMO_CASES: CaseRow[] = [
   },
   {
     id: "FSI-2024-00312",
-    title: "Loading dock rear contact — Unit V-183",
+    title: "Loading dock rear contact : Unit V-183",
     template: "Fleet Safety Incident",
     domain: "Fleet Operations",
     status: "in-review",
@@ -50,7 +50,7 @@ const DEMO_CASES: CaseRow[] = [
   },
   {
     id: "SIR-2024-00091",
-    title: "Exterior facade inspection — Hargrove Building A",
+    title: "Exterior facade inspection : Hargrove Building A",
     template: "Site Inspection Report",
     domain: "Property & Facilities",
     status: "in-review",

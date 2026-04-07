@@ -2,7 +2,7 @@
 
 ## Overview
 
-ResolveScope is a challenge submission built under time pressure with a focus on credibility over completeness. The goal was a polished, navigable frontend that demonstrates a real product loop — not a mockup, not a slide deck.
+ResolveScope is a challenge submission built under time pressure with a focus on credibility over completeness. The goal was a polished, navigable frontend that demonstrates a real product loop : not a mockup, not a slide deck.
 
 The working approach: build the smallest version of the real thing, seed it with realistic data, and make every surface reviewable end-to-end. The frontend *is* the product argument.
 
@@ -14,11 +14,11 @@ This project was built using **Codex** as the primary implementation agent for t
 
 The build system is structured around three layers:
 
-**`AGENTS.md` as the operating contract** — every agent session reads this file first. It defines the product understanding, known truths, task classes, core rules, and token-efficiency constraints that keep implementations coherent across sessions without constant correction.
+**`AGENTS.md` as the operating contract** : every agent session reads this file first. It defines the product understanding, known truths, task classes, core rules, and token-efficiency constraints that keep implementations coherent across sessions without constant correction.
 
-**Skills as modular guidance** — the `frontend-design` skill is declared mandatory for all landing pages and design-system work. Other skills (`simplify`, `loop`, `schedule`) are used when the specific task warrants them. This keeps specialized guidance modular and out of the main contract.
+**Skills as modular guidance** : the `frontend-design` skill is declared mandatory for all landing pages and design-system work. Other skills (`simplify`, `loop`, `schedule`) are used when the specific task warrants them. This keeps specialized guidance modular and out of the main contract.
 
-**Bounded implementation slices** — tasks are structured with explicit scope limits, acceptance criteria, and honesty constraints. The agent handles implementation. Product judgment stays human-directed.
+**Bounded implementation slices** : tasks are structured with explicit scope limits, acceptance criteria, and honesty constraints. The agent handles implementation. Product judgment stays human-directed.
 
 See [prompting-guide.md](./prompting-guide.md) for the full breakdown of prompt patterns, token-efficiency tactics, and how the agent contract shapes each session.
 
@@ -27,19 +27,19 @@ See [prompting-guide.md](./prompting-guide.md) for the full breakdown of prompt 
 ## Shaping decisions
 
 **One platform, not five sponsor demos.**
-The challenge has five sponsors with distinct operational domains. The weak approach is to build five disconnected demos. The stronger approach is to show that one platform — same evidence loop, same review surface, same export format — applies across all of them. Templates are the mechanism.
+The challenge has five sponsors with distinct operational domains. The weak approach is to build five disconnected demos. The stronger approach is to show that one platform : same evidence loop, same review surface, same export format : applies across all of them. Templates are the mechanism.
 
 **Seeded data over live inference.**
 Building a live AI backend on Cloudflare Workers within the challenge timeline would have meant less time on the parts that matter: the workspace UX, the review surface, the spatial annotation, the report output. Seeded data lets the UI tell the full story without depending on a backend being available at demo time.
 
 **Cloudflare-native infrastructure direction.**
-The architectural target is Cloudflare Workers + D1 + R2 + Queues + Durable Objects. This was chosen for operational simplicity, not because it's the only viable option. It's credible and coherent for the workload profile. The infrastructure is *designed* and *directional* — not yet deployed.
+The architectural target is Cloudflare Workers + D1 + R2 + Queues + Durable Objects. This was chosen for operational simplicity, not because it's the only viable option. It's credible and coherent for the workload profile. The infrastructure is *designed* and *directional* : not yet deployed.
 
 **Custom CSS, no utility framework.**
 The design system is hand-rolled. This was deliberate: utility frameworks produce generic-looking interfaces, and the product needs to feel premium and credible. The tradeoff is more styling work per component. Worth it for a challenge submission.
 
 **React Three Fiber for spatial annotation.**
-360° and spatial review is a genuine product differentiator — not decoration. The workspace includes a spatial panel because field and inspection workflows require spatial context. It's purposeful or it's not there.
+360° and spatial review is a genuine product differentiator : not decoration. The workspace includes a spatial panel because field and inspection workflows require spatial context. It's purposeful or it's not there.
 
 ---
 

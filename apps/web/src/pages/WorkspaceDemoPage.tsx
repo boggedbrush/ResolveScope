@@ -31,7 +31,7 @@ function makeAuditId(): string {
 export function WorkspaceDemoPage({ seedData, demoId }: Props) {
   const template = getTemplate(seedData.caseMeta.templateId);
 
-  // Original values snapshot — used to detect overrides
+  // Original values snapshot : used to detect overrides
   const originalValues: Record<string, string> = {
     severity: seedData.initialReview.severity,
     summary: seedData.initialReview.summary,

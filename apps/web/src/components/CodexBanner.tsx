@@ -147,7 +147,7 @@ export function CodexBanner({ variant }: { variant?: "arch" } = {}) {
               <span className="brand-divider" />
               <em className="brand brand--italic">Handshake</em>
             </div>
-            <h2 className="banner-title">Codex Creator Challenge — 2026 Entry</h2>
+            <h2 className="banner-title">Codex Creator Challenge : 2026 Entry</h2>
 
             <p className="banner-desc">
               Build something real, enter the challenge, and put your AI skills

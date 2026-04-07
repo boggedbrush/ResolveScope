@@ -8,7 +8,7 @@
 
 # ResolveScope
 
-**ResolveScope is open-source case management software for insurance claims, fleet safety incidents, site inspections, and quality workflows** — turning scattered evidence into structured, reviewable, AI-assisted case files.
+**ResolveScope is open-source case management software for insurance claims, fleet safety incidents, site inspections, and quality workflows**: turning scattered evidence into structured, reviewable, AI-assisted case files.
 
 ### Evidence-to-action infrastructure for claims, safety, inspections, and quality workflows.
 
@@ -19,7 +19,7 @@ Built for operational teams that cannot afford to get it wrong.
 
 <br>
 
-<a href="https://resolvescope.pages.dev"><strong>→ resolvescope.pages.dev — live demo, no login required</strong></a>
+<a href="https://resolvescope.pages.dev"><strong>→ resolvescope.pages.dev: live demo, no login required</strong></a>
 
 <br>
 
@@ -32,7 +32,7 @@ Built for operational teams that cannot afford to get it wrong.
 
 ---
 
-<p><em>Built as an entry for the <strong>OpenAI × Handshake Codex Creator Challenge</strong> — 2026<br>
+<p><em>Built as an entry for the <strong>OpenAI × Handshake Codex Creator Challenge</strong> (2026)<br>
 Developed with Codex as the primary implementation agent, guided by <code>AGENTS.md</code> as the operating contract.</em></p>
 
 ---
@@ -43,7 +43,7 @@ Developed with Codex as the primary implementation agent, guided by <code>AGENTS
 
 ## Live Demo
 
-**[https://resolvescope.pages.dev](https://resolvescope.pages.dev)** — deployed on Cloudflare Pages, no login required.
+**[https://resolvescope.pages.dev](https://resolvescope.pages.dev)** - deployed on Cloudflare Pages, no login required.
 
 <br>
 
@@ -51,21 +51,21 @@ Developed with Codex as the primary implementation agent, guided by <code>AGENTS
 
 | Route | What you'll see |
 |:---|:---|
-| [**`/`**](https://resolvescope.pages.dev/) | Landing — product framing and workflow overview |
-| [**`/dashboard`**](https://resolvescope.pages.dev/dashboard) | Case dashboard — seeded cases by status, priority, and type |
-| [**`/demo/auto-claim`**](https://resolvescope.pages.dev/demo/auto-claim) | Auto claim workspace — evidence, AI extraction, spatial review |
+| [**`/`**](https://resolvescope.pages.dev/) | Landing: product framing and workflow overview |
+| [**`/dashboard`**](https://resolvescope.pages.dev/dashboard) | Case dashboard: seeded cases by status, priority, and type |
+| [**`/demo/auto-claim`**](https://resolvescope.pages.dev/demo/auto-claim) | Auto claim workspace: evidence, AI extraction, spatial review |
 | [**`/demo/fleet-safety`**](https://resolvescope.pages.dev/demo/fleet-safety) | Fleet safety incident workspace |
-| [**`/demo/site-inspection`**](https://resolvescope.pages.dev/demo/site-inspection) | Site inspection — field observations, spatial annotation |
-| [**`/report/auto-claim`**](https://resolvescope.pages.dev/report/auto-claim) | Stakeholder report — formatted case brief for external review |
+| [**`/demo/site-inspection`**](https://resolvescope.pages.dev/demo/site-inspection) | Site inspection: field observations, spatial annotation |
+| [**`/report/auto-claim`**](https://resolvescope.pages.dev/report/auto-claim) | Stakeholder report: formatted case brief for external review |
 | [**`/report/fleet-safety`**](https://resolvescope.pages.dev/report/fleet-safety) | Fleet safety stakeholder report |
 | [**`/report/site-inspection`**](https://resolvescope.pages.dev/report/site-inspection) | Site inspection stakeholder report |
-| [**`/architecture`**](https://resolvescope.pages.dev/architecture) | Architecture — system design, data model, infrastructure direction |
+| [**`/architecture`**](https://resolvescope.pages.dev/architecture) | Architecture: system design, data model, infrastructure direction |
 
 </div>
 
 <br>
 
-> **Note:** The frontend demo is live. Current demo surfaces run on seeded frontend data. The Workers API, D1, R2, Queues, and Durable Objects layers are part of the architectural direction — not yet deployed.
+> **Note:** The frontend demo is live. Current demo surfaces run on seeded frontend data. The Workers API, D1, R2, Queues, and Durable Objects layers are part of the architectural direction; not yet deployed.
 
 ---
 
@@ -98,7 +98,7 @@ Operational teams face the same failure mode repeatedly:
 
 > **Important decisions get made from scattered, unstructured evidence.**
 
-The evidence exists — photos, documents, notes, field observations, video — but it lives in email threads, shared drives, and chat. No single record. No clear approval. No audit trail.
+The evidence exists (photos, documents, notes, field observations, video), but it lives in email threads, shared drives, and chat. No single record. No clear approval. No audit trail.
 
 ResolveScope is the case-centered workspace that fixes this. Every piece of evidence flows into a structured, reviewable, exportable case file. AI assists with extraction and summarization. Humans approve before anything becomes final.
 
@@ -129,12 +129,12 @@ The template layer makes it adaptable without making it generic.
 
 ## Product Surfaces
 
-- **Evidence intake** — documents, images, video, and field notes into a unified case workspace
-- **AI-assisted extraction** — structured fields, timeline construction, summaries, and draft actions
-- **Human-in-the-loop review** — every AI output is reviewable and editable before it becomes final
-- **Spatial and 360° annotation** — inspectable scenes with evidence pins for field and inspection workflows
-- **Stakeholder-ready outputs** — formatted case briefs and shareable report views
-- **Template-driven workflows** — the same surface adapts across claims, safety, inspections, and quality review
+- **Evidence intake**: documents, images, video, and field notes into a unified case workspace
+- **AI-assisted extraction**: structured fields, timeline construction, summaries, and draft actions
+- **Human-in-the-loop review**: every AI output is reviewable and editable before it becomes final
+- **Spatial and 360° annotation**: inspectable scenes with evidence pins for field and inspection workflows
+- **Stakeholder-ready outputs**: formatted case briefs and shareable report views
+- **Template-driven workflows**: the same surface adapts across claims, safety, inspections, and quality review
 
 ---
 
@@ -173,7 +173,7 @@ The template layer makes it adaptable without making it generic.
 </tr>
 <tr>
 <td><a href="docs/how-to-use-skills.md"><strong>How to use skills</strong></a></td>
-<td>How agent skills are discovered, installed, and invoked in this repo — when to let them trigger naturally vs. when to force them explicitly.</td>
+<td>How agent skills are discovered, installed, and invoked in this repo; when to let them trigger naturally vs. when to force them explicitly.</td>
 </tr>
 </table>
 

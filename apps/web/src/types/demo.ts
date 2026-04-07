@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   ResolveScope — Demo / Case types
+   ResolveScope : Demo / Case types
    ═══════════════════════════════════════════ */
 
 export type CaseStatus = "open" | "in-review" | "approved" | "exported";

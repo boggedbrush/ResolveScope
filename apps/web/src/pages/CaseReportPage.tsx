@@ -165,7 +165,7 @@ function ProvenanceNote({
   const names = ids
     .map((id) => {
       const ev = evidence.find((e) => e.id === id);
-      return ev ? ev.name.split("—")[0].trim() : id;
+      return ev ? ev.name.split(":")[0].trim() : id;
     })
     .join(", ");
   return (

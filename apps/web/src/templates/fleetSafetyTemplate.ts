@@ -57,10 +57,10 @@ export const fleetSafetyTemplate: CaseTemplate = {
     { key: "reportFiled", label: "Safety report filed with compliance team" },
   ],
   severityOptions: [
-    { value: "minor", label: "Minor — No injury, minimal property impact" },
-    { value: "moderate", label: "Moderate — Reportable, no injury" },
-    { value: "major", label: "Major — Injury or significant damage" },
-    { value: "critical", label: "Critical — Fatality or major loss event" },
+    { value: "minor", label: "Minor : No injury, minimal property impact" },
+    { value: "moderate", label: "Moderate : Reportable, no injury" },
+    { value: "major", label: "Major : Injury or significant damage" },
+    { value: "critical", label: "Critical : Fatality or major loss event" },
   ],
   reviewFieldLabels: {
     severity: "Risk Level",

@@ -35,7 +35,7 @@ function ProvenanceTags({
   onInspect: () => void;
 }) {
   const names = ids
-    .map((id) => evidence.find((e) => e.id === id)?.name.split("—")[0].trim())
+    .map((id) => evidence.find((e) => e.id === id)?.name.split(":")[0].trim())
     .filter(Boolean) as string[];
   if (!names.length) return null;
   return (
@@ -71,7 +71,7 @@ function getSectionText(data: SectionData): string {
     case "ordered-list":
       return data.items.join("\n");
     case "timeline":
-      return data.entries.map((e) => `${e.time} — ${e.event}`).join("\n");
+      return data.entries.map((e) => `${e.time} : ${e.event}`).join("\n");
     case "parties":
       return data.parties
         .map((p) => [p.role, p.name, p.contact].filter(Boolean).join(" · "))
@@ -419,7 +419,7 @@ function ExtractionSection({
   );
 }
 
-// Streaming loading state — shows a mock "thinking" animation before content arrives
+// Streaming loading state : shows a mock "thinking" animation before content arrives
 function StreamingLoader({ label }: { label: string }) {
   const [dots, setDots] = useState(".");
   useEffect(() => {
@@ -514,7 +514,7 @@ export function ExtractionPanel({
           </div>
           <h3 className="extraction-empty__title">Ready to extract</h3>
           <p className="extraction-empty__body">
-            Run extraction to generate a structured case brief — incident
+            Run extraction to generate a structured case brief : incident
             summary, timeline, findings, and recommended actions.
           </p>
           <button

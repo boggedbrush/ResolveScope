@@ -9,7 +9,7 @@ Intake → Extraction → Review → (Spatial annotation) → Export
 ```
 
 **1. Intake**
-A case is created with a template — auto claim, fleet safety, site inspection, or custom. Evidence is attached: documents, photos, video clips, field notes. The template defines which fields matter for this case type.
+A case is created with a template : auto claim, fleet safety, site inspection, or custom. Evidence is attached: documents, photos, video clips, field notes. The template defines which fields matter for this case type.
 
 **2. Extraction**
 AI reads the attached evidence and populates structured fields: severity, summary, key observations, next steps, and any template-specific fields. Extraction runs against the evidence, not from memory. The raw evidence stays visible alongside the AI output.
@@ -18,7 +18,7 @@ AI reads the attached evidence and populates structured fields: severity, summar
 A human reviewer sees the AI-populated fields side by side with the source evidence. Every field can be overridden. Every override is logged with a reason. Nothing is finalized without explicit approval.
 
 **4. Spatial annotation** *(field and inspection workflows)*
-For cases involving physical locations — vehicle damage, site defects, inspection findings — a spatial annotation panel lets reviewers pin evidence to a scene. The 360° view or lightweight 3D model shows where on the vehicle, building, or asset each finding originated.
+For cases involving physical locations : vehicle damage, site defects, inspection findings : a spatial annotation panel lets reviewers pin evidence to a scene. The 360° view or lightweight 3D model shows where on the vehicle, building, or asset each finding originated.
 
 **5. Export**
 The approved case generates a stakeholder report: a formatted brief with structured fields, evidence links, the override log, and the audit trail. The same data is available as a JSON bundle for downstream integration.
@@ -27,7 +27,7 @@ The approved case generates a stakeholder report: a formatted brief with structu
 
 ## How seeded demos map to the product story
 
-The live demo runs on seeded frontend data — there is no live AI inference in the deployed version. The seeded data is designed to show realistic case state at each stage of the workflow.
+The live demo runs on seeded frontend data : there is no live AI inference in the deployed version. The seeded data is designed to show realistic case state at each stage of the workflow.
 
 | Demo | Seed state | What it demonstrates |
 |---|---|---|
@@ -41,7 +41,7 @@ Each demo is accessible from the [dashboard](https://resolvescope.pages.dev/dash
 
 ## Why the workflow matters operationally
 
-The evidence-to-action loop exists because the alternative — scattered evidence, manual report writing, no audit trail — creates predictable downstream failures:
+The evidence-to-action loop exists because the alternative : scattered evidence, manual report writing, no audit trail : creates predictable downstream failures:
 
 - Evidence is hard to find after the fact
 - Handoffs between submitters and reviewers create gaps
@@ -55,8 +55,8 @@ The core product insight is that the workflow is the same across claims, safety 
 
 ## Product principles
 
-- **Evidence first** — raw evidence stays visible and linked, never hidden behind AI output
-- **Human approval required** — outputs are reviewable and editable before finalization
-- **Structured by default** — summaries are useful, but structured fields drive action
-- **Template-driven** — the platform adapts across domains without becoming generic
-- **Defensible outputs** — every decision is traceable to the evidence that supported it
+- **Evidence first** : raw evidence stays visible and linked, never hidden behind AI output
+- **Human approval required** : outputs are reviewable and editable before finalization
+- **Structured by default** : summaries are useful, but structured fields drive action
+- **Template-driven** : the platform adapts across domains without becoming generic
+- **Defensible outputs** : every decision is traceable to the evidence that supported it

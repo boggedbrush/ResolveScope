@@ -72,7 +72,7 @@ function BuildingFacadeSVG() {
         </g>
       ))}
 
-      {/* ── Level 1 windows (y: 304–355) — 4 windows, leaving space for entry ── */}
+      {/* ── Level 1 windows (y: 304–355) : 4 windows, leaving space for entry ── */}
       {[108, 228, 588, 708].map((x) => (
         <g key={`l1-${x}`}>
           <rect x={x} y={304} width={80} height={70} rx={2} fill="#6e8fa0" opacity="0.85" />
@@ -167,7 +167,7 @@ export function SpatialReviewPanel({ markers, evidence }: Props) {
                 .join(" ")}
               style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
               onClick={() => setSelectedId(selectedId === marker.id ? null : marker.id)}
-              aria-label={`Marker: ${marker.label} — ${SEVERITY_LABELS[marker.severity]} severity`}
+              aria-label={`Marker: ${marker.label} : ${SEVERITY_LABELS[marker.severity]} severity`}
               aria-pressed={selectedId === marker.id}
             >
               <span className="spatial-marker__dot" aria-hidden="true" />

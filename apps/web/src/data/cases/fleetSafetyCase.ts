@@ -1,7 +1,7 @@
 import type { SeedCaseData, ReviewState } from "../../types/case";
 
 /* ═══════════════════════════════════════════
-   Seeded demo case — Fleet Safety Incident
+   Seeded demo case : Fleet Safety Incident
    Scenario: low-speed rear contact at warehouse
    loading dock; driver distracted by in-cab
    dispatch tablet; no injuries; Unit V-183
@@ -24,7 +24,7 @@ export const fleetSafetySeedData: SeedCaseData = {
   reviewer: "Jordan Park",
   caseMeta: {
     id: "FSI-2024-00312",
-    title: "Loading Dock Rear Contact — Unit V-183",
+    title: "Loading Dock Rear Contact : Unit V-183",
     templateId: "fleet-safety",
     status: "in-review",
     priority: "high",
@@ -33,13 +33,13 @@ export const fleetSafetySeedData: SeedCaseData = {
     updatedAt: "2024-10-29T15:20:00Z",
     owner: "Jordan Park",
     subject: "Darnell Hughes (Driver)",
-    unit: "Unit V-183 — 2023 Ford Transit 350",
+    unit: "Unit V-183 : 2023 Ford Transit 350",
   },
   evidence: [
     {
       id: "fev-001",
       type: "note",
-      name: "Driver Statement — Darnell Hughes",
+      name: "Driver Statement : Darnell Hughes",
       uploadedBy: "Darnell Hughes (driver portal)",
       uploadedAt: "2024-10-28T08:10:00Z",
       description:
@@ -49,7 +49,7 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-002",
       type: "image",
-      name: "Incident Photo 1 — Rear Bumper Contact Zone.jpg",
+      name: "Incident Photo 1 : Rear Bumper Contact Zone.jpg",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:05:00Z",
       description:
@@ -59,7 +59,7 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-003",
       type: "image",
-      name: "Incident Photo 2 — Scene Overview Bay 4.jpg",
+      name: "Incident Photo 2 : Scene Overview Bay 4.jpg",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:08:00Z",
       description:
@@ -69,17 +69,17 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-004",
       type: "note",
-      name: "Supervisor Note — M. Okafor",
+      name: "Supervisor Note : M. Okafor",
       uploadedBy: "M. Okafor (supervisor)",
       uploadedAt: "2024-10-28T11:30:00Z",
       description:
-        "Supervisor note: driver has clean record (3 years, zero incidents). In-cab tablet policy reviewed with driver post-incident. Forklift placement indicates a zone compliance failure by warehouse staff — separate corrective action underway. No injuries to driver, warehouse personnel, or third parties. Vehicle operationally fit pending bumper repair.",
+        "Supervisor note: driver has clean record (3 years, zero incidents). In-cab tablet policy reviewed with driver post-incident. Forklift placement indicates a zone compliance failure by warehouse staff : separate corrective action underway. No injuries to driver, warehouse personnel, or third parties. Vehicle operationally fit pending bumper repair.",
       mimeType: "text/plain",
     },
     {
       id: "fev-005",
       type: "document",
-      name: "Vehicle Inspection Report — Unit V-183.pdf",
+      name: "Vehicle Inspection Report : Unit V-183.pdf",
       uploadedBy: "Fleet Maintenance (ops portal)",
       uploadedAt: "2024-10-29T09:45:00Z",
       description:
@@ -89,7 +89,7 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-006",
       type: "document",
-      name: "Dashcam Footage Log — V-183 2024-10-28.pdf",
+      name: "Dashcam Footage Log : V-183 2024-10-28.pdf",
       uploadedBy: "Fleet Safety (ops portal)",
       uploadedAt: "2024-10-29T15:20:00Z",
       description:
@@ -136,17 +136,17 @@ export const fleetSafetySeedData: SeedCaseData = {
           { label: "Unit Number", value: "V-183" },
           { label: "Vehicle", value: "2023 Ford Transit 350" },
           { label: "Fleet ID", value: "FLT-2023-183" },
-          { label: "Assigned Route", value: "Eastport — Depot 7" },
-          { label: "Driver Record", value: "Clean — 3 years, 0 prior incidents" },
+          { label: "Assigned Route", value: "Eastport : Depot 7" },
+          { label: "Driver Record", value: "Clean : 3 years, 0 prior incidents" },
           { label: "Odometer at Incident", value: "41,220 mi" },
         ],
       },
       findings: {
         type: "list",
         items: [
-          "Primary cause: driver attention diversion — interaction with in-cab dispatch tablet 8 seconds before impact (confirmed by dashcam).",
-          "Contributing factor: forklift positioned approx. 1.2m outside painted exclusion zone at Bay 4 — zone compliance failure by warehouse staff.",
-          "No spotter or banksman in use during reversing maneuver — not required under current SOP but recommended for bay reversals.",
+          "Primary cause: driver attention diversion : interaction with in-cab dispatch tablet 8 seconds before impact (confirmed by dashcam).",
+          "Contributing factor: forklift positioned approx. 1.2m outside painted exclusion zone at Bay 4 : zone compliance failure by warehouse staff.",
+          "No spotter or banksman in use during reversing maneuver : not required under current SOP but recommended for bay reversals.",
           "Damage limited to non-safety-critical components; vehicle structurally sound and operationally fit.",
           "No injuries to driver, warehouse personnel, or third parties.",
         ],
@@ -154,7 +154,7 @@ export const fleetSafetySeedData: SeedCaseData = {
       riskAssessment: {
         type: "text",
         content:
-          "Moderate — low-speed incident with no injuries and limited material damage. However, the dual contributing factors (in-cab distraction and zone non-compliance) indicate a systemic risk pattern requiring process-level response, not just individual corrective action. Dashcam data confirms the distraction timeline. The forklift placement failure is being addressed under a separate warehouse ops corrective action. Repeat risk is elevated without a formal in-cab device policy update.",
+          "Moderate : low-speed incident with no injuries and limited material damage. However, the dual contributing factors (in-cab distraction and zone non-compliance) indicate a systemic risk pattern requiring process-level response, not just individual corrective action. Dashcam data confirms the distraction timeline. The forklift placement failure is being addressed under a separate warehouse ops corrective action. Repeat risk is elevated without a formal in-cab device policy update.",
       },
       correctiveActions: {
         type: "actions",
@@ -167,7 +167,7 @@ export const fleetSafetySeedData: SeedCaseData = {
           },
           {
             action:
-              "Schedule driver coaching session for Darnell Hughes — distraction awareness and reversing protocols.",
+              "Schedule driver coaching session for Darnell Hughes : distraction awareness and reversing protocols.",
             owner: "M. Okafor (Supervisor)",
             due: "2024-11-05",
           },

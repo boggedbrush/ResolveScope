@@ -51,7 +51,7 @@ function OverrideBadge({ reason }: { reason: string }) {
       className={`override-badge ${!reason.trim() ? "override-badge--needs-reason" : ""}`}
       title={reason || "Override reason required"}
     >
-      {reason.trim() ? "Overridden" : "Override — reason required"}
+      {reason.trim() ? "Overridden" : "Override : reason required"}
     </span>
   );
 }
@@ -198,7 +198,7 @@ export function ReviewPanel({
         </div>
       </div>
 
-      {/* Checklist — driven by template */}
+      {/* Checklist : driven by template */}
       <div className="review-checklist">
         <h4 className="review-checklist__title">Review checklist</h4>
         {template.checklistItems.map(({ key, label }) => (

@@ -50,7 +50,7 @@ export function ApprovalRequirements({ status }: Props) {
     status.overrideCount === 0
       ? "No overrides"
       : status.overridesMissingReason === 0
-        ? `${status.overrideCount} override${status.overrideCount !== 1 ? "s" : ""} — all have reasons`
+        ? `${status.overrideCount} override${status.overrideCount !== 1 ? "s" : ""} : all have reasons`
         : `${status.overridesMissingReason} override${status.overridesMissingReason !== 1 ? "s" : ""} missing reason`;
 
   const extractionDone = status.extractionRun;

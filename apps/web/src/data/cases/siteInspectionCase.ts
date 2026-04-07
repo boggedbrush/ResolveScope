@@ -1,7 +1,7 @@
 import type { SeedCaseData, ReviewState, SpatialMarker } from "../../types/case";
 
 /* ═══════════════════════════════════════════
-   Seeded demo case — Site Inspection Report
+   Seeded demo case : Site Inspection Report
    Scenario: Hargrove Commercial Properties
    requests exterior inspection of Building A
    at their Eastside Campus. Inspector Alex
@@ -27,18 +27,18 @@ const initialReview: ReviewState = {
 export const siteInspectionSpatialMarkers: SpatialMarker[] = [
   {
     id: "sm-001",
-    label: "Roof Flashing — North Parapet",
+    label: "Roof Flashing : North Parapet",
     x: 17,
     y: 13,
     severity: "high",
-    note: "Metal flashing lifted at north parapet seam, approximately 4 linear feet. Visible gap at roof-wall junction — active water ingress channel under wet conditions. Sealant fully failed.",
+    note: "Metal flashing lifted at north parapet seam, approximately 4 linear feet. Visible gap at roof-wall junction : active water ingress channel under wet conditions. Sealant fully failed.",
     relatedEvidenceIds: ["siev-003"],
     relatedExtractionSectionKey: "findings",
     status: "open",
   },
   {
     id: "sm-002",
-    label: "Facade Crack — Level 2 Spandrel",
+    label: "Facade Crack : Level 2 Spandrel",
     x: 30,
     y: 44,
     severity: "high",
@@ -49,7 +49,7 @@ export const siteInspectionSpatialMarkers: SpatialMarker[] = [
   },
   {
     id: "sm-003",
-    label: "Water Intrusion — SE Corner",
+    label: "Water Intrusion : SE Corner",
     x: 81,
     y: 57,
     severity: "medium",
@@ -60,11 +60,11 @@ export const siteInspectionSpatialMarkers: SpatialMarker[] = [
   },
   {
     id: "sm-004",
-    label: "Trip Hazard — Main Entry Threshold",
+    label: "Trip Hazard : Main Entry Threshold",
     x: 50,
     y: 90,
     severity: "medium",
-    note: "Raised concrete lip at main building entry threshold — approximately 40mm height differential. ADA non-compliant. Concrete lip likely heaved due to tree root pressure. Immediate remediation advised; interim signage required.",
+    note: "Raised concrete lip at main building entry threshold : approximately 40mm height differential. ADA non-compliant. Concrete lip likely heaved due to tree root pressure. Immediate remediation advised; interim signage required.",
     relatedEvidenceIds: ["siev-007"],
     relatedExtractionSectionKey: "safetyHazards",
     status: "open",
@@ -75,7 +75,7 @@ export const siteInspectionSeedData: SeedCaseData = {
   reviewer: "Alex Reyes",
   caseMeta: {
     id: "SIR-2024-00091",
-    title: "Exterior Facade Inspection — Hargrove Building A",
+    title: "Exterior Facade Inspection : Hargrove Building A",
     templateId: "site-inspection",
     status: "in-review",
     priority: "high",
@@ -84,13 +84,13 @@ export const siteInspectionSeedData: SeedCaseData = {
     updatedAt: "2024-11-06T16:45:00Z",
     owner: "Alex Reyes",
     subject: "Hargrove Commercial Properties",
-    unit: "Building A — 1140 Eastside Blvd, Unit Campus",
+    unit: "Building A : 1140 Eastside Blvd, Unit Campus",
   },
   evidence: [
     {
       id: "siev-001",
       type: "document",
-      name: "Inspection Brief — Hargrove Building A.pdf",
+      name: "Inspection Brief : Hargrove Building A.pdf",
       uploadedBy: "Client Portal (Hargrove PM)",
       uploadedAt: "2024-11-04T08:00:00Z",
       description:
@@ -100,7 +100,7 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-002",
       type: "document",
-      name: "Inspection Checklist — Exterior Envelope.pdf",
+      name: "Inspection Checklist : Exterior Envelope.pdf",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T09:30:00Z",
       description:
@@ -110,7 +110,7 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-003",
       type: "image",
-      name: "Photo 01 — Roof Flashing North Parapet.jpg",
+      name: "Photo 01 : Roof Flashing North Parapet.jpg",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T10:15:00Z",
       description:
@@ -120,7 +120,7 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-004",
       type: "image",
-      name: "Photo 02 — Level 2 Spandrel Crack Detail.jpg",
+      name: "Photo 02 : Level 2 Spandrel Crack Detail.jpg",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T10:48:00Z",
       description:
@@ -130,7 +130,7 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-005",
       type: "image",
-      name: "Photo 03 — Southeast Corner Overview.jpg",
+      name: "Photo 03 : Southeast Corner Overview.jpg",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T11:20:00Z",
       description:
@@ -140,17 +140,17 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-006",
       type: "note",
-      name: "Inspector Field Note — Water Intrusion SE Corner",
+      name: "Inspector Field Note : Water Intrusion SE Corner",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T11:35:00Z",
       description:
-        "Field note: probed wall surface at staining zone with moisture meter — reading 32% at 25mm depth, significantly above 16% baseline for dry masonry. Suggests active or recent moisture infiltration. No interior access available for this visit but recommend interior ceiling check on Level 1 northeast.",
+        "Field note: probed wall surface at staining zone with moisture meter : reading 32% at 25mm depth, significantly above 16% baseline for dry masonry. Suggests active or recent moisture infiltration. No interior access available for this visit but recommend interior ceiling check on Level 1 northeast.",
       mimeType: "text/plain",
     },
     {
       id: "siev-007",
       type: "image",
-      name: "Photo 04 — Main Entry Trip Hazard.jpg",
+      name: "Photo 04 : Main Entry Trip Hazard.jpg",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T12:05:00Z",
       description:
@@ -160,7 +160,7 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-008",
       type: "note",
-      name: "Supervisor Review Note — A. Chen",
+      name: "Supervisor Review Note : A. Chen",
       uploadedBy: "A. Chen (senior inspector)",
       uploadedAt: "2024-11-06T16:45:00Z",
       description:
@@ -176,7 +176,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       siteSummary: {
         type: "text",
         content:
-          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2024 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the main building entry threshold. Overall site condition is rated Elevated — no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
+          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2024 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the main building entry threshold. Overall site condition is rated Elevated : no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
       },
       siteInfo: {
         type: "unit-info",
@@ -200,7 +200,7 @@ export const siteInspectionSeedData: SeedCaseData = {
           { time: "2024-11-05 10:15", event: "North parapet flashing deficiency identified and photographed" },
           { time: "2024-11-05 10:48", event: "Level 2 spandrel crack documented; tagged for structural review" },
           { time: "2024-11-05 11:20", event: "Southeast corner water staining photographed and probed" },
-          { time: "2024-11-05 11:35", event: "Field note recorded — moisture reading 32% at SE staining zone" },
+          { time: "2024-11-05 11:35", event: "Field note recorded : moisture reading 32% at SE staining zone" },
           { time: "2024-11-05 12:05", event: "Main entry trip hazard measured and photographed; building maintenance notified" },
           { time: "2024-11-05 13:00", event: "On-site inspection concluded; all evidence uploaded to case portal" },
           { time: "2024-11-06 16:45", event: "Senior inspector A. Chen reviews findings and adds supervisory note" },
@@ -209,23 +209,23 @@ export const siteInspectionSeedData: SeedCaseData = {
       findings: {
         type: "list",
         items: [
-          "Roof flashing failure at north parapet — metal cap flashing lifted 40mm, sealant fully failed over approx. 4 linear feet. Active water ingress channel under wet conditions.",
-          "Diagonal masonry crack on Level 2 spandrel panel (Col C–D), 14-inch length, 3mm width. Pattern suggests differential settlement or thermal movement — structural engineer review required.",
+          "Roof flashing failure at north parapet : metal cap flashing lifted 40mm, sealant fully failed over approx. 4 linear feet. Active water ingress channel under wet conditions.",
+          "Diagonal masonry crack on Level 2 spandrel panel (Col C–D), 14-inch length, 3mm width. Pattern suggests differential settlement or thermal movement : structural engineer review required.",
           "Water intrusion staining and efflorescence on SE facade face, approx. 6 sq ft. Moisture probe reading 32% at 25mm depth. Consistent with Level 1 window head flashing failure.",
-          "Trip hazard at main building entry — heaved concrete lip 40–42mm, likely root pressure. ADA non-compliant. Interim hazard marking in place by building maintenance.",
+          "Trip hazard at main building entry : heaved concrete lip 40–42mm, likely root pressure. ADA non-compliant. Interim hazard marking in place by building maintenance.",
           "47 of 52 checklist line items satisfactory; 5 items flagged. No roof drainage obstructions, no window seal failures beyond SE corner, no ground floor structural cracking.",
         ],
       },
       structuralObservations: {
         type: "text",
         content:
-          "The Level 2 spandrel crack is the primary structural concern noted in this inspection. The diagonal crack pattern (30 degrees from vertical) is more consistent with shear movement than pure shrinkage, and may indicate localized settlement or lateral thermal movement at the building's third-floor cantilever junction. No corresponding interior cracking was observed (interior access unavailable during this visit). The crack has not been previously repaired, suggesting it either appeared or was not documented in prior inspections. A licensed structural engineer should assess the crack and the surrounding masonry bay before next winter loading. All other observable structural elements — foundation perimeter, ground floor lintels, column lines — appeared sound and consistent with expected performance for a 1998 masonry-frame building.",
+          "The Level 2 spandrel crack is the primary structural concern noted in this inspection. The diagonal crack pattern (30 degrees from vertical) is more consistent with shear movement than pure shrinkage, and may indicate localized settlement or lateral thermal movement at the building's third-floor cantilever junction. No corresponding interior cracking was observed (interior access unavailable during this visit). The crack has not been previously repaired, suggesting it either appeared or was not documented in prior inspections. A licensed structural engineer should assess the crack and the surrounding masonry bay before next winter loading. All other observable structural elements : foundation perimeter, ground floor lintels, column lines : appeared sound and consistent with expected performance for a 1998 masonry-frame building.",
       },
       safetyHazards: {
         type: "list",
         items: [
-          "Main entry trip hazard (40–42mm heaved concrete threshold) — ADA non-compliant, elevated fall risk for pedestrian traffic. Requires interim cones/signage immediately and permanent repair within 5 business days per Hargrove liability policy.",
-          "Lifted roof flashing — secondary fall/access risk for any rooftop maintenance personnel until repair is completed. Recommend flagging with roof access log note.",
+          "Main entry trip hazard (40–42mm heaved concrete threshold) : ADA non-compliant, elevated fall risk for pedestrian traffic. Requires interim cones/signage immediately and permanent repair within 5 business days per Hargrove liability policy.",
+          "Lifted roof flashing : secondary fall/access risk for any rooftop maintenance personnel until repair is completed. Recommend flagging with roof access log note.",
         ],
       },
       recommendedActions: {
@@ -245,7 +245,7 @@ export const siteInspectionSeedData: SeedCaseData = {
           },
           {
             action:
-              "Repair main entry threshold — grind or re-pour heaved concrete section to achieve flush ≤6mm transition. Install interim hazard signage within 24 hours.",
+              "Repair main entry threshold : grind or re-pour heaved concrete section to achieve flush ≤6mm transition. Install interim hazard signage within 24 hours.",
             owner: "Building Maintenance",
             due: "2024-11-08",
           },
@@ -266,7 +266,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       inspectorNotes: {
         type: "text",
         content:
-          "Building overall presents well for its age and use class. The four flagged items are consistent with a 26-year-old masonry exterior that has had regular maintenance but may have had a gap in envelope-specific inspection coverage. Recommend establishing an annual exterior inspection cycle going forward. The spandrel crack warrants priority attention but does not in my assessment indicate imminent structural risk — the building is functioning normally and tenants should not be alarmed. If the structural engineer assessment identifies more extensive movement, a follow-up report will be filed. Note: south and west facades could not be fully assessed due to active scaffolding by adjacent site; a partial re-inspection is recommended once scaffolding is cleared (estimated Q1 2025).",
+          "Building overall presents well for its age and use class. The four flagged items are consistent with a 26-year-old masonry exterior that has had regular maintenance but may have had a gap in envelope-specific inspection coverage. Recommend establishing an annual exterior inspection cycle going forward. The spandrel crack warrants priority attention but does not in my assessment indicate imminent structural risk : the building is functioning normally and tenants should not be alarmed. If the structural engineer assessment identifies more extensive movement, a follow-up report will be filed. Note: south and west facades could not be fully assessed due to active scaffolding by adjacent site; a partial re-inspection is recommended once scaffolding is cleared (estimated Q1 2025).",
       },
     },
     provenance: {

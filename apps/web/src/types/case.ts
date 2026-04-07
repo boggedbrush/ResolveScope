@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   ResolveScope — Template-driven case types
+   ResolveScope : Template-driven case types
    ═══════════════════════════════════════════ */
 
 export type CaseStatus = "open" | "in-review" | "approved" | "exported";
@@ -37,7 +37,7 @@ export interface CaseMeta {
   templateId: string;
   status: CaseStatus;
   priority: Priority;
-  /** Severity value — valid options defined by the active template */
+  /** Severity value : valid options defined by the active template */
   severity: string;
   createdAt: string;
   updatedAt: string;
@@ -193,7 +193,7 @@ export interface SpatialMarker {
 export interface SeedCaseData {
   caseMeta: CaseMeta;
   evidence: EvidenceItem[];
-  /** Pre-seeded extraction — runAt is filled in at runtime */
+  /** Pre-seeded extraction : runAt is filled in at runtime */
   extraction: ExtractionResult;
   initialReview: ReviewState;
   reviewer: string;

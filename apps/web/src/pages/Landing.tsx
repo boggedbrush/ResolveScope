@@ -42,24 +42,24 @@ const CAPABILITIES = [
 ];
 
 const CAP_ICONS = [
-  /* 01 Case workspace — stacked layers */
+  /* 01 Case workspace: stacked layers */
   <svg key="layers" width="20" height="20" viewBox="0 0 20 20" fill="none">
     <rect x="3" y="13.5" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.35" />
     <rect x="3" y="8.75" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.65" />
     <rect x="3" y="4" width="14" height="2.5" rx="1.25" fill="currentColor" />
   </svg>,
-  /* 02 AI extraction — radiant spark */
+  /* 02 AI extraction: radiant spark */
   <svg key="spark" width="20" height="20" viewBox="0 0 20 20" fill="none">
     <path d="M10 2.5v3M10 14.5v3M2.5 10h3M14.5 10h3M4.7 4.7l2.12 2.12M13.18 13.18l2.12 2.12M15.3 4.7l-2.12 2.12M6.82 13.18l-2.12 2.12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     <circle cx="10" cy="10" r="2.25" fill="currentColor" />
   </svg>,
-  /* 03 Human review — inspector's eye */
+  /* 03 Human review: inspector's eye */
   <svg key="eye" width="20" height="20" viewBox="0 0 20 20" fill="none">
     <path d="M2 10c2.5-4.5 5-6.5 8-6.5s5.5 2 8 6.5c-2.5 4.5-5 6.5-8 6.5s-5.5-2-8-6.5z" stroke="currentColor" strokeWidth="1.5" />
     <circle cx="10" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5" />
     <circle cx="10" cy="10" r="1" fill="currentColor" />
   </svg>,
-  /* 04 Export and reporting — document with outbound arrow */
+  /* 04 Export and reporting: document with outbound arrow */
   <svg key="export" width="20" height="20" viewBox="0 0 20 20" fill="none">
     <path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     <path d="M12 4h4v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -206,7 +206,7 @@ export function Landing() {
             </h1>
             <p className="body-lg hero__subtitle">
               ResolveScope turns scattered documents, photos, and field notes
-              into structured case files — reviewed, approved, and ready to act
+              into structured case files: reviewed, approved, and ready to act
               on.
             </p>
             <div className="hero__actions">
@@ -246,7 +246,7 @@ export function Landing() {
               <ul className="proof__evidence-list">
                 <li className="proof__evidence-item">
                   <span className="proof__file-badge">PDF</span>
-                  Incident report — 2024-03-12.pdf
+                  Incident report: 2024-03-12.pdf
                 </li>
                 <li className="proof__evidence-item">
                   <span className="proof__file-badge proof__file-badge--img">IMG</span>
@@ -358,7 +358,7 @@ export function Landing() {
               </h2>
               <p className="spatial__overlay-body">
                 Flat photos miss what matters. Annotations placed directly on
-                assets, structures, and environments — so reviewers see the
+                assets, structures, and environments: so reviewers see the
                 full picture.
               </p>
             </div>
@@ -379,8 +379,8 @@ export function Landing() {
               Built for <em>real workflows</em>
             </h2>
             <p className="body-lg">
-              ResolveScope is designed around a structured evidence pipeline —
-              intake, extraction, review, and export — with a system architecture
+              ResolveScope is designed around a structured evidence pipeline:
+              intake, extraction, review, and export: with a system architecture
               built to support it end to end.
             </p>
           </div>

@@ -1,7 +1,7 @@
 import type { SeedCaseData, ReviewState } from "../../types/case";
 
 /* ═══════════════════════════════════════════
-   Seeded demo case — Auto Claim Review
+   Seeded demo case : Auto Claim Review
    Scenario: low-speed parking-lot collision,
    front-right bumper scrape + cracked headlight
    ═══════════════════════════════════════════ */
@@ -22,7 +22,7 @@ export const autoClaimSeedData: SeedCaseData = {
   reviewer: "Alex Chen",
   caseMeta: {
     id: "CLM-2024-00847",
-    title: "Parking Lot Collision — Rivera Vehicle",
+    title: "Parking Lot Collision : Rivera Vehicle",
     templateId: "auto-claim",
     status: "in-review",
     priority: "medium",
@@ -37,7 +37,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-001",
       type: "document",
-      name: "Intake Form — CLM-2024-00847.pdf",
+      name: "Intake Form : CLM-2024-00847.pdf",
       uploadedBy: "Maria Rivera (claimant portal)",
       uploadedAt: "2024-11-12T09:14:00Z",
       description:
@@ -47,7 +47,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-002",
       type: "image",
-      name: "Damage Photo 1 — Front Bumper.jpg",
+      name: "Damage Photo 1 : Front Bumper.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
       uploadedAt: "2024-11-12T09:17:00Z",
       description:
@@ -57,7 +57,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-003",
       type: "image",
-      name: "Damage Photo 2 — Headlight Assembly.jpg",
+      name: "Damage Photo 2 : Headlight Assembly.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
       uploadedAt: "2024-11-12T09:18:00Z",
       description:
@@ -67,7 +67,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-004",
       type: "image",
-      name: "Scene Photo — Parking Lot Overview.jpg",
+      name: "Scene Photo : Parking Lot Overview.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
       uploadedAt: "2024-11-12T09:20:00Z",
       description:
@@ -77,7 +77,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-005",
       type: "note",
-      name: "Adjuster Note — Initial Review",
+      name: "Adjuster Note : Initial Review",
       uploadedBy: "Alex Chen (adjuster)",
       uploadedAt: "2024-11-13T10:05:00Z",
       description:
@@ -87,7 +87,7 @@ export const autoClaimSeedData: SeedCaseData = {
     {
       id: "ev-006",
       type: "document",
-      name: "Repair Estimate — AutoBody Plus.pdf",
+      name: "Repair Estimate : AutoBody Plus.pdf",
       uploadedBy: "Alex Chen (adjuster)",
       uploadedAt: "2024-11-13T14:32:00Z",
       description:
@@ -107,7 +107,7 @@ export const autoClaimSeedData: SeedCaseData = {
       timeline: {
         type: "timeline",
         entries: [
-          { time: "2024-11-11 14:15", event: "Incident occurs — Westfield Plaza Lot C" },
+          { time: "2024-11-11 14:15", event: "Incident occurs : Westfield Plaza Lot C" },
           { time: "2024-11-11 14:45", event: "Claimant discovers damage upon returning to vehicle" },
           { time: "2024-11-11 15:02", event: "Claimant photographs damage on-site" },
           { time: "2024-11-12 09:14", event: "Claim submitted via claimant portal" },
@@ -145,14 +145,14 @@ export const autoClaimSeedData: SeedCaseData = {
       severityAssessment: {
         type: "text",
         content:
-          "Moderate — cosmetic damage only. No structural, mechanical, or safety systems affected. Repair cost within typical range for low-speed parking contact. No rental authorization required based on vehicle operability.",
+          "Moderate : cosmetic damage only. No structural, mechanical, or safety systems affected. Repair cost within typical range for low-speed parking contact. No rental authorization required based on vehicle operability.",
       },
       recommendedNextSteps: {
         type: "ordered-list",
         items: [
           "Approve repair estimate from AutoBody Plus ($1,070) subject to applicable $500 deductible.",
           "Confirm claimant's preferred repair scheduling and arrange direct payment to shop.",
-          "Close unwitnessed-party portion of claim — no subrogation avenue identified.",
+          "Close unwitnessed-party portion of claim : no subrogation avenue identified.",
           "Issue settlement summary to claimant within 5 business days per policy SLA.",
         ],
       },
