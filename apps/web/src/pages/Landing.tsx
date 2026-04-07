@@ -194,9 +194,11 @@ export function Landing() {
 
       {/* ── Hero ────────────────────────── */}
       <section className="hero">
+        <div className="hero__banner-wrap">
+          <CodexBanner />
+        </div>
         <div className="container hero__grid">
           <div>
-            <CodexBanner />
             <h1 className="display-xl">
               AI case management.
               <br />
@@ -212,10 +214,10 @@ export function Landing() {
                 Try the Demo <ArrowIcon />
               </Link>
               <a
-                href="https://github.com/boggedbrush/ResolveScope"
+                href="https://github.com/boggedbrush/ResolveScope?ref=resolvescope.pages.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn--github"
+                className="btn btn--github-dark"
               >
                 <GitHubIcon /> Explore the Repo
               </a>
@@ -406,10 +408,10 @@ export function Landing() {
               Try the Demo <ArrowIcon />
             </Link>
             <a
-              href="https://github.com/boggedbrush/ResolveScope"
+              href="https://github.com/boggedbrush/ResolveScope?ref=resolvescope.pages.dev"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn--github"
+              className="btn btn--github-dark"
             >
               <GitHubIcon /> Explore the Repo
             </a>
@@ -429,7 +431,7 @@ export function Landing() {
           <ul className="footer__links">
             <li>
               <a
-                href="https://github.com/boggedbrush/ResolveScope"
+                href="https://github.com/boggedbrush/ResolveScope?ref=resolvescope.pages.dev"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -441,7 +443,7 @@ export function Landing() {
             </li>
             <li>
               <a
-                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/how-i-built-this.md"
+                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/how-i-built-this.md?ref=resolvescope.pages.dev"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -450,7 +452,7 @@ export function Landing() {
             </li>
             <li>
               <a
-                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/prompting-guide.md"
+                href="https://github.com/boggedbrush/ResolveScope/blob/main/docs/prompting-guide.md?ref=resolvescope.pages.dev"
                 target="_blank"
                 rel="noopener noreferrer"
               >
