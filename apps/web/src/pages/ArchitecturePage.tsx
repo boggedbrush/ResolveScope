@@ -514,7 +514,7 @@ export function ArchitecturePage() {
             <h2 className="display-lg arch-infra__heading">
               Cloudflare-native, <em>edge-first</em>
             </h2>
-            <p className="body-lg body-lg--light arch-section-sub">
+            <p className="body-lg arch-section-sub">
               ResolveScope is designed around Cloudflare's edge platform — stateless
               compute, distributed storage, and coordinated state running close to users.
             </p>
