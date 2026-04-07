@@ -62,11 +62,11 @@ export function CaseWorkspace() {
               <dt>Priority</dt>
               <dd><span className="badge badge--priority-high">High</span></dd>
               <dt>Domain</dt>
-              <dd>:</dd>
+              <dd>—</dd>
               <dt>Created</dt>
-              <dd>:</dd>
+              <dd>—</dd>
               <dt>Owner</dt>
-              <dd>:</dd>
+              <dd>—</dd>
             </dl>
           </section>
 

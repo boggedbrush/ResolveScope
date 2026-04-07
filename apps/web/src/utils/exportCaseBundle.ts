@@ -95,7 +95,7 @@ function renderSectionHtml(data: SectionData): string {
         .join("")}</tbody></table>`;
     case "parties":
       return `<table><thead><tr><th>Role</th><th>Name</th><th>Contact</th></tr></thead><tbody>${data.parties
-        .map((p) => `<tr><td>${p.role}</td><td>${p.name}</td><td>${p.contact ?? ":"}</td></tr>`)
+        .map((p) => `<tr><td>${p.role}</td><td>${p.name}</td><td>${p.contact ?? "—"}</td></tr>`)
         .join("")}</tbody></table>`;
     case "unit-info":
       return `<dl class="dl-grid">${data.fields
@@ -198,13 +198,13 @@ function buildSpatialMarkersSection(
       const evidenceNames = m.relatedEvidenceIds
         .map((id) => evidence.find((e) => e.id === id)?.name ?? id)
         .join(", ");
-      const status = m.status ? STATUS_LABELS[m.status] : ":";
+      const status = m.status ? STATUS_LABELS[m.status] : "—";
       return `<tr>
         <td><strong>${m.label}</strong></td>
         <td>${SEVERITY_LABELS[m.severity]}</td>
         <td>${status}</td>
         <td>${m.note}</td>
-        <td>${evidenceNames || ":"}</td>
+        <td>${evidenceNames || "—"}</td>
       </tr>`;
     })
     .join("");
