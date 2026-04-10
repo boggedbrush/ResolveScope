@@ -1,4 +1,12 @@
-import { useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
+} from "react";
 import type { SpatialMarker, EvidenceItem } from "../../types/case";
 
 interface Props {
@@ -60,6 +68,30 @@ const SCENE_META: Record<string, SceneMeta> = {
 
 function toneClassName(tone: SceneTone) {
   return `spatial-panel--${tone}`;
+}
+
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 2.35;
+const ZOOM_STEP = 0.18;
+const BASE_DRAG_ALLOWANCE = 28;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function formatAnchorNumber(index: number) {
+  return String(index + 1).padStart(2, "0");
+}
+
+function formatCount(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function formatSectionLabel(sectionKey?: string) {
+  if (!sectionKey) return "Supporting evidence";
+  return sectionKey
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^./, (match) => match.toUpperCase());
 }
 
 function AutoClaimScene() {
@@ -137,6 +169,10 @@ function AutoClaimScene() {
         <polygon points="390,255 585,328 470,388 276,314" fill="url(#auto-car-top)" />
         <polygon points="276,314 276,420 470,494 470,388" fill="url(#auto-car-side)" />
         <polygon points="470,388 470,494 585,434 585,328" fill="#8b847d" />
+        <path d="M286 414 C 302 390, 345 390, 368 414" fill="none" stroke="#645d56" strokeWidth="8" strokeLinecap="round" opacity="0.72" />
+        <path d="M414 465 C 430 438, 478 441, 496 469" fill="none" stroke="#645d56" strokeWidth="8" strokeLinecap="round" opacity="0.72" />
+        <polygon points="280,401 470,471 470,488 280,419" fill="#5e5750" opacity="0.55" />
+        <path d="M300 374 L 468 437" stroke="#cfc7bd" strokeWidth="4" strokeLinecap="round" opacity="0.34" />
         <polygon points="331,283 465,333 390,372 257,321" fill="#87a7c2" opacity="0.82" />
         <polygon points="394,307 506,349 442,382 331,340" fill="#7394ad" opacity="0.75" />
         <polygon points="516,354 553,367 491,400 455,386" fill="#d2c9be" />
@@ -331,6 +367,12 @@ function SiteInspectionScene() {
         <polygon points="804,282 936,212 936,460 804,534" fill="url(#site-side)" />
         <polygon points="430,154 562,86 936,212 804,282" fill="#ede8e1" />
         <polygon points="430,154 430,406 384,430 384,177" fill="#8d867d" opacity="0.45" />
+        <path d="M430 242 L 804 370" stroke="#beb7ae" strokeWidth="3" opacity="0.55" />
+        <path d="M430 322 L 804 450" stroke="#b4ada5" strokeWidth="3" opacity="0.5" />
+        <path d="M548 110 L 548 446" stroke="#c8c1b8" strokeWidth="2.5" opacity="0.24" />
+        <path d="M665 150 L 665 486" stroke="#c8c1b8" strokeWidth="2.5" opacity="0.24" />
+        <polygon points="824,270 870,252 870,315 824,334" fill="#7d92a4" opacity="0.55" />
+        <polygon points="824,354 870,336 870,399 824,418" fill="#6f8598" opacity="0.48" />
         <rect x="560" y="336" width="102" height="162" rx="10" fill="#8f867d" />
         <rect x="575" y="350" width="35" height="132" rx="6" fill="#70675f" />
         <rect x="614" y="350" width="35" height="132" rx="6" fill="#70675f" />
@@ -343,8 +385,11 @@ function SiteInspectionScene() {
           [476, 364], [688, 436]
         ].map(([x, y], index) => (
           <g key={`${x}-${y}-${index}`}>
+            <polygon points={`${x - 8},${y + 10} ${x + 66},${y + 36} ${x + 66},${y + 100} ${x - 8},${y + 74}`} fill="#4c5e73" opacity="0.18" />
             <polygon points={`${x},${y} ${x + 74},${y + 26} ${x + 74},${y + 86} ${x},${y + 60}`} fill="url(#site-window)" opacity="0.9" />
             <polygon points={`${x},${y} ${x + 74},${y + 26} ${x + 110},${y + 8} ${x + 36},${y - 18}`} fill="#cbd8e2" opacity="0.55" />
+            <line x1={x + 37} y1={y + 12} x2={x + 37} y2={y + 74} stroke="#d7e2ec" strokeOpacity="0.42" strokeWidth="2.5" />
+            <line x1={x + 5} y1={y + 30} x2={x + 69} y2={y + 52} stroke="#d7e2ec" strokeOpacity="0.26" strokeWidth="2" />
           </g>
         ))}
       </g>
@@ -376,12 +421,49 @@ function SceneIllustration({ templateId }: { templateId: string }) {
 
 export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const [selectedId, setSelectedId] = useState<string>(markers[0]?.id ?? "");
+  const [zoom, setZoom] = useState(MIN_ZOOM);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const sceneViewportRef = useRef<HTMLDivElement | null>(null);
+  const sceneSurfaceRef = useRef<HTMLDivElement | null>(null);
+  const dragStateRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+  } | null>(null);
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
+
+  useEffect(() => {
+    if (!markers.some((marker) => marker.id === selectedId)) {
+      setSelectedId(markers[0]?.id ?? "");
+    }
+  }, [markers, selectedId]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === sceneSurfaceRef.current);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    handleFullscreenChange();
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   const selectedMarker = useMemo(
     () => markers.find((m) => m.id === selectedId) ?? markers[0] ?? null,
     [markers, selectedId]
   );
+  const selectedMarkerIndex = selectedMarker
+    ? markers.findIndex((marker) => marker.id === selectedMarker.id)
+    : -1;
 
   const relatedEvidence = useMemo(() => {
     if (!selectedMarker) return [] as EvidenceItem[];
@@ -393,6 +475,154 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const openCount = markers.filter(
     (m) => !m.status || m.status === "open" || m.status === "needs-review"
   ).length;
+
+  const clampPan = useCallback((nextPan: { x: number; y: number }, nextZoom = zoom) => {
+    const rect = sceneViewportRef.current?.getBoundingClientRect();
+
+    if (!rect) return nextPan;
+
+    const maxX = Math.max(((nextZoom - MIN_ZOOM) * rect.width) / 2, BASE_DRAG_ALLOWANCE);
+    const maxY = Math.max(((nextZoom - MIN_ZOOM) * rect.height) / 2, BASE_DRAG_ALLOWANCE);
+
+    return {
+      x: clamp(nextPan.x, -maxX, maxX),
+      y: clamp(nextPan.y, -maxY, maxY),
+    };
+  }, [zoom]);
+
+  const handleZoomChange = useCallback((nextZoom: number, origin = { x: 0, y: 0 }) => {
+    const safeZoom = clamp(nextZoom, MIN_ZOOM, MAX_ZOOM);
+
+    setZoom((currentZoom) => {
+      const ratio = safeZoom / currentZoom;
+
+      setPan((currentPan) =>
+        clampPan(
+          {
+            x: origin.x - (origin.x - currentPan.x) * ratio,
+            y: origin.y - (origin.y - currentPan.y) * ratio,
+          },
+          safeZoom
+        )
+      );
+
+      return safeZoom;
+    });
+  }, [clampPan]);
+
+  const handleResetView = useCallback(() => {
+    setZoom(MIN_ZOOM);
+    setPan({ x: 0, y: 0 });
+  }, []);
+
+  const focusMarker = useCallback((marker: SpatialMarker, requestedZoom = Math.max(zoom, 1.18)) => {
+    const rect = sceneViewportRef.current?.getBoundingClientRect();
+    const safeZoom = clamp(requestedZoom, MIN_ZOOM, MAX_ZOOM);
+
+    setSelectedId(marker.id);
+
+    if (!rect) {
+      setZoom(safeZoom);
+      return;
+    }
+
+    const baseX = (marker.x / 100 - 0.5) * rect.width;
+    const baseY = (marker.y / 100 - 0.5) * rect.height;
+
+    setZoom(safeZoom);
+    setPan(
+      clampPan(
+        {
+          x: -baseX * safeZoom,
+          y: -baseY * safeZoom,
+        },
+        safeZoom
+      )
+    );
+  }, [clampPan, zoom]);
+
+  const handleWheel = useCallback((event: ReactWheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    const rect = sceneViewportRef.current?.getBoundingClientRect();
+    const delta = event.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+
+    if (!rect) {
+      handleZoomChange(zoom + delta);
+      return;
+    }
+
+    handleZoomChange(zoom + delta, {
+      x: event.clientX - rect.left - rect.width / 2,
+      y: event.clientY - rect.top - rect.height / 2,
+    });
+  }, [handleZoomChange, zoom]);
+
+  const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!event.isPrimary || event.button !== 0) return;
+
+    const target = event.target as HTMLElement;
+    if (target.closest("button")) return;
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: pan.x,
+      originY: pan.y,
+    };
+
+    sceneViewportRef.current?.setPointerCapture(event.pointerId);
+    setIsDragging(true);
+  }, [pan.x, pan.y]);
+
+  const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dragStateRef.current || dragStateRef.current.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - dragStateRef.current.startX;
+    const deltaY = event.clientY - dragStateRef.current.startY;
+
+    setPan(
+      clampPan(
+        {
+          x: dragStateRef.current.originX + deltaX,
+          y: dragStateRef.current.originY + deltaY,
+        },
+        zoom
+      )
+    );
+  }, [clampPan, zoom]);
+
+  const handlePointerUp = useCallback((event?: ReactPointerEvent<HTMLDivElement>) => {
+    if (event && dragStateRef.current?.pointerId === event.pointerId) {
+      sceneViewportRef.current?.releasePointerCapture(event.pointerId);
+    }
+
+    dragStateRef.current = null;
+    setIsDragging(false);
+  }, []);
+
+  const handleToggleFullscreen = useCallback(async () => {
+    if (!sceneSurfaceRef.current) return;
+
+    if (document.fullscreenElement === sceneSurfaceRef.current) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    await sceneSurfaceRef.current.requestFullscreen();
+  }, []);
+
+  const tilt = useMemo(
+    () => ({
+      x: clamp(-pan.y / 22, -7, 7),
+      y: clamp(pan.x / 22, -7, 7),
+    }),
+    [pan.x, pan.y]
+  );
+
+  const activeAnchorNumber = selectedMarkerIndex >= 0 ? formatAnchorNumber(selectedMarkerIndex) : "00";
+  const totalAnchorCount = formatCount(markers.length);
 
   return (
     <section
@@ -423,10 +653,53 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
       <div className="spatial-panel__body">
         <div className="spatial-panel__scene-wrap">
-          <div className="spatial-panel__scene-surface">
+          <div
+            className="spatial-panel__scene-surface"
+            ref={sceneSurfaceRef}
+          >
             <div className="spatial-scene__hud">
               <span className="spatial-scene__hud-badge">Spatial</span>
               <span className="spatial-scene__hud-context">{meta.metrics.join(" · ")}</span>
+            </div>
+
+            <div className="spatial-scene__controls">
+              <div className="spatial-scene__interaction-pill">
+                Drag to inspect · scroll to zoom · use the strip below to jump between anchors
+              </div>
+
+              <div className="spatial-scene__control-group">
+                <button
+                  type="button"
+                  className="spatial-scene__control"
+                  onClick={() => handleZoomChange(zoom - ZOOM_STEP)}
+                  aria-label="Zoom out"
+                >
+                  −
+                </button>
+                <span className="spatial-scene__zoom-readout">{Math.round(zoom * 100)}%</span>
+                <button
+                  type="button"
+                  className="spatial-scene__control"
+                  onClick={() => handleZoomChange(zoom + ZOOM_STEP)}
+                  aria-label="Zoom in"
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  className="spatial-scene__control spatial-scene__control--label"
+                  onClick={handleResetView}
+                >
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  className="spatial-scene__control spatial-scene__control--label"
+                  onClick={handleToggleFullscreen}
+                >
+                  {isFullscreen ? "Collapse" : "Expand"}
+                </button>
+              </div>
             </div>
 
             <div className="spatial-scene__metrics">
@@ -437,28 +710,72 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
               ))}
             </div>
 
-            <div className="spatial-scene__visual">
-              <SceneIllustration templateId={templateId} />
+            {selectedMarker && (
+              <div className="spatial-scene__focus-panel">
+                <div className="spatial-scene__focus-top">
+                  <span className="spatial-scene__focus-anchor">
+                    Anchor {activeAnchorNumber} / {totalAnchorCount}
+                  </span>
+                  <span className={`spatial-scene__focus-severity spatial-scene__focus-severity--${selectedMarker.severity}`}>
+                    {SEVERITY_LABELS[selectedMarker.severity]}
+                  </span>
+                </div>
+                <strong className="spatial-scene__focus-title">{selectedMarker.label}</strong>
+                <span className="spatial-scene__focus-meta">
+                  {formatSectionLabel(selectedMarker.relatedExtractionSectionKey)} · {relatedEvidence.length} linked {relatedEvidence.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+            )}
 
-              {markers.map((marker) => (
-                <button
-                  key={marker.id}
-                  className={[
-                    "spatial-marker",
-                    `spatial-marker--${marker.severity}`,
-                    selectedMarker?.id === marker.id ? "spatial-marker--active" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
-                  onClick={() => setSelectedId(marker.id)}
-                  aria-label={`${marker.label}: ${SEVERITY_LABELS[marker.severity]} severity`}
-                  aria-pressed={selectedMarker?.id === marker.id}
+            <div className="spatial-scene__visual">
+              <div
+                ref={sceneViewportRef}
+                className={[
+                  "spatial-scene__viewport",
+                  isDragging ? "spatial-scene__viewport--dragging" : "",
+                ].filter(Boolean).join(" ")}
+                onWheel={handleWheel}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                onDoubleClick={handleResetView}
+              >
+                <div
+                  className="spatial-scene__transform"
+                  style={{
+                    transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom}) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                  }}
                 >
-                  <span className="spatial-marker__pulse" aria-hidden="true" />
-                  <span className="spatial-marker__dot" aria-hidden="true" />
-                </button>
-              ))}
+                  <SceneIllustration templateId={templateId} />
+
+                  {markers.map((marker, index) => (
+                    <button
+                      key={marker.id}
+                      type="button"
+                      className={[
+                        "spatial-marker",
+                        `spatial-marker--${marker.severity}`,
+                        selectedMarker?.id === marker.id ? "spatial-marker--active" : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setSelectedId(marker.id);
+                      }}
+                      aria-label={`${marker.label}: ${SEVERITY_LABELS[marker.severity]} severity`}
+                      aria-pressed={selectedMarker?.id === marker.id}
+                    >
+                      <span className="spatial-marker__pulse" aria-hidden="true" />
+                      <span className="spatial-marker__dot" aria-hidden="true" />
+                      <span className="spatial-marker__index">{formatAnchorNumber(index)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -479,6 +796,38 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
               <h3 className="spatial-marker-detail__title">{selectedMarker.label}</h3>
               <p className="spatial-marker-detail__note">{selectedMarker.note}</p>
+
+              <div className="spatial-marker-detail__meta-grid">
+                <div className="spatial-marker-detail__meta-card">
+                  <span className="spatial-marker-detail__meta-label">Anchor</span>
+                  <strong>{activeAnchorNumber} / {totalAnchorCount}</strong>
+                </div>
+                <div className="spatial-marker-detail__meta-card">
+                  <span className="spatial-marker-detail__meta-label">Linked evidence</span>
+                  <strong>{relatedEvidence.length}</strong>
+                </div>
+                <div className="spatial-marker-detail__meta-card spatial-marker-detail__meta-card--wide">
+                  <span className="spatial-marker-detail__meta-label">Scene linkage</span>
+                  <strong>{formatSectionLabel(selectedMarker.relatedExtractionSectionKey)}</strong>
+                </div>
+              </div>
+
+              <div className="spatial-marker-detail__actions">
+                <button
+                  type="button"
+                  className="spatial-marker-detail__action spatial-marker-detail__action--primary"
+                  onClick={() => focusMarker(selectedMarker, Math.max(zoom, 1.2))}
+                >
+                  Center in scene
+                </button>
+                <button
+                  type="button"
+                  className="spatial-marker-detail__action"
+                  onClick={handleResetView}
+                >
+                  Reset camera
+                </button>
+              </div>
 
               {selectedMarker.relatedExtractionSectionKey && (
                 <div className="spatial-marker-detail__section-ref">
@@ -513,9 +862,10 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
       </div>
 
       <div className="spatial-panel__marker-index">
-        {markers.map((marker) => (
+        {markers.map((marker, index) => (
           <button
             key={marker.id}
+            type="button"
             className={[
               "spatial-index-item",
               `spatial-index-item--${marker.severity}`,
@@ -523,9 +873,9 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
             ]
               .filter(Boolean)
               .join(" ")}
-            onClick={() => setSelectedId(marker.id)}
+            onClick={() => focusMarker(marker)}
           >
-            <span className="spatial-index-item__dot" aria-hidden="true" />
+            <span className="spatial-index-item__number">{formatAnchorNumber(index)}</span>
             <span className="spatial-index-item__label">{marker.label}</span>
             {marker.status && (
               <span className={`spatial-index-item__status spatial-index-item__status--${marker.status}`}>
