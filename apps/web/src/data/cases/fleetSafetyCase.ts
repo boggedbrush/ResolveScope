@@ -1,4 +1,4 @@
-import type { SeedCaseData, ReviewState } from "../../types/case";
+import type { SeedCaseData, ReviewState, SpatialMarker } from "../../types/case";
 
 /* ═══════════════════════════════════════════
    Seeded demo case : Fleet Safety Incident
@@ -20,6 +20,57 @@ const initialReview: ReviewState = {
   },
 };
 
+const fleetSafetySpatialMarkers: SpatialMarker[] = [
+  {
+    id: "flt-001",
+    label: "Rear contact point",
+    x: 52,
+    y: 54,
+    severity: "high",
+    note:
+      "This anchor marks where Unit V-183 contacted the parked forklift counterweight. The impact stayed below structural thresholds, but it is the clearest spatial proof tying the bumper damage to the warehouse obstruction.",
+    relatedEvidenceIds: ["fev-002", "fev-005"],
+    relatedExtractionSectionKey: "findings",
+    status: "open",
+  },
+  {
+    id: "flt-002",
+    label: "Forklift exclusion-zone breach",
+    x: 60,
+    y: 47,
+    severity: "medium",
+    note:
+      "The forklift sat outside the painted exclusion zone, compressing the available reverse corridor. That placement turned a routine maneuver into a shared-fault safety event rather than a purely driver-caused strike.",
+    relatedEvidenceIds: ["fev-003", "fev-004"],
+    relatedExtractionSectionKey: "riskAssessment",
+    status: "needs-review",
+  },
+  {
+    id: "flt-003",
+    label: "Reverse path visibility gap",
+    x: 35,
+    y: 58,
+    severity: "medium",
+    note:
+      "The reverse line highlights how little margin remained once the unit entered the dock approach. Without a spotter or banksman, the driver had almost no recovery room after the distraction moment.",
+    relatedEvidenceIds: ["fev-003", "fev-006"],
+    relatedExtractionSectionKey: "timeline",
+    status: "open",
+  },
+  {
+    id: "flt-004",
+    label: "Tablet distraction event",
+    x: 25,
+    y: 30,
+    severity: "low",
+    note:
+      "Dashcam metadata places the in-cab tablet interaction eight seconds before impact. In the spatial replay, it reads as a workflow-control failure that sits upstream of the collision itself.",
+    relatedEvidenceIds: ["fev-006", "fev-001"],
+    relatedExtractionSectionKey: "correctiveActions",
+    status: "resolved",
+  },
+];
+
 export const fleetSafetySeedData: SeedCaseData = {
   reviewer: "Jordan Park",
   caseMeta: {
@@ -35,6 +86,7 @@ export const fleetSafetySeedData: SeedCaseData = {
     subject: "Darnell Hughes (Driver)",
     unit: "Unit V-183 : 2023 Ford Transit 350",
   },
+  spatialMarkers: fleetSafetySpatialMarkers,
   evidence: [
     {
       id: "fev-001",

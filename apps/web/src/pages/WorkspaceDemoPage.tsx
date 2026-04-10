@@ -223,6 +223,7 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
         <SpatialReviewPanel
           markers={demoState.spatialMarkers!}
           evidence={evidence}
+          templateId={seedData.caseMeta.templateId}
         />
       )}
 

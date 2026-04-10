@@ -1,4 +1,4 @@
-import type { SeedCaseData, ReviewState } from "../../types/case";
+import type { SeedCaseData, ReviewState, SpatialMarker } from "../../types/case";
 
 /* ═══════════════════════════════════════════
    Seeded demo case : Auto Claim Review
@@ -18,6 +18,57 @@ const initialReview: ReviewState = {
   },
 };
 
+const autoClaimSpatialMarkers: SpatialMarker[] = [
+  {
+    id: "acm-001",
+    label: "Primary bumper scrape",
+    x: 54,
+    y: 56,
+    severity: "high",
+    note:
+      "Front-right fascia shows the main lateral scrape and paint transfer. The impact geometry matches a glancing sweep rather than a direct head-on strike, supporting the low-speed parking lot contact narrative.",
+    relatedEvidenceIds: ["ev-002", "ev-004"],
+    relatedExtractionSectionKey: "damageObservations",
+    status: "open",
+  },
+  {
+    id: "acm-002",
+    label: "Headlight fracture zone",
+    x: 52,
+    y: 48,
+    severity: "medium",
+    note:
+      "The cracked headlight housing sits just above the primary scrape path, showing secondary damage concentrated at the corner radius. No adjacent panel deformation is visible, which keeps the severity in the cosmetic range.",
+    relatedEvidenceIds: ["ev-003", "ev-005"],
+    relatedExtractionSectionKey: "severityAssessment",
+    status: "needs-review",
+  },
+  {
+    id: "acm-003",
+    label: "Lot C contact corridor",
+    x: 28,
+    y: 63,
+    severity: "low",
+    note:
+      "Scene photography and the lot geometry indicate a shallow pass through the stall line rather than a wider turning collision. This spatial context helps explain the narrow damage footprint on the claimant vehicle.",
+    relatedEvidenceIds: ["ev-004", "ev-001"],
+    relatedExtractionSectionKey: "timeline",
+    status: "resolved",
+  },
+  {
+    id: "acm-004",
+    label: "Repair scope confirmation",
+    x: 76,
+    y: 31,
+    severity: "medium",
+    note:
+      "The estimate aligns to exactly what the scene and photos suggest: bumper fascia replacement, headlight assembly replacement, and paint blend work. No structural line items appear in the repair package.",
+    relatedEvidenceIds: ["ev-006", "ev-005"],
+    relatedExtractionSectionKey: "recommendedNextSteps",
+    status: "open",
+  },
+];
+
 export const autoClaimSeedData: SeedCaseData = {
   reviewer: "Alex Chen",
   caseMeta: {
@@ -33,6 +84,7 @@ export const autoClaimSeedData: SeedCaseData = {
     subject: "Maria Rivera",
     unit: "2021 Honda CR-V (Silver)",
   },
+  spatialMarkers: autoClaimSpatialMarkers,
   evidence: [
     {
       id: "ev-001",
