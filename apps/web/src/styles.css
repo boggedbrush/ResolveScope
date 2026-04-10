@@ -5450,6 +5450,80 @@ html[data-theme="light"] .spatial__zoom-btn:hover {
   display: block;
 }
 
+.spatial-scene__layered {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.spatial-scene__layered--auto {
+  background:
+    radial-gradient(circle at 52% 36%, rgba(255, 156, 95, 0.18), transparent 36%),
+    linear-gradient(145deg, #181311 0%, #241813 54%, #100d0b 100%);
+}
+
+.spatial-scene__canvas,
+.spatial-scene__canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.spatial-scene__canvas,
+.spatial-scene__scene-card {
+  pointer-events: none;
+}
+
+.spatial-scene__scene-card {
+  position: absolute;
+  max-width: 250px;
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(201, 153, 123, 0.22);
+  background: rgba(18, 14, 12, 0.84);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.spatial-scene__scene-card strong {
+  color: #fff1e5;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.spatial-scene__scene-card span {
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.spatial-scene__scene-card-kicker {
+  color: #d3a588;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.spatial-scene__scene-card--left {
+  top: 24px;
+  left: 24px;
+}
+
+.spatial-scene__scene-card--right {
+  top: 24px;
+  right: 24px;
+}
+
+.spatial-scene__scene-card--active {
+  border-color: rgba(255, 164, 103, 0.52);
+  box-shadow: 0 24px 52px rgba(255, 124, 67, 0.18);
+  transform: translateY(-2px);
+}
+
 .spatial-marker {
   position: absolute;
   transform: translate(-50%, -50%);

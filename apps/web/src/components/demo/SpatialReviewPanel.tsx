@@ -1,4 +1,6 @@
 import {
+  Suspense,
+  lazy,
   useCallback,
   useEffect,
   useMemo,
@@ -94,120 +96,47 @@ function formatSectionLabel(sectionKey?: string) {
     .replace(/^./, (match) => match.toUpperCase());
 }
 
-function AutoClaimScene() {
+const AutoClaimKenneyScene = lazy(() =>
+  import("./AutoClaimKenneyScene").then((module) => ({
+    default: module.AutoClaimKenneyScene,
+  }))
+);
+
+function AutoClaimScene({ selectedMarkerId }: { selectedMarkerId?: string }) {
   return (
-    <svg
-      viewBox="0 0 1200 720"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className="spatial-scene__svg"
-    >
-      <defs>
-        <linearGradient id="auto-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#181311" />
-          <stop offset="48%" stopColor="#251a16" />
-          <stop offset="100%" stopColor="#120f0d" />
-        </linearGradient>
-        <radialGradient id="auto-glow" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#ffbb8c" stopOpacity="0.28" />
-          <stop offset="55%" stopColor="#ff8d4d" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="auto-lot" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#473630" />
-          <stop offset="100%" stopColor="#221917" />
-        </linearGradient>
-        <linearGradient id="auto-car-top" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f0ede9" />
-          <stop offset="100%" stopColor="#b2aca5" />
-        </linearGradient>
-        <linearGradient id="auto-car-side" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#9b948b" />
-          <stop offset="100%" stopColor="#6d665f" />
-        </linearGradient>
-        <linearGradient id="auto-dark-car" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#34383f" />
-          <stop offset="100%" stopColor="#12161d" />
-        </linearGradient>
-        <filter id="auto-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="20" stdDeviation="24" floodColor="#000" floodOpacity="0.45" />
-        </filter>
-      </defs>
+    <div className="spatial-scene__layered spatial-scene__layered--auto" aria-hidden="true">
+      <Suspense fallback={<div className="spatial-scene__canvas" />}>
+        <AutoClaimKenneyScene selectedMarkerId={selectedMarkerId} />
+      </Suspense>
 
-      <rect width="1200" height="720" fill="url(#auto-bg)" />
-      <rect width="1200" height="720" fill="url(#auto-glow)" />
+      <div
+        className={[
+          "spatial-scene__scene-card",
+          "spatial-scene__scene-card--left",
+          selectedMarkerId === "acm-003" ? "spatial-scene__scene-card--active" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <span className="spatial-scene__scene-card-kicker">Lot C geometry</span>
+        <strong>Shallow side sweep</strong>
+        <span>Stall-line alignment supports a narrow, low-speed glancing path</span>
+      </div>
 
-      <g opacity="0.9">
-        <polygon points="130,520 640,250 1085,432 575,690" fill="url(#auto-lot)" />
-        <polygon points="130,520 130,574 575,720 575,690" fill="#140f0d" opacity="0.9" />
-        <polygon points="575,690 575,720 1085,462 1085,432" fill="#090807" opacity="0.9" />
-      </g>
-
-      <g stroke="#7d665b" strokeOpacity="0.45" strokeWidth="6">
-        <line x1="280" y1="470" x2="705" y2="250" />
-        <line x1="374" y1="505" x2="799" y2="286" />
-        <line x1="468" y1="541" x2="893" y2="321" />
-        <line x1="562" y1="576" x2="987" y2="357" />
-        <line x1="657" y1="612" x2="1085" y2="394" />
-      </g>
-      <g stroke="#f4d7a8" strokeOpacity="0.58" strokeWidth="5">
-        <line x1="216" y1="548" x2="552" y2="708" />
-        <line x1="342" y1="482" x2="678" y2="642" />
-        <line x1="468" y1="415" x2="804" y2="575" />
-        <line x1="594" y1="349" x2="930" y2="509" />
-      </g>
-
-      <g opacity="0.65">
-        <polygon points="664,186 928,286 832,336 566,236" fill="#2a1d19" />
-        <polygon points="566,236 566,293 832,393 832,336" fill="#171210" />
-        <polygon points="832,336 832,393 928,343 928,286" fill="#0e0a09" />
-        <ellipse cx="745" cy="394" rx="128" ry="42" fill="#000" opacity="0.35" />
-      </g>
-
-      <g filter="url(#auto-shadow)">
-        <ellipse cx="492" cy="475" rx="164" ry="58" fill="#000" opacity="0.42" />
-        <polygon points="390,255 585,328 470,388 276,314" fill="url(#auto-car-top)" />
-        <polygon points="276,314 276,420 470,494 470,388" fill="url(#auto-car-side)" />
-        <polygon points="470,388 470,494 585,434 585,328" fill="#8b847d" />
-        <path d="M286 414 C 302 390, 345 390, 368 414" fill="none" stroke="#645d56" strokeWidth="8" strokeLinecap="round" opacity="0.72" />
-        <path d="M414 465 C 430 438, 478 441, 496 469" fill="none" stroke="#645d56" strokeWidth="8" strokeLinecap="round" opacity="0.72" />
-        <polygon points="280,401 470,471 470,488 280,419" fill="#5e5750" opacity="0.55" />
-        <path d="M300 374 L 468 437" stroke="#cfc7bd" strokeWidth="4" strokeLinecap="round" opacity="0.34" />
-        <polygon points="331,283 465,333 390,372 257,321" fill="#87a7c2" opacity="0.82" />
-        <polygon points="394,307 506,349 442,382 331,340" fill="#7394ad" opacity="0.75" />
-        <polygon points="516,354 553,367 491,400 455,386" fill="#d2c9be" />
-        <polygon points="285,387 359,415 359,452 285,423" fill="#8b847d" />
-        <polygon points="389,427 470,458 470,494 389,463" fill="#8b847d" />
-        <ellipse cx="329" cy="430" rx="44" ry="22" fill="#151515" />
-        <ellipse cx="463" cy="481" rx="48" ry="24" fill="#151515" />
-        <ellipse cx="329" cy="430" rx="22" ry="22" fill="#79808a" />
-        <ellipse cx="463" cy="481" rx="24" ry="24" fill="#79808a" />
-      </g>
-
-      <g>
-        <path d="M487 383 C 540 355, 582 350, 624 364" fill="none" stroke="#ff8a43" strokeWidth="10" strokeLinecap="round" opacity="0.9" />
-        <path d="M489 399 C 540 373, 580 370, 613 383" fill="none" stroke="#ffd1a9" strokeWidth="4" strokeLinecap="round" opacity="0.95" />
-        <circle cx="494" cy="389" r="14" fill="#ff8a43" opacity="0.75" />
-        <circle cx="494" cy="389" r="30" fill="#ff8a43" opacity="0.14" />
-      </g>
-
-      <g opacity="0.92">
-        <rect x="772" y="116" width="232" height="132" rx="18" fill="#1a1512" stroke="#6b4b3b" />
-        <rect x="790" y="138" width="92" height="64" rx="10" fill="#40352f" />
-        <rect x="896" y="138" width="90" height="18" rx="9" fill="#4f3f36" />
-        <rect x="896" y="168" width="60" height="12" rx="6" fill="#8b5e48" />
-        <rect x="896" y="188" width="76" height="12" rx="6" fill="#5a4d45" />
-        <text x="896" y="219" fill="#d8c7ba" fontSize="20" fontFamily="system-ui, sans-serif" fontWeight="600">Repair estimate linked</text>
-      </g>
-
-      <g opacity="0.88">
-        <rect x="156" y="114" width="212" height="120" rx="18" fill="#161311" stroke="#4c3c33" />
-        <text x="182" y="154" fill="#e0d5ca" fontSize="20" fontFamily="system-ui, sans-serif" fontWeight="600">Scene overview</text>
-        <text x="182" y="184" fill="#9c8f85" fontSize="16" fontFamily="system-ui, sans-serif">Lot C geometry confirms</text>
-        <text x="182" y="206" fill="#9c8f85" fontSize="16" fontFamily="system-ui, sans-serif">low-speed side sweep path</text>
-        <rect x="182" y="214" width="122" height="10" rx="5" fill="#8b5e48" />
-      </g>
-    </svg>
+      <div
+        className={[
+          "spatial-scene__scene-card",
+          "spatial-scene__scene-card--right",
+          selectedMarkerId === "acm-004" ? "spatial-scene__scene-card--active" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <span className="spatial-scene__scene-card-kicker">Estimate provenance</span>
+        <strong>Repair scope linked</strong>
+        <span>Fascia, headlight assembly, and paint blend stay matched to the scene</span>
+      </div>
+    </div>
   );
 }
 
@@ -413,8 +342,14 @@ function SiteInspectionScene() {
   );
 }
 
-function SceneIllustration({ templateId }: { templateId: string }) {
-  if (templateId === "auto-claim") return <AutoClaimScene />;
+function SceneIllustration({
+  templateId,
+  selectedMarkerId,
+}: {
+  templateId: string;
+  selectedMarkerId?: string;
+}) {
+  if (templateId === "auto-claim") return <AutoClaimScene selectedMarkerId={selectedMarkerId} />;
   if (templateId === "fleet-safety") return <FleetSafetyScene />;
   return <SiteInspectionScene />;
 }
@@ -748,7 +683,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                     transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom}) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
                   }}
                 >
-                  <SceneIllustration templateId={templateId} />
+                  <SceneIllustration templateId={templateId} selectedMarkerId={selectedMarker?.id} />
 
                   {markers.map((marker, index) => (
                     <button
