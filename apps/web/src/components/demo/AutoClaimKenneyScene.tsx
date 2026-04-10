@@ -91,44 +91,46 @@ function AutoClaimCanvasScene({ selectedMarkerId }: { selectedMarkerId?: string 
 
   return (
     <>
-      <fog attach="fog" args={["#120f0d", 10, 21]} />
+      <fog attach="fog" args={["#120f0d", 13, 24]} />
 
-      <ambientLight intensity={1.45} color="#f6e7d9" />
+      <ambientLight intensity={1.22} color="#f6e7d9" />
       <directionalLight
         castShadow
-        position={[7, 10, 5]}
-        intensity={2.4}
+        position={[8, 11, 6]}
+        intensity={2.2}
         color="#fff0df"
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <directionalLight position={[-5, 4, -6]} intensity={0.65} color="#8398b6" />
+      <directionalLight position={[-6, 5, -6]} intensity={0.58} color="#8398b6" />
       <pointLight
-        position={[0.85, 1.4, 0.95]}
-        intensity={impactActive ? 2.1 : 1.15}
-        distance={7}
+        position={[0.58, 1.4, 1.18]}
+        intensity={impactActive ? 1.9 : 0.92}
+        distance={8}
         color="#ff9757"
       />
 
-      <group rotation={[0.06, -0.55, 0.04]} position={[0.15, -0.08, 0.1]}>
+      <group rotation={[0.04, -0.48, 0.02]} position={[0.24, -0.08, 0.12]}>
         <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[14, 11]} />
+          <planeGeometry args={[15.2, 11.8]} />
           <meshStandardMaterial color="#241916" roughness={0.96} />
         </mesh>
 
         <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[10.4, 8.2]} />
+          <planeGeometry args={[11.4, 8.9]} />
           <meshStandardMaterial color="#34241f" roughness={0.94} />
         </mesh>
 
-        <ParkingStripe position={[-2.9, 0.04, 1.9]} size={[0.18, 4.7]} rotation={0.34} opacity={corridorActive ? 0.95 : 0.62} />
-        <ParkingStripe position={[-1.45, 0.04, 1.25]} size={[0.18, 4.9]} rotation={0.34} opacity={corridorActive ? 0.95 : 0.62} />
-        <ParkingStripe position={[0.08, 0.04, 0.58]} size={[0.18, 5.1]} rotation={0.34} opacity={0.62} />
-        <ParkingStripe position={[1.56, 0.04, -0.1]} size={[0.18, 5.2]} rotation={0.34} opacity={0.62} />
-        <ParkingStripe position={[-1.26, 0.04, 2.86]} size={[4.25, 0.13]} rotation={-1.19} color="#7f685b" opacity={0.46} />
+        <ParkingStripe position={[-3.15, 0.04, 2.02]} size={[0.16, 4.6]} rotation={0.3} opacity={corridorActive ? 0.96 : 0.58} />
+        <ParkingStripe position={[-1.58, 0.04, 1.26]} size={[0.16, 4.9]} rotation={0.3} opacity={corridorActive ? 0.92 : 0.54} />
+        <ParkingStripe position={[0.05, 0.04, 0.49]} size={[0.16, 5.2]} rotation={0.3} opacity={0.5} />
+        <ParkingStripe position={[1.68, 0.04, -0.28]} size={[0.16, 5.3]} rotation={0.3} opacity={0.5} />
+        <ParkingStripe position={[3.3, 0.04, -1.05]} size={[0.16, 5.1]} rotation={0.3} opacity={0.44} />
+        <ParkingStripe position={[-1.44, 0.04, 3.02]} size={[4.65, 0.12]} rotation={-1.27} color="#7f685b" opacity={0.42} />
+        <ParkingStripe position={[1.42, 0.04, -2.46]} size={[4.1, 0.12]} rotation={-1.27} color="#6b5a53" opacity={0.3} />
 
-        <mesh position={[-2.12, 0.03, 2.06]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.44, 0.58, 48]} />
+        <mesh position={[-2.52, 0.03, 2.04]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.4, 0.54, 48]} />
           <meshBasicMaterial
             color="#8ed9b8"
             transparent
@@ -136,15 +138,32 @@ function AutoClaimCanvasScene({ selectedMarkerId }: { selectedMarkerId?: string 
           />
         </mesh>
 
-        <mesh position={[0.84, 0.04, 0.92]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.3, 0.62, 64]} />
+        <mesh position={[1.22, 0.03, 0.12]} rotation={[-Math.PI / 2, 0.42, 0]}>
+          <planeGeometry args={[0.12, 3.2]} />
+          <meshBasicMaterial
+            color="#e3baa4"
+            transparent
+            opacity={impactActive ? 0.42 : 0.14}
+          />
+        </mesh>
+        <mesh position={[1.02, 0.031, 0.3]} rotation={[-Math.PI / 2, 0.42, 0]}>
+          <planeGeometry args={[0.06, 3.05]} />
+          <meshBasicMaterial
+            color="#ffd5ba"
+            transparent
+            opacity={impactActive ? 0.6 : 0.18}
+          />
+        </mesh>
+
+        <mesh position={[0.52, 0.04, 1.04]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.28, 0.58, 64]} />
           <meshBasicMaterial
             color="#ff8a43"
             transparent
             opacity={impactActive ? 0.78 : 0.28}
           />
         </mesh>
-        <mesh position={[0.96, 0.05, 1.08]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh position={[0.66, 0.05, 1.16]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[0.28, 48]} />
           <meshBasicMaterial
             color="#ffd2a6"
@@ -153,8 +172,8 @@ function AutoClaimCanvasScene({ selectedMarkerId }: { selectedMarkerId?: string 
           />
         </mesh>
 
-        <mesh position={[3.18, 0.04, -1.72]} rotation={[-Math.PI / 2, 0.18, 0]}>
-          <planeGeometry args={[1.85, 1.22]} />
+        <mesh position={[3.52, 0.04, -1.48]} rotation={[-Math.PI / 2, 0.18, 0]}>
+          <planeGeometry args={[1.58, 1.06]} />
           <meshBasicMaterial
             color="#e2b18b"
             transparent
@@ -164,44 +183,44 @@ function AutoClaimCanvasScene({ selectedMarkerId }: { selectedMarkerId?: string 
 
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/suv.glb`}
-          position={[0.18, 0, 0.58]}
+          position={[-0.72, 0, 0.86]}
           rotation={[0, 0.92, 0]}
-          scale={1.96}
+          scale={1.56}
         />
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/sedan.glb`}
-          position={[1.6, 0, -0.96]}
-          rotation={[0, -2.22, 0]}
-          scale={1.82}
-          tint="#4e5868"
+          position={[2.34, 0, -0.32]}
+          rotation={[0, -1.5, 0]}
+          scale={1.38}
+          tint="#495469"
         />
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/debris-bumper.glb`}
-          position={[0.98, 0.04, 1.14]}
-          rotation={[0, 0.42, 0]}
-          scale={0.84}
+          position={[0.78, 0.04, 1.58]}
+          rotation={[0, 0.22, 0]}
+          scale={0.66}
         />
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/cone.glb`}
-          position={[-2.72, 0, 2.7]}
-          rotation={[0, 0.28, 0]}
-          scale={0.58}
+          position={[-3.04, 0, 2.6]}
+          rotation={[0, 0.12, 0]}
+          scale={0.52}
         />
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/cone.glb`}
-          position={[-1.46, 0, 2.18]}
-          rotation={[0, -0.18, 0]}
-          scale={0.58}
+          position={[-2.24, 0, 2.18]}
+          rotation={[0, -0.12, 0]}
+          scale={0.5}
         />
       </group>
 
-      <mesh position={[0.36, 0.02, 0.42]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.8, 64]} />
-        <meshBasicMaterial color="#000" transparent opacity={0.16} />
+      <mesh position={[-0.16, 0.02, 0.72]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.62, 64]} />
+        <meshBasicMaterial color="#000" transparent opacity={0.13} />
       </mesh>
-      <mesh position={[1.66, 0.02, -0.98]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.46, 64]} />
-        <meshBasicMaterial color="#000" transparent opacity={0.14} />
+      <mesh position={[2.12, 0.02, -0.22]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.34, 64]} />
+        <meshBasicMaterial color="#000" transparent opacity={0.12} />
       </mesh>
     </>
   );
@@ -214,7 +233,7 @@ export function AutoClaimKenneyScene({ selectedMarkerId }: { selectedMarkerId?: 
         shadows
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false }}
-        camera={{ position: [6.8, 5.4, 7.9], fov: 33, near: 0.1, far: 40 }}
+        camera={{ position: [8.3, 6.1, 10.1], fov: 30, near: 0.1, far: 40 }}
       >
         <Suspense fallback={null}>
           <AutoClaimCanvasScene selectedMarkerId={selectedMarkerId} />

@@ -23,7 +23,7 @@ const autoClaimSpatialMarkers: SpatialMarker[] = [
     id: "acm-001",
     label: "Primary bumper scrape",
     x: 54,
-    y: 56,
+    y: 60,
     severity: "high",
     note:
       "Front-right fascia shows the main lateral scrape and paint transfer. The impact geometry matches a glancing sweep rather than a direct head-on strike, supporting the low-speed parking lot contact narrative.",
@@ -35,7 +35,7 @@ const autoClaimSpatialMarkers: SpatialMarker[] = [
     id: "acm-002",
     label: "Headlight fracture zone",
     x: 52,
-    y: 48,
+    y: 47,
     severity: "medium",
     note:
       "The cracked headlight housing sits just above the primary scrape path, showing secondary damage concentrated at the corner radius. No adjacent panel deformation is visible, which keeps the severity in the cosmetic range.",
@@ -46,8 +46,8 @@ const autoClaimSpatialMarkers: SpatialMarker[] = [
   {
     id: "acm-003",
     label: "Lot C contact corridor",
-    x: 28,
-    y: 63,
+    x: 31,
+    y: 64,
     severity: "low",
     note:
       "Scene photography and the lot geometry indicate a shallow pass through the stall line rather than a wider turning collision. This spatial context helps explain the narrow damage footprint on the claimant vehicle.",
@@ -58,8 +58,8 @@ const autoClaimSpatialMarkers: SpatialMarker[] = [
   {
     id: "acm-004",
     label: "Repair scope confirmation",
-    x: 76,
-    y: 31,
+    x: 71,
+    y: 73,
     severity: "medium",
     note:
       "The estimate aligns to exactly what the scene and photos suggest: bumper fascia replacement, headlight assembly replacement, and paint blend work. No structural line items appear in the repair package.",

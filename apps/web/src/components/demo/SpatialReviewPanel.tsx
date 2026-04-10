@@ -108,34 +108,6 @@ function AutoClaimScene({ selectedMarkerId }: { selectedMarkerId?: string }) {
       <Suspense fallback={<div className="spatial-scene__canvas" />}>
         <AutoClaimKenneyScene selectedMarkerId={selectedMarkerId} />
       </Suspense>
-
-      <div
-        className={[
-          "spatial-scene__scene-card",
-          "spatial-scene__scene-card--left",
-          selectedMarkerId === "acm-003" ? "spatial-scene__scene-card--active" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        <span className="spatial-scene__scene-card-kicker">Lot C geometry</span>
-        <strong>Shallow side sweep</strong>
-        <span>Stall-line alignment supports a narrow, low-speed glancing path</span>
-      </div>
-
-      <div
-        className={[
-          "spatial-scene__scene-card",
-          "spatial-scene__scene-card--right",
-          selectedMarkerId === "acm-004" ? "spatial-scene__scene-card--active" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        <span className="spatial-scene__scene-card-kicker">Estimate provenance</span>
-        <strong>Repair scope linked</strong>
-        <span>Fascia, headlight assembly, and paint blend stay matched to the scene</span>
-      </div>
     </div>
   );
 }
