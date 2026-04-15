@@ -102,16 +102,6 @@ const AutoClaimKenneyScene = lazy(() =>
   }))
 );
 
-function AutoClaimScene({ selectedMarkerId }: { selectedMarkerId?: string }) {
-  return (
-    <div className="spatial-scene__layered spatial-scene__layered--auto" aria-hidden="true">
-      <Suspense fallback={<div className="spatial-scene__canvas" />}>
-        <AutoClaimKenneyScene selectedMarkerId={selectedMarkerId} />
-      </Suspense>
-    </div>
-  );
-}
-
 function FleetSafetyScene() {
   return (
     <svg
@@ -317,21 +307,42 @@ function SiteInspectionScene() {
 function SceneIllustration({
   templateId,
   selectedMarkerId,
+  onSelectMarker,
+  markers,
+  zoom,
+  resetToken,
 }: {
   templateId: string;
   selectedMarkerId?: string;
+  onSelectMarker?: (markerId: string | null) => void;
+  markers?: SpatialMarker[];
+  zoom?: number;
+  resetToken?: number;
 }) {
-  if (templateId === "auto-claim") return <AutoClaimScene selectedMarkerId={selectedMarkerId} />;
+  if (templateId === "auto-claim") {
+    return (
+      <Suspense fallback={<div className="spatial-scene__canvas" />}>
+        <AutoClaimKenneyScene
+          selectedMarkerId={selectedMarkerId}
+          onSelectMarker={onSelectMarker}
+          markers={markers ?? []}
+          zoom={zoom ?? MIN_ZOOM}
+          resetToken={resetToken ?? 0}
+        />
+      </Suspense>
+    );
+  }
   if (templateId === "fleet-safety") return <FleetSafetyScene />;
   return <SiteInspectionScene />;
 }
 
 export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
-  const [selectedId, setSelectedId] = useState<string>(markers[0]?.id ?? "");
+  const [selectedId, setSelectedId] = useState<string>("");
   const [zoom, setZoom] = useState(MIN_ZOOM);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [resetToken, setResetToken] = useState(0);
 
   const sceneViewportRef = useRef<HTMLDivElement | null>(null);
   const sceneSurfaceRef = useRef<HTMLDivElement | null>(null);
@@ -344,10 +355,11 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   } | null>(null);
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
+  const isTrue3DScene = templateId === "auto-claim";
 
   useEffect(() => {
     if (!markers.some((marker) => marker.id === selectedId)) {
-      setSelectedId(markers[0]?.id ?? "");
+      setSelectedId("");
     }
   }, [markers, selectedId]);
 
@@ -365,7 +377,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   }, []);
 
   const selectedMarker = useMemo(
-    () => markers.find((m) => m.id === selectedId) ?? markers[0] ?? null,
+    () => markers.find((m) => m.id === selectedId) ?? null,
     [markers, selectedId]
   );
   const selectedMarkerIndex = selectedMarker
@@ -378,10 +390,6 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
       .map((id) => evidence.find((item) => item.id === id))
       .filter(Boolean) as EvidenceItem[];
   }, [selectedMarker, evidence]);
-
-  const openCount = markers.filter(
-    (m) => !m.status || m.status === "open" || m.status === "needs-review"
-  ).length;
 
   const clampPan = useCallback((nextPan: { x: number; y: number }, nextZoom = zoom) => {
     const rect = sceneViewportRef.current?.getBoundingClientRect();
@@ -420,6 +428,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const handleResetView = useCallback(() => {
     setZoom(MIN_ZOOM);
     setPan({ x: 0, y: 0 });
+    setResetToken((value) => value + 1);
   }, []);
 
   const focusMarker = useCallback((marker: SpatialMarker, requestedZoom = Math.max(zoom, 1.18)) => {
@@ -536,72 +545,26 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
       className={["spatial-panel", toneClassName(meta.tone)].join(" ")}
       aria-label="Spatial annotation review"
     >
-      <div className="spatial-panel__header">
-        <div className="spatial-panel__header-main">
-          <div className="spatial-panel__eyebrow">{meta.eyebrow}</div>
-          <h2 className="spatial-panel__hero-title">{meta.title}</h2>
-          <p className="spatial-panel__hero-copy">{meta.subtitle}</p>
-        </div>
-        <div className="spatial-panel__summary-rail">
-          <div className="spatial-panel__summary-card">
-            <span className="spatial-panel__summary-label">Active findings</span>
-            <strong>{openCount}</strong>
-          </div>
-          <div className="spatial-panel__summary-card">
-            <span className="spatial-panel__summary-label">Anchors</span>
-            <strong>{markers.length}</strong>
-          </div>
-          <div className="spatial-panel__summary-card spatial-panel__summary-card--wide">
-            <span className="spatial-panel__summary-label">Why this view matters</span>
-            <strong>{meta.helper}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div className="spatial-panel__body">
+      <div className="spatial-panel__body spatial-panel__body--single">
         <div className="spatial-panel__scene-wrap">
-          <div
-            className="spatial-panel__scene-surface"
-            ref={sceneSurfaceRef}
-          >
-            <div className="spatial-scene__hud">
-              <span className="spatial-scene__hud-badge">Spatial</span>
-              <span className="spatial-scene__hud-context">{meta.metrics.join(" · ")}</span>
-            </div>
-
-            <div className="spatial-scene__controls">
-              <div className="spatial-scene__interaction-pill">
-                Drag to inspect · scroll to zoom · use the strip below to jump between anchors
+          <div className="spatial__full spatial-panel__viewer">
+            <div className="spatial__toolbar spatial-panel__toolbar">
+              <div className="spatial__toolbar-left">
+                <span className="spatial__toolbar-badge">3D</span>
+                <span className="spatial__toolbar-title">Spatial Review</span>
               </div>
-
-              <div className="spatial-scene__control-group">
+              <div className="spatial-panel__toolbar-actions">
+                <span className="spatial__toolbar-meta">{markers.length} annotations</span>
                 <button
                   type="button"
-                  className="spatial-scene__control"
-                  onClick={() => handleZoomChange(zoom - ZOOM_STEP)}
-                  aria-label="Zoom out"
-                >
-                  −
-                </button>
-                <span className="spatial-scene__zoom-readout">{Math.round(zoom * 100)}%</span>
-                <button
-                  type="button"
-                  className="spatial-scene__control"
-                  onClick={() => handleZoomChange(zoom + ZOOM_STEP)}
-                  aria-label="Zoom in"
-                >
-                  +
-                </button>
-                <button
-                  type="button"
-                  className="spatial-scene__control spatial-scene__control--label"
+                  className="spatial-panel__toolbar-action"
                   onClick={handleResetView}
                 >
                   Reset
                 </button>
                 <button
                   type="button"
-                  className="spatial-scene__control spatial-scene__control--label"
+                  className="spatial-panel__toolbar-action"
                   onClick={handleToggleFullscreen}
                 >
                   {isFullscreen ? "Collapse" : "Expand"}
@@ -609,188 +572,235 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
               </div>
             </div>
 
-            <div className="spatial-scene__metrics">
-              {meta.metrics.map((item) => (
-                <span key={item} className="spatial-scene__metric-chip">
-                  {item}
-                </span>
+            <div className="spatial-panel__marker-index spatial-panel__marker-index--tabs">
+              {markers.map((marker, index) => (
+                <button
+                  key={marker.id}
+                  type="button"
+                  className={[
+                    "spatial-index-item",
+                    `spatial-index-item--${marker.severity}`,
+                    selectedMarker?.id === marker.id ? "spatial-index-item--active" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => focusMarker(marker)}
+                >
+                  <span className="spatial-index-item__number">{formatAnchorNumber(index)}</span>
+                  <span className="spatial-index-item__label">{marker.label}</span>
+                  {marker.status && (
+                    <span className={`spatial-index-item__status spatial-index-item__status--${marker.status}`}>
+                      {STATUS_LABELS[marker.status]}
+                    </span>
+                  )}
+                </button>
               ))}
             </div>
 
-            {selectedMarker && (
-              <div className="spatial-scene__focus-panel">
-                <div className="spatial-scene__focus-top">
-                  <span className="spatial-scene__focus-anchor">
-                    Anchor {activeAnchorNumber} / {totalAnchorCount}
-                  </span>
-                  <span className={`spatial-scene__focus-severity spatial-scene__focus-severity--${selectedMarker.severity}`}>
-                    {SEVERITY_LABELS[selectedMarker.severity]}
-                  </span>
-                </div>
-                <strong className="spatial-scene__focus-title">{selectedMarker.label}</strong>
-                <span className="spatial-scene__focus-meta">
-                  {formatSectionLabel(selectedMarker.relatedExtractionSectionKey)} · {relatedEvidence.length} linked {relatedEvidence.length === 1 ? "item" : "items"}
-                </span>
-              </div>
-            )}
-
-            <div className="spatial-scene__visual">
+            <div className="spatial__canvas-wrap spatial-panel__canvas-shell">
               <div
-                ref={sceneViewportRef}
-                className={[
-                  "spatial-scene__viewport",
-                  isDragging ? "spatial-scene__viewport--dragging" : "",
-                ].filter(Boolean).join(" ")}
-                onWheel={handleWheel}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerLeave={handlePointerUp}
-                onPointerCancel={handlePointerUp}
-                onDoubleClick={handleResetView}
+                className="spatial-panel__scene-surface spatial-panel__scene-surface--landing"
+                ref={sceneSurfaceRef}
               >
-                <div
-                  className="spatial-scene__transform"
-                  style={{
-                    transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom}) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                  }}
-                >
-                  <SceneIllustration templateId={templateId} selectedMarkerId={selectedMarker?.id} />
+                {selectedMarker && (
+                  <div className="spatial__overlay spatial-panel__overlay">
+                    <p className="section-label section-label--light">
+                      Anchor {activeAnchorNumber} of {totalAnchorCount}
+                    </p>
+                    <h3 className="spatial-panel__overlay-title">{selectedMarker.label}</h3>
+                    <p className="spatial__overlay-body">
+                      {selectedMarker.note}
+                    </p>
+                  </div>
+                )}
 
-                  {markers.map((marker, index) => (
-                    <button
-                      key={marker.id}
-                      type="button"
+                <div className="spatial__zoom spatial-panel__zoom">
+                  <button
+                    className="spatial__zoom-btn"
+                    onClick={() => handleZoomChange(zoom + ZOOM_STEP)}
+                    aria-label="Zoom in"
+                    type="button"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                  <button
+                    className="spatial__zoom-btn"
+                    onClick={() => handleZoomChange(zoom - ZOOM_STEP)}
+                    aria-label="Zoom out"
+                    type="button"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="spatial-scene__visual">
+                  {isTrue3DScene ? (
+                    <div className="spatial-scene__true3d">
+                      <SceneIllustration
+                        templateId={templateId}
+                        selectedMarkerId={selectedMarker?.id}
+                        onSelectMarker={(markerId) => setSelectedId(markerId ?? "")}
+                        markers={markers}
+                        zoom={zoom}
+                        resetToken={resetToken}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      ref={sceneViewportRef}
                       className={[
-                        "spatial-marker",
-                        `spatial-marker--${marker.severity}`,
-                        selectedMarker?.id === marker.id ? "spatial-marker--active" : "",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                      style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setSelectedId(marker.id);
-                      }}
-                      aria-label={`${marker.label}: ${SEVERITY_LABELS[marker.severity]} severity`}
-                      aria-pressed={selectedMarker?.id === marker.id}
+                        "spatial-scene__viewport",
+                        isDragging ? "spatial-scene__viewport--dragging" : "",
+                      ].filter(Boolean).join(" ")}
+                      onWheel={handleWheel}
+                      onPointerDown={handlePointerDown}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      onPointerLeave={handlePointerUp}
+                      onPointerCancel={handlePointerUp}
+                      onDoubleClick={handleResetView}
                     >
-                      <span className="spatial-marker__pulse" aria-hidden="true" />
-                      <span className="spatial-marker__dot" aria-hidden="true" />
-                      <span className="spatial-marker__index">{formatAnchorNumber(index)}</span>
-                    </button>
-                  ))}
+                      <div
+                        className="spatial-scene__transform"
+                        style={{
+                          transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom}) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                        }}
+                      >
+                        <SceneIllustration templateId={templateId} selectedMarkerId={selectedMarker?.id} />
+
+                        {markers.map((marker, index) => (
+                          <button
+                            key={marker.id}
+                            type="button"
+                            className={[
+                              "spatial-marker",
+                              `spatial-marker--${marker.severity}`,
+                              selectedMarker?.id === marker.id ? "spatial-marker--active" : "",
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                            style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedId(marker.id);
+                            }}
+                            aria-label={`${marker.label}: ${SEVERITY_LABELS[marker.severity]} severity`}
+                            aria-pressed={selectedMarker?.id === marker.id}
+                          >
+                            <span className="spatial-marker__pulse" aria-hidden="true" />
+                            <span className="spatial-marker__dot" aria-hidden="true" />
+                            <span className="spatial-marker__index">{formatAnchorNumber(index)}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className={`spatial__sidebar spatial-panel__sidebar${selectedMarker ? " spatial__sidebar--open" : ""}`}>
+                  {selectedMarker && (
+                    <div className="spatial-marker-detail spatial-marker-detail--sidebar" key={selectedMarker.id}>
+                      <div className="spatial__sidebar-header">
+                        <div className="spatial-marker-detail__header">
+                          <span className={`spatial-marker-detail__severity spatial-marker-detail__severity--${selectedMarker.severity}`}>
+                            {SEVERITY_LABELS[selectedMarker.severity]}
+                          </span>
+                          {selectedMarker.status && (
+                            <span className={`spatial-marker-detail__status spatial-marker-detail__status--${selectedMarker.status}`}>
+                              {STATUS_LABELS[selectedMarker.status]}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          className="spatial__sidebar-close"
+                          onClick={() => setSelectedId("")}
+                          aria-label="Close"
+                          type="button"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <h3 className="spatial-marker-detail__title">{selectedMarker.label}</h3>
+                      <p className="spatial-marker-detail__note">{selectedMarker.note}</p>
+
+                      <div className="spatial-marker-detail__meta-grid">
+                        <div className="spatial-marker-detail__meta-card">
+                          <span className="spatial-marker-detail__meta-label">Anchor</span>
+                          <strong>{activeAnchorNumber} / {totalAnchorCount}</strong>
+                        </div>
+                        <div className="spatial-marker-detail__meta-card">
+                          <span className="spatial-marker-detail__meta-label">Linked evidence</span>
+                          <strong>{relatedEvidence.length}</strong>
+                        </div>
+                        <div className="spatial-marker-detail__meta-card spatial-marker-detail__meta-card--wide">
+                          <span className="spatial-marker-detail__meta-label">Scene linkage</span>
+                          <strong>{formatSectionLabel(selectedMarker.relatedExtractionSectionKey)}</strong>
+                        </div>
+                      </div>
+
+                      <div className="spatial-marker-detail__actions">
+                        <button
+                          type="button"
+                          className="spatial-marker-detail__action spatial-marker-detail__action--primary"
+                          onClick={() => focusMarker(selectedMarker, Math.max(zoom, 1.2))}
+                        >
+                          Center in scene
+                        </button>
+                        <button
+                          type="button"
+                          className="spatial-marker-detail__action"
+                          onClick={handleResetView}
+                        >
+                          Reset camera
+                        </button>
+                      </div>
+
+                      {selectedMarker.relatedExtractionSectionKey && (
+                        <div className="spatial-marker-detail__section-ref">
+                          <span className="spatial-marker-detail__section-ref-label">Related section</span>
+                          <span className="spatial-marker-detail__section-ref-key">
+                            {selectedMarker.relatedExtractionSectionKey}
+                          </span>
+                        </div>
+                      )}
+
+                      {relatedEvidence.length > 0 && (
+                        <div className="spatial-marker-detail__evidence">
+                          <span className="spatial-marker-detail__evidence-label">Supporting evidence</span>
+                          <ul className="spatial-marker-detail__evidence-list">
+                            {relatedEvidence.map((ev) => (
+                              <li key={ev.id} className="spatial-marker-detail__evidence-item">
+                                <span className={`spatial-evidence-type spatial-evidence-type--${ev.type}`}>
+                                  {ev.type}
+                                </span>
+                                <div className="spatial-marker-detail__evidence-copy">
+                                  <span className="spatial-marker-detail__evidence-name">{ev.name}</span>
+                                  <span className="spatial-marker-detail__evidence-desc">{ev.description}</span>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
+            </div>
+
+            <div className="spatial__statusbar spatial-panel__statusbar">
+              <span>{meta.metrics.join(" · ")}</span>
+              <span>click a pin to inspect · drag to orbit · scroll to zoom</span>
             </div>
           </div>
         </div>
-
-        <aside className="spatial-panel__detail-pane">
-          {selectedMarker ? (
-            <div className="spatial-marker-detail" key={selectedMarker.id}>
-              <div className="spatial-marker-detail__header">
-                <span className={`spatial-marker-detail__severity spatial-marker-detail__severity--${selectedMarker.severity}`}>
-                  {SEVERITY_LABELS[selectedMarker.severity]}
-                </span>
-                {selectedMarker.status && (
-                  <span className={`spatial-marker-detail__status spatial-marker-detail__status--${selectedMarker.status}`}>
-                    {STATUS_LABELS[selectedMarker.status]}
-                  </span>
-                )}
-              </div>
-
-              <h3 className="spatial-marker-detail__title">{selectedMarker.label}</h3>
-              <p className="spatial-marker-detail__note">{selectedMarker.note}</p>
-
-              <div className="spatial-marker-detail__meta-grid">
-                <div className="spatial-marker-detail__meta-card">
-                  <span className="spatial-marker-detail__meta-label">Anchor</span>
-                  <strong>{activeAnchorNumber} / {totalAnchorCount}</strong>
-                </div>
-                <div className="spatial-marker-detail__meta-card">
-                  <span className="spatial-marker-detail__meta-label">Linked evidence</span>
-                  <strong>{relatedEvidence.length}</strong>
-                </div>
-                <div className="spatial-marker-detail__meta-card spatial-marker-detail__meta-card--wide">
-                  <span className="spatial-marker-detail__meta-label">Scene linkage</span>
-                  <strong>{formatSectionLabel(selectedMarker.relatedExtractionSectionKey)}</strong>
-                </div>
-              </div>
-
-              <div className="spatial-marker-detail__actions">
-                <button
-                  type="button"
-                  className="spatial-marker-detail__action spatial-marker-detail__action--primary"
-                  onClick={() => focusMarker(selectedMarker, Math.max(zoom, 1.2))}
-                >
-                  Center in scene
-                </button>
-                <button
-                  type="button"
-                  className="spatial-marker-detail__action"
-                  onClick={handleResetView}
-                >
-                  Reset camera
-                </button>
-              </div>
-
-              {selectedMarker.relatedExtractionSectionKey && (
-                <div className="spatial-marker-detail__section-ref">
-                  <span className="spatial-marker-detail__section-ref-label">Related section</span>
-                  <span className="spatial-marker-detail__section-ref-key">
-                    {selectedMarker.relatedExtractionSectionKey}
-                  </span>
-                </div>
-              )}
-
-              {relatedEvidence.length > 0 && (
-                <div className="spatial-marker-detail__evidence">
-                  <span className="spatial-marker-detail__evidence-label">Supporting evidence</span>
-                  <ul className="spatial-marker-detail__evidence-list">
-                    {relatedEvidence.map((ev) => (
-                      <li key={ev.id} className="spatial-marker-detail__evidence-item">
-                        <span className={`spatial-evidence-type spatial-evidence-type--${ev.type}`}>
-                          {ev.type}
-                        </span>
-                        <div className="spatial-marker-detail__evidence-copy">
-                          <span className="spatial-marker-detail__evidence-name">{ev.name}</span>
-                          <span className="spatial-marker-detail__evidence-desc">{ev.description}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : null}
-        </aside>
-      </div>
-
-      <div className="spatial-panel__marker-index">
-        {markers.map((marker, index) => (
-          <button
-            key={marker.id}
-            type="button"
-            className={[
-              "spatial-index-item",
-              `spatial-index-item--${marker.severity}`,
-              selectedMarker?.id === marker.id ? "spatial-index-item--active" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            onClick={() => focusMarker(marker)}
-          >
-            <span className="spatial-index-item__number">{formatAnchorNumber(index)}</span>
-            <span className="spatial-index-item__label">{marker.label}</span>
-            {marker.status && (
-              <span className={`spatial-index-item__status spatial-index-item__status--${marker.status}`}>
-                {STATUS_LABELS[marker.status]}
-              </span>
-            )}
-          </button>
-        ))}
       </div>
     </section>
   );
