@@ -207,6 +207,7 @@ export interface SeedCaseData {
  */
 export interface DemoCaseState {
   demoId: string;
+  seedSignature: string;
   reviewer: string;
   caseMeta: CaseMeta;
   evidence: EvidenceItem[];

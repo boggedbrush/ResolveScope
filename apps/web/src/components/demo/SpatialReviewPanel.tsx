@@ -43,12 +43,12 @@ interface SceneMeta {
 
 const SCENE_META: Record<string, SceneMeta> = {
   "auto-claim": {
-    title: "Collision Geometry Review",
-    subtitle: "Parking-lot impact mapped against vehicle damage, scene context, and repair evidence",
-    eyebrow: "3D damage reconstruction",
-    helper: "Orbit the incident at a glance: contact point, evidence provenance, and severity all stay spatially linked",
+    title: "Hazard Avoidance Review",
+    subtitle: "Cone-marked pavement damage, sedan reverse-out angle, and claimant impact path aligned in one spatial reconstruction",
+    eyebrow: "3D incident reconstruction",
+    helper: "Orbit the claimant SUV, reversing sedan, road crack, cones, and repair evidence in one view so the contact narrative stays reviewable",
     tone: "copper",
-    metrics: ["4 evidence anchors", "Front-right impact", "$1,070 estimate"],
+    metrics: ["4 evidence anchors", "Hazard avoidance contact", "$1,070 estimate"],
   },
   "fleet-safety": {
     title: "Dock Maneuver Risk Replay",
@@ -311,6 +311,8 @@ function SceneIllustration({
   markers,
   zoom,
   resetToken,
+  interactive = true,
+  allowScrollZoom = false,
 }: {
   templateId: string;
   selectedMarkerId?: string;
@@ -318,6 +320,8 @@ function SceneIllustration({
   markers?: SpatialMarker[];
   zoom?: number;
   resetToken?: number;
+  interactive?: boolean;
+  allowScrollZoom?: boolean;
 }) {
   if (templateId === "auto-claim") {
     return (
@@ -328,6 +332,8 @@ function SceneIllustration({
           markers={markers ?? []}
           zoom={zoom ?? MIN_ZOOM}
           resetToken={resetToken ?? 0}
+          interactive={interactive}
+          allowScrollZoom={allowScrollZoom}
         />
       </Suspense>
     );
@@ -341,8 +347,9 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const [zoom, setZoom] = useState(MIN_ZOOM);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [resetToken, setResetToken] = useState(0);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
 
   const sceneViewportRef = useRef<HTMLDivElement | null>(null);
   const sceneSurfaceRef = useRef<HTMLDivElement | null>(null);
@@ -356,6 +363,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
   const isTrue3DScene = templateId === "auto-claim";
+  const allowDirectSceneManipulation = !isCompactViewport;
 
   useEffect(() => {
     if (!markers.some((marker) => marker.id === selectedId)) {
@@ -364,17 +372,39 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   }, [markers, selectedId]);
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(document.fullscreenElement === sceneSurfaceRef.current);
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 720px)");
+    const syncViewportMode = () => {
+      setIsCompactViewport(mediaQuery.matches);
     };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    handleFullscreenChange();
+    syncViewportMode();
+    mediaQuery.addEventListener("change", syncViewportMode);
 
     return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      mediaQuery.removeEventListener("change", syncViewportMode);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsExpanded(false);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isExpanded]);
 
   const selectedMarker = useMemo(
     () => markers.find((m) => m.id === selectedId) ?? null,
@@ -458,6 +488,8 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   }, [clampPan, zoom]);
 
   const handleWheel = useCallback((event: ReactWheelEvent<HTMLDivElement>) => {
+    if (!allowDirectSceneManipulation) return;
+
     event.preventDefault();
 
     const rect = sceneViewportRef.current?.getBoundingClientRect();
@@ -472,9 +504,10 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
       x: event.clientX - rect.left - rect.width / 2,
       y: event.clientY - rect.top - rect.height / 2,
     });
-  }, [handleZoomChange, zoom]);
+  }, [allowDirectSceneManipulation, handleZoomChange, zoom]);
 
   const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!allowDirectSceneManipulation) return;
     if (!event.isPrimary || event.button !== 0) return;
 
     const target = event.target as HTMLElement;
@@ -490,9 +523,10 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
     sceneViewportRef.current?.setPointerCapture(event.pointerId);
     setIsDragging(true);
-  }, [pan.x, pan.y]);
+  }, [allowDirectSceneManipulation, pan.x, pan.y]);
 
   const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!allowDirectSceneManipulation) return;
     if (!dragStateRef.current || dragStateRef.current.pointerId !== event.pointerId) return;
 
     const deltaX = event.clientX - dragStateRef.current.startX;
@@ -507,7 +541,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
         zoom
       )
     );
-  }, [clampPan, zoom]);
+  }, [allowDirectSceneManipulation, clampPan, zoom]);
 
   const handlePointerUp = useCallback((event?: ReactPointerEvent<HTMLDivElement>) => {
     if (event && dragStateRef.current?.pointerId === event.pointerId) {
@@ -518,15 +552,8 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
     setIsDragging(false);
   }, []);
 
-  const handleToggleFullscreen = useCallback(async () => {
-    if (!sceneSurfaceRef.current) return;
-
-    if (document.fullscreenElement === sceneSurfaceRef.current) {
-      await document.exitFullscreen();
-      return;
-    }
-
-    await sceneSurfaceRef.current.requestFullscreen();
+  const handleToggleFullscreen = useCallback(() => {
+    setIsExpanded((current) => !current);
   }, []);
 
   const tilt = useMemo(
@@ -542,12 +569,22 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
   return (
     <section
-      className={["spatial-panel", toneClassName(meta.tone)].join(" ")}
+      className={[
+        "spatial-panel",
+        toneClassName(meta.tone),
+        isCompactViewport ? "spatial-panel--compact" : "",
+      ].filter(Boolean).join(" ")}
       aria-label="Spatial annotation review"
     >
       <div className="spatial-panel__body spatial-panel__body--single">
         <div className="spatial-panel__scene-wrap">
-          <div className="spatial__full spatial-panel__viewer">
+          <div
+            className={[
+              "spatial__full",
+              "spatial-panel__viewer",
+              isExpanded ? "spatial-panel__viewer--expanded" : "",
+            ].filter(Boolean).join(" ")}
+          >
             <div className="spatial__toolbar spatial-panel__toolbar">
               <div className="spatial__toolbar-left">
                 <span className="spatial__toolbar-badge">3D</span>
@@ -567,7 +604,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                   className="spatial-panel__toolbar-action"
                   onClick={handleToggleFullscreen}
                 >
-                  {isFullscreen ? "Collapse" : "Expand"}
+                  {isExpanded ? "Collapse" : "Expand"}
                 </button>
               </div>
             </div>
@@ -647,6 +684,8 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                         markers={markers}
                         zoom={zoom}
                         resetToken={resetToken}
+                        interactive={allowDirectSceneManipulation}
+                        allowScrollZoom={isExpanded}
                       />
                     </div>
                   ) : (
@@ -656,13 +695,13 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                         "spatial-scene__viewport",
                         isDragging ? "spatial-scene__viewport--dragging" : "",
                       ].filter(Boolean).join(" ")}
-                      onWheel={handleWheel}
-                      onPointerDown={handlePointerDown}
-                      onPointerMove={handlePointerMove}
-                      onPointerUp={handlePointerUp}
-                      onPointerLeave={handlePointerUp}
-                      onPointerCancel={handlePointerUp}
-                      onDoubleClick={handleResetView}
+                      onWheel={allowDirectSceneManipulation ? handleWheel : undefined}
+                      onPointerDown={allowDirectSceneManipulation ? handlePointerDown : undefined}
+                      onPointerMove={allowDirectSceneManipulation ? handlePointerMove : undefined}
+                      onPointerUp={allowDirectSceneManipulation ? handlePointerUp : undefined}
+                      onPointerLeave={allowDirectSceneManipulation ? handlePointerUp : undefined}
+                      onPointerCancel={allowDirectSceneManipulation ? handlePointerUp : undefined}
+                      onDoubleClick={allowDirectSceneManipulation ? handleResetView : undefined}
                     >
                       <div
                         className="spatial-scene__transform"
@@ -797,7 +836,13 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
             <div className="spatial__statusbar spatial-panel__statusbar">
               <span>{meta.metrics.join(" · ")}</span>
-              <span>click a pin to inspect · drag to orbit · scroll to zoom</span>
+              <span>
+                {allowDirectSceneManipulation
+                  ? isExpanded
+                    ? "click a pin to inspect · drag to orbit · scroll to zoom"
+                    : "click a pin to inspect · drag to orbit · zoom with +/-"
+                  : "use marker tabs to inspect · page scroll stays active · zoom with +/-"}
+              </span>
             </div>
           </div>
         </div>
