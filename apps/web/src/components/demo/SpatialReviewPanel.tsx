@@ -10,6 +10,9 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from "react";
 import type { SpatialMarker, EvidenceItem } from "../../types/case";
+import { ImageViewerOverlay } from "./ImageViewerOverlay";
+import { NoteViewerOverlay } from "./NoteViewerOverlay";
+import { PdfViewerOverlay } from "./PdfViewerOverlay";
 
 interface Props {
   markers: SpatialMarker[];
@@ -28,6 +31,22 @@ const STATUS_LABELS: Record<NonNullable<SpatialMarker["status"]>, string> = {
   open: "Open",
   resolved: "Resolved",
   "needs-review": "Needs Review",
+};
+
+const getEvidenceFileLabel = (item: EvidenceItem) => {
+  if (item.mimeType?.includes("pdf") || item.name.toLowerCase().endsWith(".pdf")) {
+    return "PDF";
+  }
+
+  return item.type;
+};
+
+const getEvidenceFileAction = (item: EvidenceItem) => {
+  if (item.mimeType?.includes("pdf") || item.name.toLowerCase().endsWith(".pdf")) {
+    return "Open PDF";
+  }
+
+  return "Open file";
 };
 
 type SceneTone = "copper" | "forest" | "slate";
@@ -370,6 +389,9 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [resetToken, setResetToken] = useState(0);
   const [isCompactViewport, setIsCompactViewport] = useState(false);
+  const [activeImage, setActiveImage] = useState<{ title: string; src: string } | null>(null);
+  const [activePdf, setActivePdf] = useState<{ title: string; src: string } | null>(null);
+  const [activeDocument, setActiveDocument] = useState<EvidenceItem | null>(null);
 
   const sceneViewportRef = useRef<HTMLDivElement | null>(null);
   const sceneSurfaceRef = useRef<HTMLDivElement | null>(null);
@@ -588,6 +610,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   const totalAnchorCount = formatCount(markers.length);
 
   return (
+    <>
     <section
       className={[
         "spatial-panel",
@@ -836,12 +859,69 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                           <ul className="spatial-marker-detail__evidence-list">
                             {relatedEvidence.map((ev) => (
                               <li key={ev.id} className="spatial-marker-detail__evidence-item">
-                                <span className={`spatial-evidence-type spatial-evidence-type--${ev.type}`}>
-                                  {ev.type}
-                                </span>
-                                <div className="spatial-marker-detail__evidence-copy">
-                                  <span className="spatial-marker-detail__evidence-name">{ev.name}</span>
-                                  <span className="spatial-marker-detail__evidence-desc">{ev.description}</span>
+                                {ev.type === "image" && ev.previewUrl ? (
+                                  <button
+                                    type="button"
+                                    className="spatial-marker-detail__evidence-preview-button"
+                                    onClick={() => setActiveImage({ title: ev.name, src: ev.previewUrl! })}
+                                    aria-label={`Expand ${ev.name}`}
+                                  >
+                                    <img
+                                      className="spatial-marker-detail__evidence-image"
+                                      src={ev.previewUrl}
+                                      alt=""
+                                      loading="lazy"
+                                    />
+                                    <span className="spatial-marker-detail__evidence-preview-overlay">
+                                      <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                                        <path d="M3 3h5M3 3v5M15 3h-5M15 3v5M3 15h5M3 15v-5M15 15h-5M15 15v-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                      </svg>
+                                      Expand
+                                    </span>
+                                  </button>
+                                ) : ev.previewUrl ? (
+                                  <a
+                                    className="spatial-marker-detail__evidence-file"
+                                    href={ev.previewUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={(event) => {
+                                      const isPdf = ev.mimeType?.includes("pdf") || ev.name.toLowerCase().endsWith(".pdf");
+                                      if (!isPdf) return;
+                                      event.preventDefault();
+                                      setActivePdf({ title: ev.name, src: ev.previewUrl! });
+                                    }}
+                                  >
+                                    <span className="spatial-marker-detail__evidence-file-type">
+                                      {getEvidenceFileLabel(ev)}
+                                    </span>
+                                    <span className="spatial-marker-detail__evidence-file-action">
+                                      {getEvidenceFileAction(ev)}
+                                    </span>
+                                  </a>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    className="spatial-marker-detail__evidence-file spatial-marker-detail__evidence-file--static"
+                                    onClick={() => setActiveDocument(ev)}
+                                    aria-label={`Expand ${ev.name}`}
+                                  >
+                                    <span className="spatial-marker-detail__evidence-file-type">
+                                      {getEvidenceFileLabel(ev)}
+                                    </span>
+                                    <span className="spatial-marker-detail__evidence-file-action">
+                                      Expand summary
+                                    </span>
+                                  </button>
+                                )}
+                                <div className="spatial-marker-detail__evidence-body">
+                                  <span className={`spatial-evidence-type spatial-evidence-type--${ev.type}`}>
+                                    {ev.type}
+                                  </span>
+                                  <div className="spatial-marker-detail__evidence-copy">
+                                    <span className="spatial-marker-detail__evidence-name">{ev.name}</span>
+                                    <span className="spatial-marker-detail__evidence-desc">{ev.description}</span>
+                                  </div>
                                 </div>
                               </li>
                             ))}
@@ -868,5 +948,29 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
         </div>
       </div>
     </section>
+    {activeImage && (
+      <ImageViewerOverlay
+        title={activeImage.title}
+        src={activeImage.src}
+        onClose={() => setActiveImage(null)}
+      />
+    )}
+    {activePdf && (
+      <PdfViewerOverlay
+        title={activePdf.title}
+        src={activePdf.src}
+        onClose={() => setActivePdf(null)}
+      />
+    )}
+    {activeDocument && (
+      <NoteViewerOverlay
+        title={activeDocument.name}
+        body={activeDocument.description}
+        uploadedBy={activeDocument.uploadedBy}
+        uploadedAt={activeDocument.uploadedAt}
+        onClose={() => setActiveDocument(null)}
+      />
+    )}
+    </>
   );
 }

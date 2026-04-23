@@ -6290,6 +6290,127 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
 }
 
 .spatial-marker-detail__evidence-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, var(--spatial-accent) 22%);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    color-mix(in srgb, var(--bg-alt) 72%, transparent);
+}
+
+.spatial-marker-detail__evidence-preview-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+}
+
+.spatial-marker-detail__evidence-preview-button:focus-visible {
+  outline: 2px solid var(--spatial-accent);
+  outline-offset: 3px;
+}
+
+.spatial-marker-detail__evidence-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, var(--spatial-accent) 28%);
+  background: var(--bg);
+}
+
+.spatial-marker-detail__evidence-preview-overlay {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(10, 12, 10, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.spatial-marker-detail__evidence-preview-button:hover .spatial-marker-detail__evidence-preview-overlay,
+.spatial-marker-detail__evidence-preview-button:focus-visible .spatial-marker-detail__evidence-preview-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.spatial-marker-detail__evidence-file {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, var(--spatial-accent) 30%);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--spatial-accent-soft) 42%, transparent), transparent 58%),
+    color-mix(in srgb, var(--bg) 88%, var(--spatial-accent-soft));
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.spatial-marker-detail__evidence-file:hover {
+  border-color: color-mix(in srgb, var(--border) 45%, var(--spatial-accent) 55%);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--spatial-accent-soft) 56%, transparent), transparent 58%),
+    color-mix(in srgb, var(--bg) 82%, var(--spatial-accent-soft));
+}
+
+.spatial-marker-detail__evidence-file--static {
+  color: var(--text-secondary);
+}
+
+.spatial-marker-detail__evidence-file-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 42px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, var(--text) 30%);
+  background: color-mix(in srgb, var(--bg-alt) 78%, var(--text) 8%);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.spatial-marker-detail__evidence-file-action {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.spatial-marker-detail__evidence-body {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px;

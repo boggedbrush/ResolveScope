@@ -139,6 +139,7 @@ export const fleetSafetySeedData: SeedCaseData = {
       description:
         "Post-incident inspection by fleet maintenance. Findings: bent trailer hitch receiver (non-safety critical), minor scratch on rear lower valance. All lights, brakes, and safety systems fully operational. Estimated repair cost: $380. Vehicle cleared for continued operations pending cosmetic repair.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/fleet-safety/vehicle-inspection-report-unit-v-183.pdf",
     },
     {
       id: "fev-006",
