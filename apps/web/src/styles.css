@@ -6002,6 +6002,49 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
   touch-action: pan-y pinch-zoom;
 }
 
+.spatial-scene__pin-hit {
+  width: 36px;
+  height: 36px;
+  border: 2px solid color-mix(in srgb, currentColor 62%, #ffffff 38%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.72) 48%, color-mix(in srgb, currentColor 34%, #ffffff 66%) 100%);
+  box-shadow:
+    0 0 0 3px rgba(8, 12, 11, 0.78),
+    0 10px 22px rgba(0, 0, 0, 0.36),
+    0 0 18px color-mix(in srgb, currentColor 46%, transparent);
+  color: color-mix(in srgb, currentColor 76%, #4a2019 24%);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font: 800 0.78rem/1 var(--font-mono);
+  letter-spacing: 0;
+  pointer-events: auto;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.spatial-scene__pin-hit:hover,
+.spatial-scene__pin-hit--active {
+  border-color: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(8, 12, 11, 0.82),
+    0 12px 28px rgba(0, 0, 0, 0.44),
+    0 0 26px color-mix(in srgb, currentColor 64%, transparent);
+  transform: scale(1.1);
+}
+
+.spatial-scene__pin-hit:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.spatial-scene__pin-hit--high { color: #d85a4c; }
+.spatial-scene__pin-hit--medium { color: #d1a348; }
+.spatial-scene__pin-hit--low { color: #3da170; }
+.spatial-scene__pin-hit--critical { color: #b12828; }
+
 .spatial-marker {
   position: absolute;
   transform: translate(-50%, -50%);

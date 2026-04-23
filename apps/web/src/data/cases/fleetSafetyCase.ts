@@ -101,22 +101,24 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-002",
       type: "image",
-      name: "Incident Photo 1 : Rear Bumper Contact Zone.jpg",
+      name: "Incident Photo 1 : Rear Bumper Contact Zone.png",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:05:00Z",
       description:
         "Rear bumper of Unit V-183 showing impact scuff and bent trailer hitch receiver. No structural intrusion into cargo bay doors. Minor cosmetic damage to forklift counterweight housing also visible.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/rear-bumper-contact-zone.png",
     },
     {
       id: "fev-003",
       type: "image",
-      name: "Incident Photo 2 : Scene Overview Bay 4.jpg",
+      name: "Incident Photo 2 : Scene Overview Bay 4.png",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:08:00Z",
       description:
         "Wide-angle view of Bay 4 loading area. Forklift positioned approx. 1.2m outside painted exclusion zone markings. No spotter or banksman visible in frame.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/bay-4-scene-overview.png",
     },
     {
       id: "fev-004",
@@ -140,13 +142,14 @@ export const fleetSafetySeedData: SeedCaseData = {
     },
     {
       id: "fev-006",
-      type: "document",
-      name: "Dashcam Footage Log : V-183 2024-10-28.pdf",
+      type: "image",
+      name: "Dashcam Still : Tablet Event T-00:08.png",
       uploadedBy: "Fleet Safety (ops portal)",
       uploadedAt: "2024-10-29T15:20:00Z",
       description:
-        "Dashcam metadata and clip log for Unit V-183 on incident date. Confirms vehicle speed 4.2 mph at point of contact. Tablet interaction event recorded 8 seconds prior to impact. Clip retained in fleet safety system for 90-day review window.",
-      mimeType: "application/pdf",
+        "Dashcam still and metadata from Unit V-183 on incident date. Confirms vehicle speed 4.2 mph at point of contact. Tablet interaction event recorded 8 seconds prior to impact. Clip retained in fleet safety system for 90-day review window.",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/dashcam-tablet-event.png",
     },
   ],
   initialReview,
@@ -170,7 +173,7 @@ export const fleetSafetySeedData: SeedCaseData = {
           { time: "2024-10-28 09:08", event: "Scene and damage photos uploaded by supervisor" },
           { time: "2024-10-28 11:30", event: "Supervisor note submitted; in-cab tablet policy reviewed with driver" },
           { time: "2024-10-29 09:45", event: "Fleet maintenance inspection completed; vehicle cleared" },
-          { time: "2024-10-29 15:20", event: "Dashcam footage log filed by Fleet Safety" },
+          { time: "2024-10-29 15:20", event: "Dashcam still and clip metadata filed by Fleet Safety" },
         ],
       },
       parties: {

@@ -102,6 +102,12 @@ const AutoClaimKenneyScene = lazy(() =>
   }))
 );
 
+const FleetSafetyKenneyScene = lazy(() =>
+  import("./FleetSafetyKenneyScene").then((module) => ({
+    default: module.FleetSafetyKenneyScene,
+  }))
+);
+
 function FleetSafetyScene() {
   return (
     <svg
@@ -338,7 +344,21 @@ function SceneIllustration({
       </Suspense>
     );
   }
-  if (templateId === "fleet-safety") return <FleetSafetyScene />;
+  if (templateId === "fleet-safety") {
+    return (
+      <Suspense fallback={<FleetSafetyScene />}>
+        <FleetSafetyKenneyScene
+          selectedMarkerId={selectedMarkerId}
+          onSelectMarker={onSelectMarker}
+          markers={markers ?? []}
+          zoom={zoom ?? MIN_ZOOM}
+          resetToken={resetToken ?? 0}
+          interactive={interactive}
+          allowScrollZoom={allowScrollZoom}
+        />
+      </Suspense>
+    );
+  }
   return <SiteInspectionScene />;
 }
 
@@ -362,7 +382,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   } | null>(null);
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
-  const isTrue3DScene = templateId === "auto-claim";
+  const isTrue3DScene = templateId === "auto-claim" || templateId === "fleet-safety";
   const allowDirectSceneManipulation = !isCompactViewport;
 
   useEffect(() => {
