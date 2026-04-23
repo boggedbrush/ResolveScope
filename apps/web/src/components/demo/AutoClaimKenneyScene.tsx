@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import type { SpatialMarker } from "../../types/case";
@@ -165,11 +165,50 @@ function MarkerPin({
   if (!position) return null;
 
   const color = severityColor(marker.severity);
-  const headOffset = 0.95;
+  const markerNumber = marker.id.slice(-3).replace(/^0+/, "").padStart(2, "0");
+  const headOffset = 1.85;
   const stemHeight = headOffset - 0.08;
+  const handleSelect = (event: { stopPropagation: () => void }) => {
+    event.stopPropagation();
+    onSelect(marker.id);
+  };
+  const handlePointerOver = () => {
+    document.body.style.cursor = "pointer";
+  };
+  const handlePointerOut = () => {
+    document.body.style.cursor = "auto";
+  };
 
   return (
     <group position={position}>
+      <Html position={[0, headOffset, 0]} center zIndexRange={[12, 0]}>
+        <button
+          type="button"
+          className={[
+            "spatial-scene__pin-hit",
+            `spatial-scene__pin-hit--${marker.severity}`,
+            isActive ? "spatial-scene__pin-hit--active" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={handleSelect}
+          aria-label={`Inspect ${marker.label}`}
+          aria-pressed={isActive}
+        >
+          {markerNumber}
+        </button>
+      </Html>
+      <mesh
+        position={[0, headOffset, 0]}
+        onPointerDown={handleSelect}
+        onClick={handleSelect}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+      >
+        <sphereGeometry args={[0.38, 20, 20]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
       <mesh position={[0, headOffset / 2 - 0.02, 0]}>
         <cylinderGeometry args={[0.012, 0.012, stemHeight, 8]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={isActive ? 0.55 : 0.2} />
@@ -180,16 +219,10 @@ function MarkerPin({
       </mesh>
       <mesh
         position={[0, headOffset, 0]}
-        onClick={(event) => {
-          event.stopPropagation();
-          onSelect(marker.id);
-        }}
-        onPointerOver={() => {
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={() => {
-          document.body.style.cursor = "auto";
-        }}
+        onPointerDown={handleSelect}
+        onClick={handleSelect}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
       >
         <sphereGeometry args={[0.14, 20, 20]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={isActive ? 1.1 : 0.55} />
