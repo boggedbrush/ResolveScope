@@ -449,9 +449,7 @@ export function CaseReportPage() {
               </div>
               <div className="report-meta-item">
                 <span className="report-meta-item__label">Status</span>
-                <span
-                  className={`badge badge--status-${caseMeta.status.replace("-", "")}`}
-                >
+                <span className={`badge badge--status-${caseMeta.status}`}>
                   {STATUS_LABELS[caseMeta.status] ?? caseMeta.status}
                 </span>
               </div>

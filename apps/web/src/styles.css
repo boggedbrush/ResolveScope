@@ -817,10 +817,16 @@ section {
   pointer-events: none;
   user-select: none;
   overflow: hidden;
-  white-space: pre-wrap;
-  word-break: break-all;
   z-index: 2;
   transition: opacity 0.8s ease;
+}
+
+/* Keep generated binary decorative without exposing it as DOM text. */
+.binary-layer::before {
+  content: attr(data-binary);
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .codex-banner.is-animated .binary-layer {
@@ -5774,9 +5780,11 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
   display: block;
 }
 
-/* Disabled approve button */
+/* Disabled gated actions */
 .review-actions__approve:disabled,
-.review-actions__approve[aria-disabled="true"] {
+.review-actions__approve[aria-disabled="true"],
+.review-actions__export:disabled,
+.review-actions__export[aria-disabled="true"] {
   background: var(--bg-alt);
   color: var(--text-tertiary);
   border: 1.5px solid var(--border);

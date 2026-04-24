@@ -51,7 +51,7 @@ export function CodexBanner({ variant }: { variant?: "arch" } = {}) {
       const rect = banner!.getBoundingClientRect();
       const cols = Math.max(Math.ceil(rect.width / 26), 40);
       const rows = Math.max(Math.ceil(rect.height / 30), 16);
-      binaryLayer!.textContent = generate(rows, cols);
+      binaryLayer!.dataset.binary = generate(rows, cols);
     }
 
     populate();
@@ -97,10 +97,10 @@ export function CodexBanner({ variant }: { variant?: "arch" } = {}) {
 
   return (
     <div className="codex-banner" ref={bannerRef}>
-      <div className="orb orb--left" />
-      <div className="orb orb--right" />
-      <div className="binary-layer" ref={binaryRef} />
-      <div className="center-fade" />
+      <div className="orb orb--left" aria-hidden="true" />
+      <div className="orb orb--right" aria-hidden="true" />
+      <div className="binary-layer" ref={binaryRef} aria-hidden="true" role="presentation" />
+      <div className="center-fade" aria-hidden="true" />
 
       <div className="banner-content">
         {variant === "arch" ? (

@@ -72,6 +72,7 @@ export function ReviewPanel({
   onExportJson,
 }: Props) {
   const isApproved = caseStatus === "approved";
+  const canExport = isApproved && extraction !== null;
   const { reviewFieldLabels } = template;
 
   const approvalStatus = checkApproval(
@@ -248,7 +249,16 @@ export function ReviewPanel({
           <button
             className="btn btn--outline review-actions__export"
             onClick={onExportJson}
-            aria-label="Download JSON case bundle"
+            disabled={!canExport}
+            aria-disabled={!canExport}
+            aria-label="Download approved JSON case bundle"
+            title={
+              canExport
+                ? "Download approved JSON case bundle"
+                : extraction === null
+                  ? "Run extraction and approve this case before exporting JSON"
+                  : "Approve this case before exporting JSON"
+            }
           >
             Export JSON
           </button>

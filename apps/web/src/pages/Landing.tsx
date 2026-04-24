@@ -37,13 +37,13 @@ const CAPABILITIES = [
   },
   {
     title: "Human review",
-    body: "Inspect AI-generated fields before finalization. Edit structured outputs with explicit audit history and role-based approval.",
+    body: "Inspect AI-generated fields before finalization. Use checklist approval and audit history to keep reviewer decisions visible.",
     accent: false,
     num: "03",
   },
   {
     title: "Export and reporting",
-    body: "Generate polished PDF reports and JSON bundles. Create shareable links for external stakeholders and downstream systems.",
+    body: "Open stakeholder report views, print or save PDFs from the browser, and download approved JSON bundles.",
     accent: true,
     num: "04",
   },

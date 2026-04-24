@@ -181,9 +181,7 @@ export function Dashboard() {
                     </span>
                   </td>
                   <td>
-                    <span
-                      className={`badge badge--status-${c.status.replace("-", "")}`}
-                    >
+                    <span className={`badge badge--status-${c.status}`}>
                       {STATUS_LABELS[c.status]}
                     </span>
                   </td>

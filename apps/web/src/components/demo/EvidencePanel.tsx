@@ -72,8 +72,7 @@ export function EvidencePanel({
     e.target.value = "";
   }
 
-  // Normalize CSS class: "in-review" → "inreview", "total-loss" → "totalloss"
-  const statusClass = status.replace(/-/g, "");
+  const statusClass = status;
   const severityClass = severity.replace(/-/g, "");
 
   return (

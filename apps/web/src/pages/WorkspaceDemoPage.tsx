@@ -172,6 +172,9 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
   }
 
   function handleExportJson() {
+    // Export stays approval-gated so the demo preserves review before handoff.
+    if (caseMeta.status !== "approved" || demoState.extraction === null) return;
+
     const nextState = commitDemoState((prev) =>
       appendAudit(prev, "report_exported", "JSON bundle downloaded")
     );
