@@ -199,22 +199,17 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
     <div className={`demo-page${hasSpatial ? " demo-page--with-spatial" : ""}`}>
       <header className="demo-topbar">
         <div className="demo-topbar__left">
-          <Link to="/" className="demo-topbar__logo">
-            Resolve<span>Scope</span>
+          <Link to="/dashboard" className="btn btn--outline demo-topbar__back">
+            ← Dashboard
           </Link>
-          <span className="demo-topbar__sep" aria-hidden="true">/</span>
-          <span className="demo-topbar__breadcrumb">Demo workspace</span>
+          <span className="demo-topbar__badge section-label">
+            {template.label}
+          </span>
         </div>
         <div className="demo-topbar__right">
           <button className="btn btn--outline demo-topbar__back" onClick={handleResetDemo}>
             Reset demo
           </button>
-          <span className="demo-topbar__badge section-label">
-            {template.label}
-          </span>
-          <Link to="/dashboard" className="btn btn--outline demo-topbar__back">
-            ← Dashboard
-          </Link>
           <ThemeControl className="demo-topbar__theme" />
         </div>
       </header>
@@ -223,6 +218,7 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
         <SpatialReviewPanel
           markers={demoState.spatialMarkers!}
           evidence={evidence}
+          templateId={seedData.caseMeta.templateId}
         />
       )}
 
