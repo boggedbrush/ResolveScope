@@ -3523,8 +3523,16 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
 }
 
 .app-sidebar__footer {
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.app-sidebar__footer .app-sidebar__nav-item {
+  width: 100%;
 }
 
 /* ── Main content area ──────────────────── */
@@ -3578,6 +3586,146 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
   border-radius: 10px;
   overflow: hidden;
   background: var(--bg-card);
+}
+
+/* ═══════════════════════════════════════════
+   Dashboard settings
+   ═══════════════════════════════════════════ */
+
+.settings-page {
+  width: min(820px, 100%);
+  margin: 0 auto;
+  padding: 36px 40px 48px;
+}
+
+.settings-page__header {
+  margin-bottom: 28px;
+}
+
+.settings-page__eyebrow {
+  margin-bottom: 6px;
+  color: var(--copper);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-page__title {
+  color: var(--text);
+  font-size: clamp(1.85rem, 3vw, 2.65rem);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.settings-page__subtitle {
+  max-width: 700px;
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.settings-page__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.settings-panel {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  padding: 22px;
+}
+
+.settings-panel--primary {
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--copper-subtle) 62%, transparent), transparent 62%),
+    var(--bg-card);
+}
+
+.settings-panel__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.settings-panel__heading h2 {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.settings-panel__heading p {
+  max-width: 560px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.settings-field,
+.settings-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+
+.settings-action {
+  margin-top: 16px;
+}
+
+.settings-field__label,
+.settings-action h3 {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.settings-field__hint,
+.settings-action p {
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.settings-page__theme {
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .app-layout {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .app-sidebar {
+    width: 172px;
+  }
+
+  .dashboard,
+  .settings-page {
+    padding: 24px 20px 36px;
+  }
+
+  .settings-panel__heading,
+  .settings-field,
+  .settings-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 /* ── Case table ─────────────────────────── */

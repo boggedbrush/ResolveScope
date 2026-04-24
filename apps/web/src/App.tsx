@@ -8,6 +8,11 @@ const Landing = lazy(() =>
 const Dashboard = lazy(() =>
   import("./pages/Dashboard").then((m) => ({ default: m.Dashboard }))
 );
+const DashboardSettings = lazy(() =>
+  import("./pages/DashboardSettings").then((m) => ({
+    default: m.DashboardSettings,
+  }))
+);
 const CaseWorkspace = lazy(() =>
   import("./pages/CaseWorkspace").then((m) => ({ default: m.CaseWorkspace }))
 );
@@ -49,6 +54,7 @@ export function App() {
         <Route path="/architecture" element={<ArchitecturePage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/settings" element={<DashboardSettings />} />
           <Route path="/cases/:id" element={<CaseWorkspace />} />
         </Route>
       </Routes>

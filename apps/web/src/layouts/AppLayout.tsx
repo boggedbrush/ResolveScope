@@ -39,6 +39,7 @@ export function AppLayout() {
             <li>
               <NavLink
                 to="/dashboard"
+                end
                 className={({ isActive }) =>
                   `app-sidebar__nav-item${isActive ? " app-sidebar__nav-item--active" : ""}`
                 }
@@ -52,10 +53,15 @@ export function AppLayout() {
 
         <div className="app-sidebar__footer">
           <ThemeControl className="app-sidebar__theme" />
-          <button className="app-sidebar__nav-item app-sidebar__nav-item--muted">
+          <NavLink
+            to="/dashboard/settings"
+            className={({ isActive }) =>
+              `app-sidebar__nav-item app-sidebar__nav-item--muted${isActive ? " app-sidebar__nav-item--active" : ""}`
+            }
+          >
             <GridIcon />
             Settings
-          </button>
+          </NavLink>
         </div>
       </aside>
 
