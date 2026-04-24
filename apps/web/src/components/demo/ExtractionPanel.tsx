@@ -319,6 +319,14 @@ function useStreamingReveal(
     let lastTime: number | null = null;
     let currentSection = 0;
 
+    function finishStream() {
+      const completed = new Array(n).fill(1);
+      stateRef.current = { activeSectionIdx: n, progress: completed };
+      setSectionProgress(completed);
+      setActiveSectionIdx(n);
+      setStreamDone(true);
+    }
+
     function tick(now: number) {
       if (lastTime === null) {
         lastTime = now;
@@ -329,7 +337,7 @@ function useStreamingReveal(
       lastTime = now;
 
       if (currentSection >= n) {
-        setStreamDone(true);
+        finishStream();
         return;
       }
 
@@ -346,22 +354,26 @@ function useStreamingReveal(
       const charsThisFrame = charsPerSec * jitter * dt;
       const delta = sectionLen > 0 ? charsThisFrame / sectionLen : 1;
 
-      setSectionProgress((prev) => {
-        const next = [...prev];
-        const newProg = Math.min(1, (next[currentSection] ?? 0) + delta);
-        next[currentSection] = newProg;
-        if (newProg >= 1) {
-          // Small pause between sections (~120ms) achieved by advancing immediately
-          currentSection++;
-          setActiveSectionIdx(currentSection);
-        }
-        return next;
-      });
+      // Keep section advancement outside React state updaters; StrictMode may
+      // re-run them and skip the completed state that reveals provenance.
+      const next = [...stateRef.current.progress];
+      const newProg = Math.min(1, (next[currentSection] ?? 0) + delta);
+      next[currentSection] = newProg;
+
+      if (newProg >= 1) {
+        currentSection++;
+        stateRef.current = { activeSectionIdx: currentSection, progress: next };
+        setActiveSectionIdx(currentSection);
+      } else {
+        stateRef.current = { activeSectionIdx: currentSection, progress: next };
+      }
+
+      setSectionProgress(next);
 
       if (currentSection < n) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
-        setStreamDone(true);
+        finishStream();
       }
     }
 

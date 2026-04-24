@@ -379,7 +379,8 @@ export function CaseReportPage() {
   const state = getDemoCaseState(demoId!, seedData);
   const caseMeta = state.caseMeta;
   const evidence = state.evidence;
-  const extraction = state.extraction ?? seedData.extraction;
+  // Reports must reflect the case workflow state, including a reset demo.
+  const extraction = state.extraction;
   const review = state.review;
   const reviewer = state.reviewer;
   const spatialMarkers = state.spatialMarkers ?? seedData.spatialMarkers;
@@ -524,27 +525,40 @@ export function CaseReportPage() {
         <div className="report-divider" aria-hidden="true" />
 
         {/* ── Extraction sections ── */}
-        <div className="report-sections">
-          {template.extractionSections.map((def) => {
-            const data = extraction.sections[def.key];
-            if (!data) return null;
-            const provenanceKey = def.provenanceKey ?? def.key;
-            const provenanceIds = extraction.provenance[provenanceKey] ?? [];
+        {extraction ? (
+          <div className="report-sections">
+            {template.extractionSections.map((def) => {
+              const data = extraction.sections[def.key];
+              if (!data) return null;
+              const provenanceKey = def.provenanceKey ?? def.key;
+              const provenanceIds = extraction.provenance[provenanceKey] ?? [];
 
-            return (
-              <div key={def.key} className="report-section">
-                <div className="report-section__header">
-                  <span className="report-section__label">
-                    {template.label}
-                  </span>
-                  <h2 className="report-section__title">{def.title}</h2>
+              return (
+                <div key={def.key} className="report-section">
+                  <div className="report-section__header">
+                    <span className="report-section__label">
+                      {template.label}
+                    </span>
+                    <h2 className="report-section__title">{def.title}</h2>
+                  </div>
+                  <SectionContent data={data} />
+                  <ProvenanceNote ids={provenanceIds} evidence={evidence} />
                 </div>
-                <SectionContent data={data} />
-                <ProvenanceNote ids={provenanceIds} evidence={evidence} />
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="report-section">
+            <div className="report-section__header">
+              <span className="report-section__label">{template.label}</span>
+              <h2 className="report-section__title">Extraction Not Run</h2>
+              <p className="report-section__subtitle">
+                Run extraction in the workspace before using this stakeholder
+                report as a generated case brief.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ── Spatial findings ── */}
         {hasSpatial && (
@@ -648,11 +662,13 @@ export function CaseReportPage() {
         <div className="report-divider" aria-hidden="true" />
 
         {/* ── Provenance appendix ── */}
-        <ProvenanceAppendix
-          template={template}
-          extraction={extraction}
-          evidence={evidence}
-        />
+        {extraction && (
+          <ProvenanceAppendix
+            template={template}
+            extraction={extraction}
+            evidence={evidence}
+          />
+        )}
 
         {/* ── Footer ── */}
         <footer className="report-footer">
