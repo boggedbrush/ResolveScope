@@ -3690,7 +3690,15 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 24px;
   margin-bottom: 28px;
+}
+
+.dashboard__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .dashboard__title {
