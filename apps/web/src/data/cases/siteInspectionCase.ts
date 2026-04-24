@@ -60,11 +60,11 @@ export const siteInspectionSpatialMarkers: SpatialMarker[] = [
   },
   {
     id: "sm-004",
-    label: "Trip Hazard : Main Entry Threshold",
+    label: "Trip Hazard : Back Entrance Threshold",
     x: 50,
     y: 90,
     severity: "medium",
-    note: "Raised concrete lip at main building entry threshold : approximately 40mm height differential. ADA non-compliant. Concrete lip likely heaved due to tree root pressure. Immediate remediation advised; interim signage required.",
+    note: "Raised concrete lip at back entrance threshold : approximately 40mm height differential. ADA non-compliant. Concrete lip likely heaved due to tree root pressure. Immediate remediation advised; interim signage required.",
     relatedEvidenceIds: ["siev-007"],
     relatedExtractionSectionKey: "safetyHazards",
     status: "open",
@@ -96,6 +96,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       description:
         "Client-submitted inspection brief. Hargrove PM reports recurring damp patches in Level 1 northeast corridor and visible facade cracking noticed by tenants. Requests full exterior envelope assessment ahead of winter season.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/site-inspection/inspection-brief-hargrove-building-a.pdf",
     },
     {
       id: "siev-002",
@@ -106,36 +107,40 @@ export const siteInspectionSeedData: SeedCaseData = {
       description:
         "Completed pre-inspection checklist for exterior envelope survey. Covers facade, roof edge, windows, ground plane, drainage, and entry areas. 47 of 52 line items satisfactory. 5 items flagged for documentation.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/site-inspection/inspection-checklist-exterior-envelope.pdf",
     },
     {
       id: "siev-003",
       type: "image",
-      name: "Photo 01 : Roof Flashing North Parapet.jpg",
+      name: "Photo 01 : Roof Flashing North Parapet.png",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T10:15:00Z",
       description:
         "Close-up of north parapet at roof level. Metal cap flashing has lifted approximately 40mm from the substrate at the wall-roof junction. Sealant at seam is fully cracked and missing in two sections. Water staining visible on interior parapet face.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/site-inspection/roof-flashing-north-parapet.png",
     },
     {
       id: "siev-004",
       type: "image",
-      name: "Photo 02 : Level 2 Spandrel Crack Detail.jpg",
+      name: "Photo 02 : Level 2 Spandrel Crack Detail.png",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T10:48:00Z",
       description:
         "Diagonal crack on Level 2 masonry spandrel panel between Window Column C and Column D. Crack runs from upper-left to lower-right at approximately 30 degrees from vertical, 14 inches in length, 3mm width at widest point. No previous repair attempts visible.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/site-inspection/level-2-spandrel-crack.png",
     },
     {
       id: "siev-005",
       type: "image",
-      name: "Photo 03 : Southeast Corner Overview.jpg",
+      name: "Photo 03 : Southeast Corner Overview.png",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T11:20:00Z",
       description:
         "Wide-angle view of southeast building corner from ground level. Shows water staining and efflorescence running vertically from Level 1 window head to ground plane, approximately 6 sq ft affected. Staining pattern consistent with head flashing failure at right-most window of ground floor bank.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/site-inspection/southeast-corner-water-intrusion.png",
     },
     {
       id: "siev-006",
@@ -150,12 +155,13 @@ export const siteInspectionSeedData: SeedCaseData = {
     {
       id: "siev-007",
       type: "image",
-      name: "Photo 04 : Main Entry Trip Hazard.jpg",
+      name: "Photo 04 : Back Entrance Trip Hazard.png",
       uploadedBy: "Alex Reyes (field inspector)",
       uploadedAt: "2024-11-05T12:05:00Z",
       description:
-        "Main building entry threshold showing heaved concrete section. Measurement probe in frame indicates 40–42mm height differential at the joint. Tree root visible in adjacent landscaping bed. Hazard marked with cones by building maintenance on day of inspection.",
-      mimeType: "image/jpeg",
+        "Back entrance threshold showing heaved concrete section. Measurement probe in frame indicates 40–42mm height differential at the joint. Tree root visible in adjacent landscaping bed. Hazard marked with cones by building maintenance on day of inspection.",
+      mimeType: "image/png",
+      previewUrl: "/assets/site-inspection/main-entry-trip-hazard.png",
     },
     {
       id: "siev-008",
@@ -176,7 +182,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       siteSummary: {
         type: "text",
         content:
-          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2024 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the main building entry threshold. Overall site condition is rated Elevated : no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
+          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2024 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the back entrance threshold. Overall site condition is rated Elevated : no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
       },
       siteInfo: {
         type: "unit-info",
@@ -212,7 +218,7 @@ export const siteInspectionSeedData: SeedCaseData = {
           "Roof flashing failure at north parapet : metal cap flashing lifted 40mm, sealant fully failed over approx. 4 linear feet. Active water ingress channel under wet conditions.",
           "Diagonal masonry crack on Level 2 spandrel panel (Col C–D), 14-inch length, 3mm width. Pattern suggests differential settlement or thermal movement : structural engineer review required.",
           "Water intrusion staining and efflorescence on SE facade face, approx. 6 sq ft. Moisture probe reading 32% at 25mm depth. Consistent with Level 1 window head flashing failure.",
-          "Trip hazard at main building entry : heaved concrete lip 40–42mm, likely root pressure. ADA non-compliant. Interim hazard marking in place by building maintenance.",
+          "Trip hazard at back entrance : heaved concrete lip 40–42mm, likely root pressure. ADA non-compliant. Interim hazard marking in place by building maintenance.",
           "47 of 52 checklist line items satisfactory; 5 items flagged. No roof drainage obstructions, no window seal failures beyond SE corner, no ground floor structural cracking.",
         ],
       },
@@ -245,7 +251,7 @@ export const siteInspectionSeedData: SeedCaseData = {
           },
           {
             action:
-              "Repair main entry threshold : grind or re-pour heaved concrete section to achieve flush ≤6mm transition. Install interim hazard signage within 24 hours.",
+              "Repair back entrance threshold : grind or re-pour heaved concrete section to achieve flush ≤6mm transition. Install interim hazard signage within 24 hours.",
             owner: "Building Maintenance",
             due: "2024-11-08",
           },

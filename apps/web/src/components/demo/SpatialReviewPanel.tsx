@@ -127,6 +127,12 @@ const FleetSafetyKenneyScene = lazy(() =>
   }))
 );
 
+const SiteInspectionKenneyScene = lazy(() =>
+  import("./SiteInspectionKenneyScene").then((module) => ({
+    default: module.SiteInspectionKenneyScene,
+  }))
+);
+
 function FleetSafetyScene() {
   return (
     <svg
@@ -231,104 +237,6 @@ function FleetSafetyScene() {
   );
 }
 
-function SiteInspectionScene() {
-  return (
-    <svg
-      viewBox="0 0 1200 720"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className="spatial-scene__svg"
-    >
-      <defs>
-        <linearGradient id="site-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#121519" />
-          <stop offset="50%" stopColor="#182028" />
-          <stop offset="100%" stopColor="#0a0d12" />
-        </linearGradient>
-        <radialGradient id="site-glow" cx="56%" cy="42%" r="58%">
-          <stop offset="0%" stopColor="#8fa8c7" stopOpacity="0.22" />
-          <stop offset="55%" stopColor="#597192" stopOpacity="0.11" />
-          <stop offset="100%" stopColor="#000" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="site-ground" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#28313c" />
-          <stop offset="100%" stopColor="#10141a" />
-        </linearGradient>
-        <linearGradient id="site-front" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#d8d4ce" />
-          <stop offset="100%" stopColor="#aca59b" />
-        </linearGradient>
-        <linearGradient id="site-side" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#b8b1a7" />
-          <stop offset="100%" stopColor="#8d867d" />
-        </linearGradient>
-        <linearGradient id="site-window" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#9eb2c4" />
-          <stop offset="100%" stopColor="#5e7288" />
-        </linearGradient>
-        <filter id="site-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="24" stdDeviation="28" floodColor="#000" floodOpacity="0.45" />
-        </filter>
-      </defs>
-
-      <rect width="1200" height="720" fill="url(#site-bg)" />
-      <rect width="1200" height="720" fill="url(#site-glow)" />
-
-      <polygon points="86,574 604,320 1088,474 570,720" fill="url(#site-ground)" />
-      <polygon points="86,574 86,620 570,720 570,720" fill="#0a0d12" />
-
-      <g filter="url(#site-shadow)">
-        <ellipse cx="604" cy="476" rx="244" ry="64" fill="#000" opacity="0.36" />
-        <polygon points="430,154 804,282 804,534 430,406" fill="url(#site-front)" />
-        <polygon points="804,282 936,212 936,460 804,534" fill="url(#site-side)" />
-        <polygon points="430,154 562,86 936,212 804,282" fill="#ede8e1" />
-        <polygon points="430,154 430,406 384,430 384,177" fill="#8d867d" opacity="0.45" />
-        <path d="M430 242 L 804 370" stroke="#beb7ae" strokeWidth="3" opacity="0.55" />
-        <path d="M430 322 L 804 450" stroke="#b4ada5" strokeWidth="3" opacity="0.5" />
-        <path d="M548 110 L 548 446" stroke="#c8c1b8" strokeWidth="2.5" opacity="0.24" />
-        <path d="M665 150 L 665 486" stroke="#c8c1b8" strokeWidth="2.5" opacity="0.24" />
-        <polygon points="824,270 870,252 870,315 824,334" fill="#7d92a4" opacity="0.55" />
-        <polygon points="824,354 870,336 870,399 824,418" fill="#6f8598" opacity="0.48" />
-        <rect x="560" y="336" width="102" height="162" rx="10" fill="#8f867d" />
-        <rect x="575" y="350" width="35" height="132" rx="6" fill="#70675f" />
-        <rect x="614" y="350" width="35" height="132" rx="6" fill="#70675f" />
-      </g>
-
-      <g opacity="0.92">
-        {[
-          [476, 188], [582, 224], [688, 260],
-          [476, 276], [582, 312], [688, 348],
-          [476, 364], [688, 436]
-        ].map(([x, y], index) => (
-          <g key={`${x}-${y}-${index}`}>
-            <polygon points={`${x - 8},${y + 10} ${x + 66},${y + 36} ${x + 66},${y + 100} ${x - 8},${y + 74}`} fill="#4c5e73" opacity="0.18" />
-            <polygon points={`${x},${y} ${x + 74},${y + 26} ${x + 74},${y + 86} ${x},${y + 60}`} fill="url(#site-window)" opacity="0.9" />
-            <polygon points={`${x},${y} ${x + 74},${y + 26} ${x + 110},${y + 8} ${x + 36},${y - 18}`} fill="#cbd8e2" opacity="0.55" />
-            <line x1={x + 37} y1={y + 12} x2={x + 37} y2={y + 74} stroke="#d7e2ec" strokeOpacity="0.42" strokeWidth="2.5" />
-            <line x1={x + 5} y1={y + 30} x2={x + 69} y2={y + 52} stroke="#d7e2ec" strokeOpacity="0.26" strokeWidth="2" />
-          </g>
-        ))}
-      </g>
-
-      <g>
-        <path d="M523 127 L 618 160" stroke="#ffad7b" strokeWidth="8" strokeLinecap="round" strokeDasharray="18 12" opacity="0.9" />
-        <path d="M589 309 L 637 326 L 620 378 L 572 360" fill="none" stroke="#ff9d84" strokeWidth="7" strokeLinecap="round" opacity="0.88" />
-        <path d="M742 416 C 760 430, 776 466, 786 512" fill="none" stroke="#7eb7ff" strokeWidth="8" strokeLinecap="round" opacity="0.45" />
-        <path d="M742 416 C 764 442, 786 478, 800 534" fill="none" stroke="#dfeeff" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
-        <polygon points="576,518 647,542 604,564 534,540" fill="#d7a864" opacity="0.9" />
-      </g>
-
-      <g opacity="0.9">
-        <rect x="154" y="118" width="248" height="132" rx="18" fill="#11161d" stroke="#405166" />
-        <text x="182" y="158" fill="#dce6f4" fontSize="20" fontFamily="system-ui, sans-serif" fontWeight="600">Remediation queue</text>
-        <rect x="182" y="180" width="108" height="12" rx="6" fill="#7ba0d6" opacity="0.85" />
-        <rect x="182" y="204" width="156" height="12" rx="6" fill="#4c5e75" opacity="0.85" />
-        <rect x="182" y="228" width="120" height="12" rx="6" fill="#ffb17b" opacity="0.85" />
-      </g>
-    </svg>
-  );
-}
-
 function SceneIllustration({
   templateId,
   selectedMarkerId,
@@ -378,7 +286,22 @@ function SceneIllustration({
       </Suspense>
     );
   }
-  return <SiteInspectionScene />;
+  if (templateId === "site-inspection") {
+    return (
+      <Suspense fallback={<div className="spatial-scene__canvas" />}>
+        <SiteInspectionKenneyScene
+          selectedMarkerId={selectedMarkerId}
+          onSelectMarker={onSelectMarker}
+          markers={markers ?? []}
+          zoom={zoom ?? MIN_ZOOM}
+          resetToken={resetToken ?? 0}
+          interactive={interactive}
+          allowScrollZoom={allowScrollZoom}
+        />
+      </Suspense>
+    );
+  }
+  return <div className="spatial-scene__canvas" />;
 }
 
 export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
@@ -404,7 +327,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
   } | null>(null);
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
-  const isTrue3DScene = templateId === "auto-claim" || templateId === "fleet-safety";
+  const isTrue3DScene = templateId === "auto-claim" || templateId === "fleet-safety" || templateId === "site-inspection";
   const allowDirectSceneManipulation = !isCompactViewport;
 
   useEffect(() => {
