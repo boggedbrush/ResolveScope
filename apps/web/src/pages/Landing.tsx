@@ -3,12 +3,20 @@ import { Link } from "react-router-dom";
 import { HeroDemo } from "../components/HeroDemo";
 import { CodexBanner } from "../components/CodexBanner";
 import { ThemeControl } from "../components/ThemeControl";
+import { MobileNavMenu, type MobileNavItem } from "../components/MobileNavMenu";
 
 const SpatialPreview = lazy(() =>
   import("../components/SpatialPreview").then((m) => ({
     default: m.SpatialPreview,
   }))
 );
+
+const LANDING_NAV_ITEMS: MobileNavItem[] = [
+  { label: "How it works", href: "#proof" },
+  { label: "Capabilities", href: "#capabilities" },
+  { label: "Spatial Review", href: "#spatial" },
+  { label: "Architecture", to: "/architecture" },
+];
 
 /* ═══════════════════════════════════════════
    Section data
@@ -187,6 +195,7 @@ export function Landing() {
                 Try the Demo
               </Link>
               <ThemeControl className="nav__theme" />
+              <MobileNavMenu items={LANDING_NAV_ITEMS} />
             </div>
           </div>
         </div>

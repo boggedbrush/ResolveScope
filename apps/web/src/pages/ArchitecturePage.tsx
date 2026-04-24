@@ -2,6 +2,15 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeControl } from "../components/ThemeControl";
 import { CodexBanner } from "../components/CodexBanner";
+import { MobileNavMenu, type MobileNavItem } from "../components/MobileNavMenu";
+
+const ARCHITECTURE_NAV_ITEMS: MobileNavItem[] = [
+  { label: "Overview", href: "#overview" },
+  { label: "Components", href: "#components" },
+  { label: "Infrastructure", href: "#infrastructure" },
+  { label: "AI Trust", href: "#ai-trust" },
+  { label: "Home", to: "/" },
+];
 
 /* ═══════════════════════════════════════════
    Scroll reveal hook (matches Landing.tsx)
@@ -368,6 +377,7 @@ export function ArchitecturePage() {
                 Try the Demo
               </Link>
               <ThemeControl className="nav__theme" />
+              <MobileNavMenu items={ARCHITECTURE_NAV_ITEMS} />
             </div>
           </div>
         </div>

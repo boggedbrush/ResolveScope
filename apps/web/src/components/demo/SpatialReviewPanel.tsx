@@ -328,7 +328,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
 
   const meta = SCENE_META[templateId] ?? SCENE_META["site-inspection"];
   const isTrue3DScene = templateId === "auto-claim" || templateId === "fleet-safety" || templateId === "site-inspection";
-  const allowDirectSceneManipulation = !isCompactViewport;
+  const allowDirectSceneManipulation = isTrue3DScene || !isCompactViewport;
 
   useEffect(() => {
     if (!markers.some((marker) => marker.id === selectedId)) {

@@ -121,7 +121,7 @@ export function Dashboard() {
             {rows.length} cases · {activeCount} active
           </p>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className="dashboard__actions">
           <button className="btn btn--outline btn--sm" onClick={handleResetAllDemos}>
             Reset demos
           </button>

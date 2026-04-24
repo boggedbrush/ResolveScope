@@ -228,11 +228,6 @@ export function HeroDemo() {
   return (
     <div className="hero-demo">
       <div className="hero-demo__bar">
-        <div className="hero-demo__dots">
-          <div className="hero-demo__dot" />
-          <div className="hero-demo__dot" />
-          <div className="hero-demo__dot" />
-        </div>
         <span className="hero-demo__bar-label">
           <span className="hero-demo__bar-step">{STAGE_META[stage].step}</span>
           {STAGE_META[stage].label}
