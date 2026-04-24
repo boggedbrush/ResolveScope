@@ -1,0 +1,65 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Length 1954 >>
+stream
+BT /F2 20 Tf 54 744 Td (Inspection Checklist) Tj ET
+BT /F1 15 Tf 54 718 Td (Exterior Envelope) Tj ET
+1.2 w 54 700 m 558 700 l S
+BT /F2 10 Tf 54 672 Td (CASE) Tj ET
+BT /F1 10 Tf 190 672 Td (SIR-2024-00091) Tj ET
+BT /F2 10 Tf 54 654 Td (INSPECTOR) Tj ET
+BT /F1 10 Tf 190 654 Td (Alex Reyes) Tj ET
+BT /F2 10 Tf 54 636 Td (INSPECTION DATE) Tj ET
+BT /F1 10 Tf 190 636 Td (November 5, 2024) Tj ET
+BT /F2 10 Tf 54 618 Td (CHECKLIST RESULT) Tj ET
+BT /F1 10 Tf 190 618 Td (47 of 52 line items satisfactory) Tj ET
+BT /F2 10 Tf 54 600 Td (FLAGGED ITEMS) Tj ET
+BT /F1 10 Tf 190 600 Td (5) Tj ET
+BT /F2 13 Tf 54 564 Td (Facade And Openings) Tj ET
+BT /F1 10.5 Tf 72 545 Td ([FLAG] Level 2 spandrel panel crack documented for structural review.) Tj ET
+BT /F1 10.5 Tf 72 523 Td ([FLAG] Southeast corner staining and efflorescence below window head documented for) Tj ET
+BT /F1 10.5 Tf 72 508 Td (remediation scope.) Tj ET
+BT /F1 10.5 Tf 72 486 Td ([PASS] Remaining window sealant lines show no visible perimeter failure.) Tj ET
+BT /F2 13 Tf 54 456 Td (Roof Edge And Drainage) Tj ET
+BT /F1 10.5 Tf 72 437 Td ([FLAG] North parapet metal cap flashing lifted approximately 40mm with failed sealant.) Tj ET
+BT /F1 10.5 Tf 72 415 Td ([PASS] Roof drainage outlets clear at time of inspection.) Tj ET
+BT /F2 13 Tf 54 385 Td (Ground Plane And Access) Tj ET
+BT /F1 10.5 Tf 72 366 Td ([FLAG] Back entrance concrete threshold has 40-42mm height differential and requires) Tj ET
+BT /F1 10.5 Tf 72 351 Td (interim marking.) Tj ET
+BT /F1 10.5 Tf 72 329 Td ([PASS] No broad settlement or ponding observed at adjacent pavement.) Tj ET
+BT /F2 13 Tf 54 299 Td (Inspector Note) Tj ET
+BT /F1 10.5 Tf 72 280 Td (Recommend structural engineer review for the Level 2 crack and prompt envelope repairs) Tj ET
+BT /F1 10.5 Tf 72 265 Td (before projected winter rain events.) Tj ET
+0.6 w 54 66 m 558 66 l S
+BT /F1 9 Tf 54 48 Td (ResolveScope demo evidence document : generated static exhibit) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000321 00000 n 
+0000000396 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2402
+%%EOF

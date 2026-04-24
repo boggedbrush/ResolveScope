@@ -24,13 +24,28 @@ function storageKey(demoId: string): string {
 function sanitizeEvidenceForPersistence(evidence: EvidenceItem[]): EvidenceItem[] {
   return evidence.map((item) => ({
     ...item,
-    previewUrl: undefined,
+    previewUrl:
+      item.previewUrl && !item.previewUrl.startsWith("blob:")
+        ? item.previewUrl
+        : undefined,
   }));
+}
+
+function createSeedSignature(seedData: SeedCaseData): string {
+  return JSON.stringify({
+    reviewer: seedData.reviewer,
+    caseMeta: seedData.caseMeta,
+    evidence: seedData.evidence,
+    extraction: seedData.extraction,
+    initialReview: seedData.initialReview,
+    spatialMarkers: seedData.spatialMarkers ?? [],
+  });
 }
 
 function createInitialDemoState(demoId: string, seedData: SeedCaseData): DemoCaseState {
   return {
     demoId,
+    seedSignature: createSeedSignature(seedData),
     reviewer: seedData.reviewer,
     caseMeta: { ...seedData.caseMeta },
     evidence: sanitizeEvidenceForPersistence(seedData.evidence),
@@ -61,7 +76,8 @@ function persistDemoCaseState(demoId: string, state: DemoCaseState): void {
 
 export function getDemoCaseState(demoId: string, seedData: SeedCaseData): DemoCaseState {
   const stored = loadStoredDemoCaseState(demoId);
-  if (stored) return stored;
+  const currentSeedSignature = createSeedSignature(seedData);
+  if (stored && stored.seedSignature === currentSeedSignature) return stored;
 
   const initialState = createInitialDemoState(demoId, seedData);
   persistDemoCaseState(demoId, initialState);

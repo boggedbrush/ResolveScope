@@ -1,4 +1,4 @@
-import type { SeedCaseData, ReviewState } from "../../types/case";
+import type { SeedCaseData, ReviewState, SpatialMarker } from "../../types/case";
 
 /* ═══════════════════════════════════════════
    Seeded demo case : Fleet Safety Incident
@@ -20,6 +20,57 @@ const initialReview: ReviewState = {
   },
 };
 
+const fleetSafetySpatialMarkers: SpatialMarker[] = [
+  {
+    id: "flt-001",
+    label: "Rear contact point",
+    x: 52,
+    y: 54,
+    severity: "high",
+    note:
+      "This anchor marks where Unit V-183 contacted the parked forklift counterweight. The impact stayed below structural thresholds, but it is the clearest spatial proof tying the bumper damage to the warehouse obstruction.",
+    relatedEvidenceIds: ["fev-002", "fev-005"],
+    relatedExtractionSectionKey: "findings",
+    status: "open",
+  },
+  {
+    id: "flt-002",
+    label: "Forklift exclusion-zone breach",
+    x: 60,
+    y: 47,
+    severity: "medium",
+    note:
+      "The forklift sat outside the painted exclusion zone, compressing the available reverse corridor. That placement turned a routine maneuver into a shared-fault safety event rather than a purely driver-caused strike.",
+    relatedEvidenceIds: ["fev-003", "fev-004"],
+    relatedExtractionSectionKey: "riskAssessment",
+    status: "needs-review",
+  },
+  {
+    id: "flt-003",
+    label: "Reverse path visibility gap",
+    x: 35,
+    y: 58,
+    severity: "medium",
+    note:
+      "The reverse line highlights how little margin remained once the unit entered the dock approach. Without a spotter or banksman, the driver had almost no recovery room after the distraction moment.",
+    relatedEvidenceIds: ["fev-003", "fev-006"],
+    relatedExtractionSectionKey: "timeline",
+    status: "open",
+  },
+  {
+    id: "flt-004",
+    label: "Tablet distraction event",
+    x: 25,
+    y: 30,
+    severity: "low",
+    note:
+      "Dashcam metadata places the in-cab tablet interaction eight seconds before impact. In the spatial replay, it reads as a workflow-control failure that sits upstream of the collision itself.",
+    relatedEvidenceIds: ["fev-006", "fev-001"],
+    relatedExtractionSectionKey: "correctiveActions",
+    status: "resolved",
+  },
+];
+
 export const fleetSafetySeedData: SeedCaseData = {
   reviewer: "Jordan Park",
   caseMeta: {
@@ -35,6 +86,7 @@ export const fleetSafetySeedData: SeedCaseData = {
     subject: "Darnell Hughes (Driver)",
     unit: "Unit V-183 : 2023 Ford Transit 350",
   },
+  spatialMarkers: fleetSafetySpatialMarkers,
   evidence: [
     {
       id: "fev-001",
@@ -49,22 +101,24 @@ export const fleetSafetySeedData: SeedCaseData = {
     {
       id: "fev-002",
       type: "image",
-      name: "Incident Photo 1 : Rear Bumper Contact Zone.jpg",
+      name: "Incident Photo 1 : Rear Bumper Contact Zone.png",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:05:00Z",
       description:
         "Rear bumper of Unit V-183 showing impact scuff and bent trailer hitch receiver. No structural intrusion into cargo bay doors. Minor cosmetic damage to forklift counterweight housing also visible.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/rear-bumper-contact-zone.png",
     },
     {
       id: "fev-003",
       type: "image",
-      name: "Incident Photo 2 : Scene Overview Bay 4.jpg",
+      name: "Incident Photo 2 : Scene Overview Bay 4.png",
       uploadedBy: "Supervisor M. Okafor (ops portal)",
       uploadedAt: "2024-10-28T09:08:00Z",
       description:
         "Wide-angle view of Bay 4 loading area. Forklift positioned approx. 1.2m outside painted exclusion zone markings. No spotter or banksman visible in frame.",
-      mimeType: "image/jpeg",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/bay-4-scene-overview.png",
     },
     {
       id: "fev-004",
@@ -85,16 +139,18 @@ export const fleetSafetySeedData: SeedCaseData = {
       description:
         "Post-incident inspection by fleet maintenance. Findings: bent trailer hitch receiver (non-safety critical), minor scratch on rear lower valance. All lights, brakes, and safety systems fully operational. Estimated repair cost: $380. Vehicle cleared for continued operations pending cosmetic repair.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/fleet-safety/vehicle-inspection-report-unit-v-183.pdf",
     },
     {
       id: "fev-006",
-      type: "document",
-      name: "Dashcam Footage Log : V-183 2024-10-28.pdf",
+      type: "image",
+      name: "Dashcam Still : Tablet Event T-00:08.png",
       uploadedBy: "Fleet Safety (ops portal)",
       uploadedAt: "2024-10-29T15:20:00Z",
       description:
-        "Dashcam metadata and clip log for Unit V-183 on incident date. Confirms vehicle speed 4.2 mph at point of contact. Tablet interaction event recorded 8 seconds prior to impact. Clip retained in fleet safety system for 90-day review window.",
-      mimeType: "application/pdf",
+        "Dashcam still and metadata from Unit V-183 on incident date. Confirms vehicle speed 4.2 mph at point of contact. Tablet interaction event recorded 8 seconds prior to impact. Clip retained in fleet safety system for 90-day review window.",
+      mimeType: "image/png",
+      previewUrl: "/assets/fleet-safety/dashcam-tablet-event.png",
     },
   ],
   initialReview,
@@ -118,7 +174,7 @@ export const fleetSafetySeedData: SeedCaseData = {
           { time: "2024-10-28 09:08", event: "Scene and damage photos uploaded by supervisor" },
           { time: "2024-10-28 11:30", event: "Supervisor note submitted; in-cab tablet policy reviewed with driver" },
           { time: "2024-10-29 09:45", event: "Fleet maintenance inspection completed; vehicle cleared" },
-          { time: "2024-10-29 15:20", event: "Dashcam footage log filed by Fleet Safety" },
+          { time: "2024-10-29 15:20", event: "Dashcam still and clip metadata filed by Fleet Safety" },
         ],
       },
       parties: {
