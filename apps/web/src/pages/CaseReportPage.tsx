@@ -398,22 +398,17 @@ export function CaseReportPage() {
       {/* ── Top bar ── */}
       <header className="report-topbar">
         <div className="report-topbar__left">
-          <Link to="/" className="report-topbar__logo">
-            Resolve<span>Scope</span>
-          </Link>
-          <span className="report-topbar__sep" aria-hidden="true">/</span>
-          <span className="report-topbar__breadcrumb">Case Report</span>
-        </div>
-        <div className="report-topbar__right">
-          <span className="section-label report-topbar__template">
-            {template.label}
-          </span>
           <Link
             to={`/demo/${demoId}`}
             className="btn btn--outline btn--sm report-topbar__btn"
           >
-            Open workspace
+            Return to workspace
           </Link>
+          <span className="section-label report-topbar__template">
+            {template.label}
+          </span>
+        </div>
+        <div className="report-topbar__right">
           <button
             className="btn btn--primary btn--sm report-topbar__btn"
             onClick={() => window.print()}
