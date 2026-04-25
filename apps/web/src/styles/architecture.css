@@ -1,0 +1,660 @@
+
+/* ═══════════════════════════════════════════
+   Architecture Page
+   ═══════════════════════════════════════════ */
+
+/* ── Hero ──────────────────────────────── */
+
+.arch-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 80% 8%, color-mix(in srgb, var(--forest) 12%, transparent), transparent 32rem),
+    radial-gradient(circle at 8% 16%, color-mix(in srgb, var(--copper) 13%, transparent), transparent 34rem),
+    var(--bg);
+}
+
+.arch-hero {
+  padding-top: clamp(140px, 16vw, 230px);
+  padding-bottom: clamp(110px, 14vw, 210px);
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 60% 48% at 84% 48%, color-mix(in srgb, var(--copper) 15%, transparent), transparent 68%);
+}
+
+.arch-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(420px, 0.86fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 112px);
+}
+
+.arch-hero__sub {
+  margin-top: 24px;
+  max-width: 640px;
+}
+
+.arch-hero__links {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.arch-hero__title {
+  max-width: min(1120px, 92vw);
+  font-size: clamp(3.4rem, 5.25vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  margin-top: 18px;
+}
+
+.arch-hero__artifact {
+  border: 1px solid color-mix(in srgb, var(--border) 72%, var(--copper) 28%);
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--bg-card) 86%, transparent), color-mix(in srgb, var(--bg-deep-alt) 12%, var(--bg-card))),
+    var(--bg-card);
+  box-shadow: 0 34px 110px color-mix(in srgb, var(--copper) 14%, transparent);
+  overflow: hidden;
+}
+
+.arch-artifact__bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+.arch-artifact__body {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px 20px;
+  padding: clamp(22px, 3vw, 34px);
+  font-family: var(--font-mono);
+  font-size: clamp(10.5px, 1vw, 12px);
+}
+
+.arch-artifact__body span {
+  color: var(--copper);
+}
+
+.arch-artifact__body strong {
+  color: var(--text);
+  font-weight: 500;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* ── Section header ────────────────────── */
+
+.arch-section-header {
+  margin-bottom: clamp(56px, 7vw, 96px);
+}
+
+.arch-section-header--compact {
+  margin-bottom: clamp(36px, 4.5vw, 60px);
+}
+
+.arch-section-sub {
+  margin-top: 18px;
+  max-width: 720px;
+}
+
+.arch-label--forest {
+  color: var(--forest);
+}
+
+/* ── Diagram card ──────────────────────── */
+
+.arch-diagram-card {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(184, 90, 48, 0.2), transparent 20rem),
+    var(--bg-deep-alt);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: clamp(24px, 4vw, 48px);
+  margin-bottom: clamp(80px, 10vw, 140px);
+}
+
+.arch-diagram-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.arch-diagram-card__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+
+.arch-diagram-card__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #6b6962;
+  letter-spacing: 0.05em;
+}
+
+.arch-diagram-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Overview grid ─────────────────────── */
+
+.arch-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+/* ── Components section ────────────────── */
+
+.arch-components {
+  padding-block: clamp(72px, 8vw, 124px);
+  background: transparent;
+}
+
+.arch-components .arch-section-header {
+  max-width: 900px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.arch-components .arch-section-sub {
+  margin-inline: auto;
+}
+
+.arch-component-ledger {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: clamp(8px, 1vw, 14px) 0;
+  list-style: none;
+  border-block: 1px solid var(--border);
+  background:
+    linear-gradient(90deg, transparent 0 16%, color-mix(in srgb, var(--border) 62%, transparent) 16% calc(16% + 1px), transparent calc(16% + 1px)),
+    linear-gradient(color-mix(in srgb, var(--border) 54%, transparent) 1px, transparent 1px),
+    color-mix(in srgb, var(--bg-alt) 72%, transparent);
+  background-size: auto, 100% 92px, auto;
+}
+
+.arch-component-ledger::before {
+  content: "";
+  position: absolute;
+  top: clamp(32px, 4vw, 48px);
+  bottom: clamp(32px, 4vw, 48px);
+  left: 16%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--copper), var(--forest), transparent);
+}
+
+.arch-component-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(112px, 0.55fr) minmax(260px, 0.95fr) minmax(0, 1.35fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 72px);
+  min-height: clamp(132px, 12vw, 176px);
+  padding: clamp(24px, 3vw, 42px) clamp(24px, 4vw, 64px);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+.arch-component-row:last-child {
+  border-bottom: 0;
+}
+
+.arch-component-row::before {
+  content: "";
+  position: absolute;
+  left: calc(16% - 5px);
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  border: 1px solid var(--copper);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--copper) 42%, transparent);
+  transform: translateY(-50%);
+}
+
+.arch-component-row__index {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--copper);
+}
+
+.arch-component-row__index span {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  letter-spacing: 0.14em;
+}
+
+.arch-component-row__index i {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--copper) 38%, transparent);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  font-style: normal;
+}
+
+.arch-component-row h3 {
+  max-width: 16ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.05rem, 3.4vw, 4.3rem);
+  font-weight: 400;
+  line-height: 0.96;
+  color: var(--text);
+}
+
+.arch-component-row p {
+  max-width: 38rem;
+  font-size: clamp(1.02rem, 1.35vw, 1.22rem);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .arch-component-ledger,
+  .arch-component-ledger::before {
+    background:
+      linear-gradient(color-mix(in srgb, var(--border) 54%, transparent) 1px, transparent 1px),
+      color-mix(in srgb, var(--bg-alt) 72%, transparent);
+    background-size: 100% 92px, auto;
+  }
+
+  .arch-component-ledger::before,
+  .arch-component-row::before {
+    display: none;
+  }
+
+  .arch-component-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  .arch-component-row h3 {
+    max-width: 18ch;
+  }
+}
+
+/* ── Cloudflare infrastructure ─────────── */
+
+.arch-infra {
+  padding-block: clamp(72px, 8vw, 124px);
+  background:
+    linear-gradient(180deg, var(--bg-alt), var(--bg)),
+    var(--bg-alt);
+}
+
+.arch-wiremap {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: clamp(34px, 5vw, 64px);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background:
+    linear-gradient(color-mix(in srgb, var(--forest) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--forest) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(135deg, color-mix(in srgb, var(--forest) 8%, var(--bg-alt)), var(--bg-alt) 62%);
+  background-size: 82px 82px, 82px 82px, auto;
+  overflow: hidden;
+}
+
+.arch-wiremap::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: clamp(24px, 3vw, 42px);
+  right: clamp(24px, 3vw, 42px);
+  height: 1px;
+  z-index: 0;
+  background: linear-gradient(90deg, transparent, var(--forest), var(--copper), transparent);
+}
+
+.arch-wiremap__lane {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: clamp(24px, 3vw, 42px);
+  min-height: clamp(370px, 34vw, 480px);
+  padding: clamp(22px, 2.7vw, 34px);
+  border-inline-end: 1px solid var(--border);
+}
+
+.arch-wiremap__lane:last-child {
+  border-inline-end: 0;
+}
+
+.arch-wiremap__lane::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -7px;
+  width: 13px;
+  height: 13px;
+  border-block-start: 1px solid var(--copper);
+  border-inline-end: 1px solid var(--copper);
+  background: var(--bg-alt);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.arch-wiremap__lane:last-child::after {
+  display: none;
+}
+
+.arch-wiremap__stage {
+  max-width: 21rem;
+}
+
+.arch-wiremap__stage span {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+
+.arch-wiremap__stage p {
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.arch-wiremap__services {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.arch-wiremap-service {
+  position: relative;
+  padding: clamp(16px, 1.7vw, 20px);
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 88%, transparent), color-mix(in srgb, var(--forest) 7%, var(--bg-card)));
+  box-shadow: 0 22px 52px color-mix(in srgb, var(--bg) 58%, transparent);
+}
+
+.arch-wiremap-service::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--forest);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--forest) 60%, transparent);
+  transform: translateY(-50%);
+}
+
+.arch-wiremap-service__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.arch-wiremap-service h3 {
+  font-size: clamp(1.2rem, 1.65vw, 1.65rem);
+  font-weight: 750;
+  line-height: 1;
+  color: var(--text);
+}
+
+.arch-wiremap-service__header span {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+
+.arch-wiremap-service p {
+  font-size: clamp(0.9rem, 1vw, 0.98rem);
+  line-height: 1.58;
+  color: var(--text-secondary);
+}
+
+.arch-infra-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-block: 1px solid var(--border);
+}
+
+.arch-infra-strip__cell {
+  padding: 18px 16px;
+  border-inline-start: 1px solid var(--border);
+}
+
+.arch-infra-strip__cell:last-child {
+  border-inline-end: 1px solid var(--border);
+}
+
+.arch-infra-strip__cell span,
+.arch-infra-strip__cell strong {
+  display: block;
+}
+
+.arch-infra-strip__cell span {
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+
+.arch-infra-strip__cell strong {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+@media (max-width: 1000px) {
+  .arch-wiremap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .arch-wiremap::before {
+    display: none;
+  }
+
+  .arch-wiremap__lane {
+    min-height: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .arch-wiremap__lane:nth-child(even) {
+    border-inline-end: 0;
+  }
+
+  .arch-wiremap__lane::after {
+    display: none;
+  }
+
+  .arch-infra-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .arch-wiremap,
+  .arch-infra-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .arch-wiremap__lane,
+  .arch-wiremap__lane:nth-child(even) {
+    border-inline-end: 0;
+  }
+
+  .arch-infra-strip__cell {
+    border-inline-end: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .arch-infra-strip__cell:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* ── AI trust steps ────────────────────── */
+
+.arch-trust-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 960px;
+}
+
+.arch-trust-step {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.arch-trust-step__connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.arch-trust-step__node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--copper);
+  background: var(--copper-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--copper);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.arch-trust-step__line {
+  width: 1.5px;
+  flex: 1;
+  min-height: 48px;
+  background: var(--border);
+  margin: 8px 0;
+}
+
+.arch-trust-step__content {
+  padding-bottom: 48px;
+}
+
+.arch-trust-step__content h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.arch-trust-step__content p {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ── Built with Codex ──────────────────── */
+
+@media (max-width: 800px) {
+  .arch-hero {
+    padding-top: 120px;
+  }
+
+  .arch-hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .arch-hero__artifact {
+    max-width: 620px;
+  }
+
+  .arch-diagram-card {
+    padding: 24px 20px 28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .arch-hero__title {
+    font-size: clamp(3rem, 14vw, 4.4rem);
+  }
+
+  .arch-artifact__bar,
+  .arch-artifact__body {
+    grid-template-columns: 1fr;
+  }
+
+  .arch-artifact__bar {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .arch-trust-step {
+    gap: 18px;
+  }
+}
+
+/* ── Codex banner (arch page) ─────────── */
+
+.arch-codex-banner {
+  padding-top: 0;
+  padding-bottom: calc(var(--section-pad) + 1px);
+  background: var(--bg);
+}
+
+/* ── Delays (arch page) ────────────────── */
+
+.arch-infra .reveal.delay-1 { transition-delay: 0.1s; }
+.arch-infra .reveal.delay-2 { transition-delay: 0.2s; }
+.arch-infra .reveal.delay-3 { transition-delay: 0.3s; }
+
+/* ── Stagger delays ────────────────────── */
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.35s; }
+.delay-5 { transition-delay: 0.4s; }
