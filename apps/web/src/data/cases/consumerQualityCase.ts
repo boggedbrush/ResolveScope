@@ -80,6 +80,17 @@ export const consumerQualitySeedData: SeedCaseData = {
     },
     {
       id: "cqev-005",
+      type: "image",
+      name: "Sample Photo : Texture Complaint.png",
+      uploadedBy: "Quality operations",
+      uploadedAt: "2026-03-18T15:12:00Z",
+      description:
+        "Review photo of the returned sample jar for lot HC-26-0417B. The cream surface shows visible graininess and slight separation consistent with the complaint note.",
+      mimeType: "image/png",
+      previewUrl: "/assets/consumer-quality/texture-complaint-sample-hc-26-0417b.png",
+    },
+    {
+      id: "cqev-006",
       type: "note",
       name: "Support Transcript : March 18",
       uploadedBy: "Support intake",
@@ -89,7 +100,7 @@ export const consumerQualitySeedData: SeedCaseData = {
       mimeType: "text/plain",
     },
     {
-      id: "cqev-006",
+      id: "cqev-007",
       type: "note",
       name: "Reviewer Notes : Initial Quality Check",
       uploadedBy: "Maya Patel (quality reviewer)",
@@ -146,6 +157,7 @@ export const consumerQualitySeedData: SeedCaseData = {
           "Product reference sheet defines smooth texture as the expected condition and lists visible separation as a quality review trigger.",
           "Order metadata ties the complaint to ORD-882145 and confirms ordinary fulfillment and delivery timing.",
           "Batch record snapshot shows lot HC-26-0417B was within release checks at the time of packaging.",
+          "Sample photo shows visible graininess and slight separation on the returned jar surface.",
           "Reviewer notes recommend replacement handling and short-term lot monitoring because this is currently a single matched complaint.",
         ],
       },

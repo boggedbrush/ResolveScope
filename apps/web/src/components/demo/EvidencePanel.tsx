@@ -27,6 +27,7 @@ const TYPE_LABELS: Record<EvidenceType, string> = {
 
 function getEvidenceTypeLabel(item: EvidenceItem): string {
   if (item.mimeType === "text/csv") return "Data";
+  if (item.type === "image" && item.name.toLowerCase().includes("screenshot")) return "Screenshot";
   return TYPE_LABELS[item.type];
 }
 

@@ -25,6 +25,13 @@ function fmtRunAt(iso: string): string {
   });
 }
 
+function getEvidenceThumbLabel(item: EvidenceItem): string {
+  if (item.mimeType === "text/csv") return "CSV";
+  if (item.type === "note") return "NOTE";
+  if (item.type === "document") return "DOC";
+  return item.type.toUpperCase();
+}
+
 function ProvenanceTags({
   ids,
   evidence,
@@ -34,13 +41,39 @@ function ProvenanceTags({
   evidence: EvidenceItem[];
   onInspect: () => void;
 }) {
-  const names = ids
-    .map((id) => evidence.find((e) => e.id === id)?.name.split(":")[0].trim())
-    .filter(Boolean) as string[];
-  if (!names.length) return null;
+  const sources = ids
+    .map((id) => evidence.find((e) => e.id === id))
+    .filter(Boolean) as EvidenceItem[];
+  if (!sources.length) return null;
+
+  const names = sources.map((item) => item.name.split(":")[0].trim());
+
   return (
     <div className="extraction-provenance" aria-label="Supported by">
       <span className="extraction-provenance__label">Supported by:</span>
+      <button
+        type="button"
+        className="extraction-provenance__thumbs"
+        onClick={onInspect}
+        aria-label={`Inspect ${ids.length} supporting evidence item${ids.length !== 1 ? "s" : ""}`}
+      >
+        {sources.slice(0, 3).map((item) => (
+          <span key={item.id} className="extraction-provenance__thumb" title={item.name}>
+            {item.type === "image" && item.previewUrl ? (
+              <img src={item.previewUrl} alt="" loading="lazy" />
+            ) : (
+              <span className="extraction-provenance__thumb-fallback">
+                {getEvidenceThumbLabel(item)}
+              </span>
+            )}
+          </span>
+        ))}
+        {sources.length > 3 && (
+          <span className="extraction-provenance__thumb extraction-provenance__thumb--more">
+            +{sources.length - 3}
+          </span>
+        )}
+      </button>
       {names.map((n) => (
         <span key={n} className="extraction-provenance__tag">
           {n}

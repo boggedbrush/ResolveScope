@@ -91,6 +91,17 @@ export const complianceAuditSeedData: SeedCaseData = {
     },
     {
       id: "caev-006",
+      type: "image",
+      name: "Workspace Access Screenshot : V-214.png",
+      uploadedBy: "Audit intake",
+      uploadedAt: "2026-04-09T10:18:00Z",
+      description:
+        "Screenshot of the vendor workspace access screen for V-214. The access list shows the owner sign-off item marked pending during the sampled review.",
+      mimeType: "image/png",
+      previewUrl: "/assets/compliance-audit/access-review-checklist-photo-v-214.png",
+    },
+    {
+      id: "caev-007",
       type: "note",
       name: "Remediation Note : Owner Outreach",
       uploadedBy: "Nora Bell (reviewer)",
@@ -129,6 +140,7 @@ export const complianceAuditSeedData: SeedCaseData = {
           "Business owner sign-off is blank in the approval summary.",
           "Internal note says sign-off was requested but not attached before sampling.",
           "Quarterly checklist marks one evidence exception tied to the same missing sign-off.",
+          "Workspace access screenshot shows the V-214 owner sign-off item marked pending.",
         ],
       },
       missingEvidence: {
