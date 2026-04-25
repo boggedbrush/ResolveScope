@@ -180,8 +180,43 @@ export function Landing() {
               <li>
                 <a href="#spatial">Spatial Review</a>
               </li>
-              <li>
-                <Link to="/architecture">Architecture</Link>
+              <li className="nav__dropdown">
+                <button
+                  type="button"
+                  className="nav__dropdown-trigger"
+                  aria-haspopup="true"
+                >
+                  Architecture
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3 4.5 6 7.5l3-3"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div className="nav__dropdown-menu" role="menu">
+                  <Link to="/architecture" role="menuitem">
+                    System overview
+                  </Link>
+                  <Link to="/architecture#components" role="menuitem">
+                    Core components
+                  </Link>
+                  <Link to="/architecture#infrastructure" role="menuitem">
+                    Infrastructure
+                  </Link>
+                  <Link to="/architecture#ai-trust" role="menuitem">
+                    AI trust model
+                  </Link>
+                </div>
               </li>
             </ul>
           </div>

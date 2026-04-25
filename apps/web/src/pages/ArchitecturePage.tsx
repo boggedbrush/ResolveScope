@@ -5,11 +5,10 @@ import { CodexBanner } from "../components/CodexBanner";
 import { MobileNavMenu, type MobileNavItem } from "../components/MobileNavMenu";
 
 const ARCHITECTURE_NAV_ITEMS: MobileNavItem[] = [
-  { label: "Overview", href: "#overview" },
-  { label: "Components", href: "#components" },
-  { label: "Infrastructure", href: "#infrastructure" },
-  { label: "AI Trust", href: "#ai-trust" },
-  { label: "Home", to: "/" },
+  { label: "How it works", to: "/#proof" },
+  { label: "Capabilities", to: "/#capabilities" },
+  { label: "Spatial Review", to: "/#spatial" },
+  { label: "Architecture", to: "/architecture" },
 ];
 
 /* ═══════════════════════════════════════════
@@ -388,15 +387,56 @@ export function ArchitecturePage() {
             </Link>
           </div>
           <div className="nav__zone nav__zone--center">
-            <div className="nav__item--active">
-              <span className="nav__link-label">Architecture</span>
-              <ul className="nav__subnav">
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#components">Components</a></li>
-                <li><a href="#infrastructure">Infrastructure</a></li>
-                <li><a href="#ai-trust">AI Trust</a></li>
-              </ul>
-            </div>
+            <ul className="nav__links">
+              <li>
+                <Link to="/#proof">How it works</Link>
+              </li>
+              <li>
+                <Link to="/#capabilities">Capabilities</Link>
+              </li>
+              <li>
+                <Link to="/#spatial">Spatial Review</Link>
+              </li>
+              <li className="nav__dropdown nav__dropdown--active">
+                <button
+                  type="button"
+                  className="nav__dropdown-trigger"
+                  aria-haspopup="true"
+                  aria-current="page"
+                >
+                  Architecture
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3 4.5 6 7.5l3-3"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div className="nav__dropdown-menu" role="menu">
+                  <a href="#overview" role="menuitem">
+                    System overview
+                  </a>
+                  <a href="#components" role="menuitem">
+                    Core components
+                  </a>
+                  <a href="#infrastructure" role="menuitem">
+                    Infrastructure
+                  </a>
+                  <a href="#ai-trust" role="menuitem">
+                    AI trust model
+                  </a>
+                </div>
+              </li>
+            </ul>
           </div>
           <div className="nav__zone nav__zone--right">
             <div className="nav__actions" role="group" aria-label="Primary actions">

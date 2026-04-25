@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { DEMO_SEED_MAP } from "../data/demoResolver";
 import { getDemoCaseState, resetAllDemoCaseStates, useDemoStateVersion } from "../data/demoState";
 import type { CaseStatus, Priority } from "../types/case";
@@ -111,12 +112,40 @@ const DOMAIN_COLORS: Record<string, string> = {
   "Compliance Operations": "slate",
 };
 
+const DESKTOP_WARNING_DISMISSED_KEY = "resolvescope.dashboardDesktopWarningDismissed";
+
 function displayCaseId(caseId: string): string {
   return caseId.replace("-2024-", "-2026-");
 }
 
 export function Dashboard() {
+  const navigate = useNavigate();
+  const [showDesktopWarning, setShowDesktopWarning] = useState(false);
+  const [doNotAskAgain, setDoNotAskAgain] = useState(false);
+
   useDemoStateVersion();
+
+  useEffect(() => {
+    const hasDismissed =
+      window.localStorage.getItem(DESKTOP_WARNING_DISMISSED_KEY) === "true";
+
+    if (hasDismissed) return;
+
+    const mobileQuery = window.matchMedia(
+      "(max-width: 767px), (pointer: coarse) and (max-width: 1024px)"
+    );
+
+    const updateWarning = () => {
+      setShowDesktopWarning(mobileQuery.matches);
+    };
+
+    updateWarning();
+    mobileQuery.addEventListener("change", updateWarning);
+
+    return () => {
+      mobileQuery.removeEventListener("change", updateWarning);
+    };
+  }, []);
 
   const rows = DEMO_CASES.map((row) => {
     if (!row.demoPath) return row;
@@ -145,6 +174,17 @@ export function Dashboard() {
 
   function handleResetAllDemos() {
     resetAllDemoCaseStates(DEMO_SEED_MAP);
+  }
+
+  function handleContinueOnMobile() {
+    if (doNotAskAgain) {
+      window.localStorage.setItem(DESKTOP_WARNING_DISMISSED_KEY, "true");
+    }
+    setShowDesktopWarning(false);
+  }
+
+  function handleReturnFromMobile() {
+    navigate("/", { replace: true });
   }
 
   function renderCaseRows(caseRows: CaseRow[]) {
@@ -209,6 +249,46 @@ export function Dashboard() {
 
   return (
     <main className="dashboard" aria-labelledby="dashboard-title">
+      {showDesktopWarning && (
+        <div className="dashboard-mobile-warning" role="dialog" aria-modal="true" aria-labelledby="dashboard-mobile-warning-title">
+          <div className="dashboard-mobile-warning__panel">
+            <p className="dashboard-mobile-warning__eyebrow">Desktop workspace</p>
+            <h2 id="dashboard-mobile-warning-title">
+              This dashboard is designed for desktop review.
+            </h2>
+            <p>
+              The workspace uses wide tables, side navigation, and report actions
+              that are easier to review on a larger screen. You can continue on
+              this device, but some content may require horizontal scanning.
+            </p>
+            <label className="dashboard-mobile-warning__check">
+              <input
+                type="checkbox"
+                checked={doNotAskAgain}
+                onChange={(event) => setDoNotAskAgain(event.target.checked)}
+              />
+              Do not ask again on this device
+            </label>
+            <div className="dashboard-mobile-warning__actions">
+              <button
+                type="button"
+                className="btn btn--outline"
+                onClick={handleReturnFromMobile}
+              >
+                Return
+              </button>
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={handleContinueOnMobile}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <section className="dashboard__table-section" id="case-queue">
         <div className="dashboard__header">
           <div>

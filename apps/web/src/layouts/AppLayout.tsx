@@ -14,13 +14,16 @@ function LayersIcon() {
   );
 }
 
-function GridIcon() {
+function SettingsCogIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M8.95 2.75h2.1l.45 2.04c.37.12.72.27 1.05.46l1.76-1.13 1.49 1.49-1.13 1.76c.19.33.34.68.46 1.05l2.04.45v2.1l-2.04.45c-.12.37-.27.72-.46 1.05l1.13 1.76-1.49 1.49-1.76-1.13c-.33.19-.68.34-1.05.46l-.45 2.04h-2.1l-.45-2.04a5.27 5.27 0 0 1-1.05-.46l-1.76 1.13-1.49-1.49 1.13-1.76a5.27 5.27 0 0 1-.46-1.05l-2.04-.45v-2.1l2.04-.45c.12-.37.27-.72.46-1.05L4.2 5.61l1.49-1.49 1.76 1.13c.33-.19.68-.34 1.05-.46l.45-2.04Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="10" r="2.35" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -159,7 +162,7 @@ export function AppLayout() {
               `app-sidebar__nav-item app-sidebar__nav-item--muted${isActive ? " app-sidebar__nav-item--active" : ""}`
             }
           >
-            <GridIcon />
+            <SettingsCogIcon />
             Settings
           </NavLink>
         </div>
