@@ -61,6 +61,32 @@ const DEMO_CASES: CaseRow[] = [
     demoPath: "/demo/site-inspection",
     reportPath: "/report/site-inspection",
   },
+  {
+    id: "CQC-2026-00428",
+    title: "Texture complaint : Hydrating Face Cream",
+    template: "Consumer Quality Complaint",
+    domain: "Consumer Quality",
+    status: "in-review",
+    priority: "medium",
+    updatedAt: "2026-03-19",
+    evidenceCount: 6,
+    subject: "Jordan Ellis",
+    demoPath: "/demo/consumer-quality",
+    reportPath: "/report/consumer-quality",
+  },
+  {
+    id: "CAR-2026-00176",
+    title: "Access approval evidence review : Vendor workspace",
+    template: "Compliance Audit Review",
+    domain: "Compliance Operations",
+    status: "in-review",
+    priority: "high",
+    updatedAt: "2026-04-09",
+    evidenceCount: 6,
+    subject: "Vendor Workspace Access",
+    demoPath: "/demo/compliance-audit",
+    reportPath: "/report/compliance-audit",
+  },
 ];
 
 const STATUS_LABELS: Record<CaseStatus, string> = {
@@ -81,6 +107,8 @@ const DOMAIN_COLORS: Record<string, string> = {
   Insurance: "copper",
   "Fleet Operations": "forest",
   "Property & Facilities": "slate",
+  "Consumer Quality": "forest",
+  "Compliance Operations": "slate",
 };
 
 function displayCaseId(caseId: string): string {

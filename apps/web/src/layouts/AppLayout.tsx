@@ -58,6 +58,8 @@ const SIDEBAR_DEMOS = [
   { demoId: "auto-claim", path: "/demo/auto-claim", label: "Auto claim" },
   { demoId: "fleet-safety", path: "/demo/fleet-safety", label: "Fleet incident" },
   { demoId: "site-inspection", path: "/demo/site-inspection", label: "Site inspection" },
+  { demoId: "consumer-quality", path: "/demo/consumer-quality", label: "Quality complaint" },
+  { demoId: "compliance-audit", path: "/demo/compliance-audit", label: "Audit review" },
 ];
 
 function displayCaseId(caseId: string): string {

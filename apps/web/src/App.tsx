@@ -31,6 +31,16 @@ const SiteInspectionDemoPage = lazy(() =>
     default: m.SiteInspectionDemoPage,
   }))
 );
+const ConsumerQualityDemoPage = lazy(() =>
+  import("./pages/ConsumerQualityDemoPage").then((m) => ({
+    default: m.ConsumerQualityDemoPage,
+  }))
+);
+const ComplianceAuditDemoPage = lazy(() =>
+  import("./pages/ComplianceAuditDemoPage").then((m) => ({
+    default: m.ComplianceAuditDemoPage,
+  }))
+);
 const CaseReportPage = lazy(() =>
   import("./pages/CaseReportPage").then((m) => ({
     default: m.CaseReportPage,
@@ -56,6 +66,8 @@ export function App() {
           <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
           <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
           <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
+          <Route path="/demo/consumer-quality" element={<ConsumerQualityDemoPage />} />
+          <Route path="/demo/compliance-audit" element={<ComplianceAuditDemoPage />} />
         </Route>
       </Routes>
     </Suspense>
