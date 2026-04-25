@@ -1,6 +1,5 @@
 import {
-  Suspense,
-  lazy,
+  type ComponentType,
   useCallback,
   useEffect,
   useMemo,
@@ -95,6 +94,7 @@ const MIN_ZOOM = 1;
 const MAX_ZOOM = 2.35;
 const ZOOM_STEP = 0.18;
 const BASE_DRAG_ALLOWANCE = 28;
+const MIN_SCENE_LOADING_MS = 500;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -115,125 +115,52 @@ function formatSectionLabel(sectionKey?: string) {
     .replace(/^./, (match) => match.toUpperCase());
 }
 
-const AutoClaimKenneyScene = lazy(() =>
-  import("./AutoClaimKenneyScene").then((module) => ({
-    default: module.AutoClaimKenneyScene,
-  }))
-);
+type KenneySceneProps = {
+  selectedMarkerId?: string;
+  onSelectMarker?: (markerId: string | null) => void;
+  markers: SpatialMarker[];
+  zoom: number;
+  resetToken: number;
+  interactive: boolean;
+  allowScrollZoom: boolean;
+};
 
-const FleetSafetyKenneyScene = lazy(() =>
-  import("./FleetSafetyKenneyScene").then((module) => ({
-    default: module.FleetSafetyKenneyScene,
-  }))
-);
+type KenneySceneComponent = ComponentType<KenneySceneProps>;
 
-const SiteInspectionKenneyScene = lazy(() =>
-  import("./SiteInspectionKenneyScene").then((module) => ({
-    default: module.SiteInspectionKenneyScene,
-  }))
-);
+function loadKenneyScene(templateId: string): Promise<KenneySceneComponent | null> {
+  if (templateId === "auto-claim") {
+    return import("./AutoClaimKenneyScene").then((module) => module.AutoClaimKenneyScene);
+  }
 
-function FleetSafetyScene() {
+  if (templateId === "fleet-safety") {
+    return import("./FleetSafetyKenneyScene").then((module) => module.FleetSafetyKenneyScene);
+  }
+
+  if (templateId === "site-inspection") {
+    return import("./SiteInspectionKenneyScene").then((module) => module.SiteInspectionKenneyScene);
+  }
+
+  return Promise.resolve(null);
+}
+
+function SpatialSceneLoader({ templateId }: { templateId: string }) {
+  const meta = SCENE_META[templateId] ?? SCENE_META["auto-claim"];
+
   return (
-    <svg
-      viewBox="0 0 1200 720"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className="spatial-scene__svg"
-    >
-      <defs>
-        <linearGradient id="fleet-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#101615" />
-          <stop offset="50%" stopColor="#152421" />
-          <stop offset="100%" stopColor="#0a0f0f" />
-        </linearGradient>
-        <radialGradient id="fleet-glow" cx="58%" cy="42%" r="58%">
-          <stop offset="0%" stopColor="#6fd4b1" stopOpacity="0.22" />
-          <stop offset="55%" stopColor="#3a7f69" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#000" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="fleet-floor" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#24322e" />
-          <stop offset="100%" stopColor="#101716" />
-        </linearGradient>
-        <linearGradient id="fleet-van" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#e5ebe6" />
-          <stop offset="100%" stopColor="#b9c3bc" />
-        </linearGradient>
-        <linearGradient id="fleet-van-side" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#8da098" />
-          <stop offset="100%" stopColor="#5f716a" />
-        </linearGradient>
-        <filter id="fleet-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="18" stdDeviation="22" floodColor="#000" floodOpacity="0.46" />
-        </filter>
-      </defs>
-
-      <rect width="1200" height="720" fill="url(#fleet-bg)" />
-      <rect width="1200" height="720" fill="url(#fleet-glow)" />
-
-      <polygon points="84,536 628,252 1092,430 548,714" fill="url(#fleet-floor)" />
-      <polygon points="84,536 84,590 548,720 548,714" fill="#0a0f0f" />
-      <polygon points="548,714 548,720 1092,466 1092,430" fill="#07100f" />
-
-      <g opacity="0.8">
-        <polygon points="674,132 1036,268 1036,476 674,338" fill="#172220" />
-        <polygon points="582,180 674,132 674,338 582,387" fill="#0d1414" />
-        <polygon points="582,180 944,315 1036,268 674,132" fill="#243431" />
-        <rect x="753" y="220" width="160" height="126" rx="12" fill="#0f1817" opacity="0.95" />
-        <rect x="771" y="238" width="124" height="90" rx="10" fill="#21312e" />
-        <rect x="946" y="192" width="34" height="204" rx="10" fill="#101716" />
-      </g>
-
-      <g stroke="#6fae97" strokeOpacity="0.3" strokeWidth="4">
-        <line x1="220" y1="560" x2="574" y2="374" />
-        <line x1="312" y1="595" x2="666" y2="409" />
-        <line x1="404" y1="630" x2="758" y2="444" />
-        <line x1="496" y1="665" x2="850" y2="479" />
-      </g>
-
-      <g opacity="0.85">
-        <path d="M314 450 C 382 420, 454 404, 540 402" fill="none" stroke="#8fe8c7" strokeWidth="9" strokeLinecap="round" strokeDasharray="18 16" />
-        <path d="M336 475 C 402 446, 474 430, 556 428" fill="none" stroke="#d3fff0" strokeWidth="3" strokeLinecap="round" strokeDasharray="12 14" opacity="0.9" />
-      </g>
-
-      <g filter="url(#fleet-shadow)">
-        <ellipse cx="430" cy="492" rx="150" ry="54" fill="#000" opacity="0.42" />
-        <polygon points="350,286 576,370 448,438 224,352" fill="url(#fleet-van)" />
-        <polygon points="224,352 224,460 448,545 448,438" fill="url(#fleet-van-side)" />
-        <polygon points="448,438 448,545 576,477 576,370" fill="#7d9088" />
-        <polygon points="312,313 452,364 378,404 239,351" fill="#71949f" opacity="0.78" />
-        <polygon points="461,369 546,400 475,438 392,406" fill="#d7ddd9" />
-        <rect x="255" y="408" width="116" height="18" rx="9" fill="#2a6b4a" opacity="0.85" />
-        <ellipse cx="283" cy="463" rx="42" ry="22" fill="#121515" />
-        <ellipse cx="430" cy="521" rx="48" ry="24" fill="#121515" />
-        <ellipse cx="283" cy="463" rx="21" ry="21" fill="#71817c" />
-        <ellipse cx="430" cy="521" rx="24" ry="24" fill="#71817c" />
-      </g>
-
-      <g filter="url(#fleet-shadow)">
-        <ellipse cx="604" cy="420" rx="92" ry="30" fill="#000" opacity="0.28" />
-        <polygon points="578,316 668,350 632,368 542,334" fill="#d8a440" />
-        <polygon points="542,334 542,424 632,460 632,368" fill="#926926" />
-        <polygon points="632,368 632,460 668,442 668,350" fill="#7f5618" />
-        <rect x="592" y="274" width="30" height="56" rx="10" fill="#2d251f" />
-      </g>
-
-      <g>
-        <circle cx="520" cy="416" r="16" fill="#ff8f6c" opacity="0.82" />
-        <circle cx="520" cy="416" r="38" fill="#ff8f6c" opacity="0.14" />
-        <path d="M519 416 C 560 402, 586 394, 603 386" fill="none" stroke="#ff8f6c" strokeWidth="8" strokeLinecap="round" opacity="0.8" />
-      </g>
-
-      <g opacity="0.92">
-        <rect x="180" y="122" width="240" height="126" rx="18" fill="#0f1716" stroke="#33574b" />
-        <text x="206" y="158" fill="#d7ebe4" fontSize="20" fontFamily="system-ui, sans-serif" fontWeight="600">Dispatch distraction</text>
-        <rect x="206" y="175" width="78" height="46" rx="12" fill="#21312e" />
-        <rect x="298" y="178" width="96" height="12" rx="6" fill="#71d6b1" opacity="0.8" />
-        <rect x="298" y="201" width="64" height="10" rx="5" fill="#4f7e6f" opacity="0.8" />
-        <rect x="206" y="228" width="148" height="8" rx="4" fill="#28413b" />
-      </g>
-    </svg>
+    <div className="spatial-scene__canvas spatial-scene__loader" role="status" aria-live="polite" aria-busy="true">
+      <div className="spatial-scene__loader-grid" aria-hidden="true">
+        <span className="spatial-scene__loader-pin spatial-scene__loader-pin--one" />
+        <span className="spatial-scene__loader-pin spatial-scene__loader-pin--two" />
+        <span className="spatial-scene__loader-pin spatial-scene__loader-pin--three" />
+        <span className="spatial-scene__loader-path spatial-scene__loader-path--one" />
+        <span className="spatial-scene__loader-path spatial-scene__loader-path--two" />
+      </div>
+      <div className="spatial-scene__loader-copy">
+        <span className="spatial-scene__loader-kicker">{meta.eyebrow}</span>
+        <strong>Preparing spatial review</strong>
+        <span>Resolving evidence anchors and scene geometry.</span>
+      </div>
+    </div>
   );
 }
 
@@ -256,10 +183,51 @@ function SceneIllustration({
   interactive?: boolean;
   allowScrollZoom?: boolean;
 }) {
-  if (templateId === "auto-claim") {
-    return (
-      <Suspense fallback={<div className="spatial-scene__canvas" />}>
-        <AutoClaimKenneyScene
+  const [hasMinimumLoadingElapsed, setHasMinimumLoadingElapsed] = useState(false);
+  const [SceneComponent, setSceneComponent] = useState<KenneySceneComponent | null>(null);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(true);
+  const [isLoaderExiting, setIsLoaderExiting] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+
+    setHasMinimumLoadingElapsed(false);
+    setSceneComponent(null);
+    setIsLoaderVisible(true);
+    setIsLoaderExiting(false);
+
+    const timerId = window.setTimeout(() => {
+      setHasMinimumLoadingElapsed(true);
+    }, MIN_SCENE_LOADING_MS);
+
+    loadKenneyScene(templateId).then((loadedScene) => {
+      if (!isActive) return;
+      setSceneComponent(() => loadedScene);
+    });
+
+    return () => {
+      isActive = false;
+      window.clearTimeout(timerId);
+    };
+  }, [templateId]);
+
+  useEffect(() => {
+    if (!hasMinimumLoadingElapsed || !SceneComponent) return;
+
+    setIsLoaderExiting(true);
+    const timerId = window.setTimeout(() => {
+      setIsLoaderVisible(false);
+    }, 280);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [hasMinimumLoadingElapsed, SceneComponent]);
+
+  return (
+    <div className="spatial-scene__stage">
+      {SceneComponent ? (
+        <SceneComponent
           selectedMarkerId={selectedMarkerId}
           onSelectMarker={onSelectMarker}
           markers={markers ?? []}
@@ -268,40 +236,16 @@ function SceneIllustration({
           interactive={interactive}
           allowScrollZoom={allowScrollZoom}
         />
-      </Suspense>
-    );
-  }
-  if (templateId === "fleet-safety") {
-    return (
-      <Suspense fallback={<FleetSafetyScene />}>
-        <FleetSafetyKenneyScene
-          selectedMarkerId={selectedMarkerId}
-          onSelectMarker={onSelectMarker}
-          markers={markers ?? []}
-          zoom={zoom ?? MIN_ZOOM}
-          resetToken={resetToken ?? 0}
-          interactive={interactive}
-          allowScrollZoom={allowScrollZoom}
-        />
-      </Suspense>
-    );
-  }
-  if (templateId === "site-inspection") {
-    return (
-      <Suspense fallback={<div className="spatial-scene__canvas" />}>
-        <SiteInspectionKenneyScene
-          selectedMarkerId={selectedMarkerId}
-          onSelectMarker={onSelectMarker}
-          markers={markers ?? []}
-          zoom={zoom ?? MIN_ZOOM}
-          resetToken={resetToken ?? 0}
-          interactive={interactive}
-          allowScrollZoom={allowScrollZoom}
-        />
-      </Suspense>
-    );
-  }
-  return <div className="spatial-scene__canvas" />;
+      ) : (
+        <div className="spatial-scene__canvas" />
+      )}
+      {isLoaderVisible && (
+        <div className={`spatial-scene__loader-layer${isLoaderExiting ? " spatial-scene__loader-layer--exit" : ""}`}>
+          <SpatialSceneLoader templateId={templateId} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {

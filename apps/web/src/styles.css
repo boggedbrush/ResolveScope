@@ -6602,6 +6602,195 @@ html[data-theme="light"] .spatial-marker-detail__section-ref-key {
   pointer-events: none;
 }
 
+.spatial-scene__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  overflow: hidden;
+  background: var(--spatial-scene-bg);
+}
+
+.spatial-scene__loader-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 280ms ease, transform 280ms ease, filter 280ms ease;
+  pointer-events: none;
+}
+
+.spatial-scene__loader-layer--exit {
+  opacity: 0;
+  filter: blur(8px);
+  transform: scale(1.012);
+}
+
+.spatial-scene__loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--spatial-accent) 22%, transparent), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    var(--spatial-scene-bg);
+  color: var(--text-on-dark);
+}
+
+.spatial-scene__loader::before {
+  content: "";
+  position: absolute;
+  inset: 14%;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 42%, transparent 74%);
+  opacity: 0.45;
+  transform: perspective(560px) rotateX(64deg) translateY(52px);
+  animation: spatial-loader-grid 2.8s linear infinite;
+}
+
+.spatial-scene__loader::after {
+  content: "";
+  position: absolute;
+  width: min(56vw, 720px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--spatial-accent) 38%, transparent);
+  opacity: 0.32;
+  transform: rotateX(64deg) scale(0.72);
+  animation: spatial-loader-scan 2.4s ease-in-out infinite;
+}
+
+.spatial-scene__loader-grid {
+  position: relative;
+  width: min(48vw, 420px);
+  aspect-ratio: 1.55;
+  transform: rotateX(58deg) rotateZ(-12deg);
+  transform-style: preserve-3d;
+}
+
+.spatial-scene__loader-pin,
+.spatial-scene__loader-path {
+  position: absolute;
+  display: block;
+}
+
+.spatial-scene__loader-pin {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spatial-accent) 76%, #fff 24%);
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--spatial-accent) 16%, transparent),
+    0 0 32px color-mix(in srgb, var(--spatial-accent) 48%, transparent);
+  animation: spatial-loader-pulse 1.8s ease-in-out infinite;
+}
+
+.spatial-scene__loader-pin--one {
+  left: 18%;
+  top: 58%;
+}
+
+.spatial-scene__loader-pin--two {
+  left: 47%;
+  top: 30%;
+  animation-delay: 0.22s;
+}
+
+.spatial-scene__loader-pin--three {
+  left: 74%;
+  top: 54%;
+  animation-delay: 0.44s;
+}
+
+.spatial-scene__loader-path {
+  height: 2px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--spatial-accent) 70%, transparent), transparent);
+  opacity: 0.58;
+}
+
+.spatial-scene__loader-path--one {
+  left: 22%;
+  top: 58%;
+  width: 34%;
+  transform: rotate(-27deg);
+}
+
+.spatial-scene__loader-path--two {
+  left: 50%;
+  top: 36%;
+  width: 31%;
+  transform: rotate(26deg);
+}
+
+.spatial-scene__loader-copy {
+  position: absolute;
+  left: 32px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: min(380px, calc(100% - 64px));
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(9, 10, 10, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+}
+
+.spatial-scene__loader-copy strong {
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.spatial-scene__loader-copy span:last-child {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.spatial-scene__loader-kicker {
+  color: color-mix(in srgb, var(--spatial-accent) 78%, #fff 22%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@keyframes spatial-loader-grid {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 44px, 44px 0; }
+}
+
+@keyframes spatial-loader-scan {
+  0%, 100% { opacity: 0.18; transform: rotateX(64deg) scale(0.58); }
+  48% { opacity: 0.44; transform: rotateX(64deg) scale(0.84); }
+}
+
+@keyframes spatial-loader-pulse {
+  0%, 100% { transform: translateZ(0) scale(0.9); opacity: 0.72; }
+  50% { transform: translateZ(18px) scale(1.08); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spatial-scene__loader::before,
+  .spatial-scene__loader::after,
+  .spatial-scene__loader-pin {
+    animation: none;
+  }
+}
+
 .spatial-scene__true3d,
 .spatial-scene__true3d .spatial-scene__canvas {
   width: 100%;
