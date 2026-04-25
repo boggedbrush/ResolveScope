@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState, useCallback, useEffect } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Edges, ContactShadows } from "@react-three/drei";
+import { OrbitControls, Edges, ContactShadows, Html } from "@react-three/drei";
 import * as THREE from "three";
 
 /* ── Camera ──────────────────────────── */
@@ -140,6 +140,12 @@ const ANNOTATIONS: AnnotationDef[] = [
   },
 ];
 
+function getAnnotationSeverity(status: string): "low" | "medium" | "high" {
+  if (status === "Flagged" || status === "Review") return "high";
+  if (status === "Noted") return "medium";
+  return "low";
+}
+
 /* ─────────────────────────────────────── *
  *  Components                             *
  * ─────────────────────────────────────── */
@@ -185,14 +191,16 @@ const _v3 = new THREE.Vector3();
 function Annotation({
   pin,
   color,
-  status: _status,
+  status,
   label: _label,
   detail: _detail,
   align: _align,
+  index,
   isActive,
   isAnyActive,
   onSelect,
 }: AnnotationDef & {
+  index: number;
   isActive: boolean;
   isAnyActive: boolean;
   onSelect: () => void;
@@ -251,6 +259,8 @@ function Annotation({
   const stemLen = pin[1] - 0.08;
   const sphereEmissive = isActive ? 0.9 : dimmed ? 0.15 : 0.5;
   const stemOpacity = dimmed ? 0.1 : 0.3;
+  const severity = getAnnotationSeverity(status);
+  const markerNumber = String(index + 1).padStart(2, "0");
 
   return (
     <group>
@@ -267,7 +277,29 @@ function Annotation({
 
       {/* Floating head */}
       <group ref={headRef} position={[pin[0], pin[1], pin[2]]}>
-        {/* Clickable sphere */}
+        <Html center zIndexRange={[12, 0]}>
+          <button
+            type="button"
+            className={[
+              "spatial-scene__pin-hit",
+              `spatial-scene__pin-hit--${severity}`,
+              isActive ? "spatial-scene__pin-hit--active" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSelect();
+            }}
+            aria-label={`Inspect ${_label}`}
+            aria-pressed={isActive}
+          >
+            {markerNumber}
+          </button>
+        </Html>
+
+        {/* Invisible 3D hit target keeps the marker easy to select while orbiting. */}
         <mesh
           ref={sphereRef}
           onClick={handleClick}
@@ -281,7 +313,8 @@ function Annotation({
             emissiveIntensity={sphereEmissive}
             roughness={0.3}
             transparent
-            opacity={dimmed ? 0.35 : 1}
+            opacity={0}
+            depthWrite={false}
           />
         </mesh>
 
@@ -377,6 +410,7 @@ function Scene({
           <Annotation
             key={`ann-${i}`}
             {...a}
+            index={i}
             isActive={activePin === i}
             isAnyActive={activePin !== null}
             onSelect={() =>
