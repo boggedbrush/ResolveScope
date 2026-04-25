@@ -2006,6 +2006,10 @@ html[data-theme="light"] .spatial__toolbar-meta {
   color: var(--text-tertiary);
 }
 
+html[data-theme="light"] .spatial__canvas-wrap {
+  background: #f3efe7;
+}
+
 html[data-theme="light"] .spatial__overlay {
   background: rgba(250, 250, 247, 0.88);
   border-color: var(--border);
@@ -2013,6 +2017,10 @@ html[data-theme="light"] .spatial__overlay {
 
 html[data-theme="light"] .spatial__overlay .display-lg {
   color: var(--text);
+}
+
+html[data-theme="light"] .spatial__overlay .eyebrow {
+  color: var(--copper);
 }
 
 html[data-theme="light"] .spatial__overlay-body {

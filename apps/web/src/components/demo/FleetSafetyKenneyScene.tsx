@@ -4,6 +4,7 @@ import { Html, OrbitControls } from "@react-three/drei";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
 import type { SpatialMarker } from "../../types/case";
+import { useTheme } from "../../theme/theme";
 
 const HOME_CAMERA: [number, number, number] = [8.6, 6.4, 10.8];
 const SCENE_GROUP_ROTATION: [number, number, number] = [0.02, -0.46, 0.01];
@@ -16,6 +17,35 @@ const FLEET_MARKER_POSITIONS: Record<string, [number, number, number]> = {
   "flt-003": [-2.18, 0.04, 0.32],
   "flt-004": [-1.24, 0.04, 1.18],
 };
+
+type SceneTheme = "light" | "dark";
+
+const FLEET_SCENE = {
+  dark: {
+    background: "#000000",
+    fog: "#0c1311",
+    ambient: "#e5fff4",
+    key: "#ecfff6",
+    fill: "#8aa39a",
+    floor: "#1b2522",
+    wall: "#101816",
+    bayMark: "#d7e6df",
+    bayInterior: "#1b2522",
+    path: "#8fe8c7",
+  },
+  light: {
+    background: "#f4f7f0",
+    fog: "#dce8df",
+    ambient: "#fbfff7",
+    key: "#ffffff",
+    fill: "#94a99e",
+    floor: "#cfd9d1",
+    wall: "#dbe4db",
+    bayMark: "#f7fbf7",
+    bayInterior: "#bbc9bf",
+    path: "#2fa777",
+  },
+} satisfies Record<SceneTheme, Record<string, string>>;
 
 function severityColor(severity: SpatialMarker["severity"]) {
   if (severity === "critical") return "#b12828";
@@ -198,7 +228,8 @@ function ForkliftModel({ active }: { active: boolean }) {
   );
 }
 
-function ReversePath({ active }: { active: boolean }) {
+function ReversePath({ active, theme }: { active: boolean; theme: SceneTheme }) {
+  const palette = FLEET_SCENE[theme];
   const steps: [number, number, number, number][] = [
     [-3.45, -0.45, 0.1, 0.86],
     [-2.72, -0.05, 0.18, 0.72],
@@ -215,14 +246,14 @@ function ReversePath({ active }: { active: boolean }) {
           position={[x, 0.055, z]}
           size={[0.28, 1.04]}
           rotation={rotation}
-          color="#8fe8c7"
+          color={palette.path}
           opacity={active ? opacity : opacity * 0.36}
         />
       ))}
       <mesh position={[-2.02, 0.062, 0.28]} rotation={[-Math.PI / 2, 0, -0.2]}>
         <ringGeometry args={[1.65, 1.74, 64, 1, 0.2, 1.26]} />
         <meshBasicMaterial
-          color="#8fe8c7"
+          color={palette.path}
           transparent
           opacity={active ? 0.42 : 0.16}
           side={THREE.DoubleSide}
@@ -500,31 +531,34 @@ function FleetSafetyCanvasScene({
   selectedMarkerId,
   markers,
   onSelectMarker,
+  theme,
 }: {
   selectedMarkerId?: string;
   markers: SpatialMarker[];
   onSelectMarker?: (markerId: string | null) => void;
+  theme: SceneTheme;
 }) {
   const contactActive = selectedMarkerId === "flt-001";
   const zoneActive = selectedMarkerId === "flt-002";
   const pathActive = selectedMarkerId === "flt-003";
   const tabletActive = selectedMarkerId === "flt-004";
+  const palette = FLEET_SCENE[theme];
 
   return (
     <>
-      <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#0c1311", 14, 25]} />
+      <color attach="background" args={[palette.background]} />
+      <fog attach="fog" args={[palette.fog, theme === "light" ? 16 : 14, theme === "light" ? 29 : 25]} />
 
-      <ambientLight intensity={1.04} color="#e5fff4" />
+      <ambientLight intensity={theme === "light" ? 1.36 : 1.04} color={palette.ambient} />
       <directionalLight
         castShadow
         position={[7, 10, 6]}
-        intensity={2.1}
-        color="#ecfff6"
+        intensity={theme === "light" ? 2.35 : 2.1}
+        color={palette.key}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <directionalLight position={[-6, 4, -5]} intensity={0.48} color="#8aa39a" />
+      <directionalLight position={[-6, 4, -5]} intensity={theme === "light" ? 0.68 : 0.48} color={palette.fill} />
       <pointLight
         position={[0.6, 1.1, 1.76]}
         intensity={contactActive ? 2.1 : 0.75}
@@ -541,30 +575,30 @@ function FleetSafetyCanvasScene({
       <group rotation={SCENE_GROUP_ROTATION} position={SCENE_GROUP_POSITION}>
         <mesh position={[0.5, 0, 0.46]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <planeGeometry args={[14, 13]} />
-          <meshStandardMaterial color="#1b2522" roughness={0.96} />
+          <meshStandardMaterial color={palette.floor} roughness={0.96} />
         </mesh>
 
         <mesh position={[1.1, 1.58, -3.42]} receiveShadow>
           <boxGeometry args={[8.8, 3.2, 0.26]} />
-          <meshStandardMaterial color="#101816" roughness={0.9} />
+          <meshStandardMaterial color={palette.wall} roughness={0.9} />
         </mesh>
 
         <DockDoor position={[-2.2, 0, -3.58]} label="BAY 3" />
         <DockDoor position={[0, 0, -3.58]} label="BAY 4" />
         <DockDoor position={[2.2, 0, -3.58]} label="BAY 5" />
 
-        <FloorMarking position={[0, 0.054, -1.16]} size={[2.12, 4.2]} color="#d7e6df" opacity={0.28} />
-        <FloorMarking position={[0, 0.058, -1.16]} size={[1.62, 3.54]} color="#1b2522" opacity={1} />
-        <FloorMarking position={[0, 0.062, -3.14]} size={[1.76, 0.14]} color="#d7e6df" opacity={0.58} />
+        <FloorMarking position={[0, 0.054, -1.16]} size={[2.12, 4.2]} color={palette.bayMark} opacity={0.28} />
+        <FloorMarking position={[0, 0.058, -1.16]} size={[1.62, 3.54]} color={palette.bayInterior} opacity={1} />
+        <FloorMarking position={[0, 0.062, -3.14]} size={[1.76, 0.14]} color={palette.bayMark} opacity={0.58} />
 
         <FloorMarking position={[1.38, 0.064, 0.96]} size={[2.08, 1.72]} color="#d1a348" opacity={zoneActive ? 0.42 : 0.2} />
-        <FloorMarking position={[1.38, 0.068, 0.96]} size={[1.56, 1.22]} color="#1b2522" opacity={1} />
+        <FloorMarking position={[1.38, 0.068, 0.96]} size={[1.56, 1.22]} color={palette.bayInterior} opacity={1} />
         <FloorMarking position={[1.38, 0.071, 1.82]} size={[2.08, 0.12]} color="#d1a348" opacity={zoneActive ? 0.88 : 0.5} />
         <FloorMarking position={[1.38, 0.071, 0.1]} size={[2.08, 0.12]} color="#d1a348" opacity={zoneActive ? 0.88 : 0.5} />
         <FloorMarking position={[0.34, 0.071, 0.96]} size={[0.12, 1.72]} color="#d1a348" opacity={zoneActive ? 0.88 : 0.5} />
         <FloorMarking position={[2.42, 0.071, 0.96]} size={[0.12, 1.72]} color="#d1a348" opacity={zoneActive ? 0.88 : 0.5} />
 
-        <ReversePath active={pathActive} />
+        <ReversePath active={pathActive} theme={theme} />
 
         <mesh position={[1.36, 0.07, 0.88]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.35, 0.72, 64]} />
@@ -613,6 +647,7 @@ export function FleetSafetyKenneyScene({
   const controlsRef = useRef<any>(null);
   const eventSourceRef = useRef<HTMLDivElement | null>(null);
   const eventSource = eventSourceRef as unknown as RefObject<HTMLElement>;
+  const { resolvedTheme } = useTheme();
 
   return (
     <div
@@ -645,6 +680,7 @@ export function FleetSafetyKenneyScene({
             selectedMarkerId={selectedMarkerId}
             markers={markers}
             onSelectMarker={onSelectMarker}
+            theme={resolvedTheme}
           />
         </Suspense>
         <OrbitControls

@@ -4,6 +4,7 @@ import { Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import type { SpatialMarker } from "../../types/case";
+import { useTheme } from "../../theme/theme";
 
 const KENNEY_VEHICLE_BASE = "/assets/kenney-car-kit/vehicle-scene";
 const HOME_CAMERA: [number, number, number] = [8.3, 6.1, 10.1];
@@ -14,6 +15,35 @@ const AUTO_CLAIM_MARKER_POSITIONS: Record<string, [number, number, number]> = {
   "acm-003": [-2.52, 0.04, 2.04],
   "acm-004": [4.0, 0.04, -1.15],
 };
+
+type SceneTheme = "light" | "dark";
+
+const AUTO_CLAIM_SCENE = {
+  dark: {
+    background: "#000000",
+    fog: "#120f0d",
+    ambient: "#f6e7d9",
+    key: "#fff0df",
+    fill: "#8398b6",
+    floor: "#2b313d",
+    stripe: "#f2d5b5",
+    stripeWarm: "#84695d",
+    stripeMuted: "#7d6357",
+    sedanTint: "#495469",
+  },
+  light: {
+    background: "#f8f3ea",
+    fog: "#eadfd0",
+    ambient: "#fff8ec",
+    key: "#fff7ea",
+    fill: "#b8c5d8",
+    floor: "#d8d1c5",
+    stripe: "#f7efe3",
+    stripeWarm: "#b48a72",
+    stripeMuted: "#a98570",
+    sedanTint: "#7c8798",
+  },
+} satisfies Record<SceneTheme, Record<string, string>>;
 
 function severityColor(severity: SpatialMarker["severity"]) {
   if (severity === "critical") return "#b12828";
@@ -110,43 +140,59 @@ function ParkingStripe({
 function RoadCrack({
   position,
   rotation = 0,
+  theme,
 }: {
   position: [number, number, number];
   rotation?: number;
+  theme: SceneTheme;
 }) {
+  const crack = theme === "light"
+    ? {
+        stain: "#9ca3ad",
+        dark: "#404652",
+        darker: "#2f3440",
+        chip: "#7c8490",
+      }
+    : {
+        stain: "#3b404a",
+        dark: "#111215",
+        darker: "#0d0e10",
+        chip: "#5e6470",
+      };
+
   return (
     <group position={position} rotation={[0, rotation, 0]}>
       <mesh position={[0.02, 0.006, 0.04]} rotation={[-Math.PI / 2, 0.1, 0]}>
         <planeGeometry args={[1.92, 0.22]} />
-        <meshStandardMaterial color="#3b404a" roughness={1} transparent opacity={0.42} />
+        <meshStandardMaterial color={crack.stain} roughness={1} transparent opacity={0.42} />
       </mesh>
       <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0.08, 0]}>
         <planeGeometry args={[1.56, 0.06]} />
-        <meshStandardMaterial color="#111215" roughness={1} />
+        <meshStandardMaterial color={crack.dark} roughness={1} />
       </mesh>
       <mesh position={[-0.46, 0.011, 0.12]} rotation={[-Math.PI / 2, -0.58, 0]}>
         <planeGeometry args={[0.56, 0.05]} />
-        <meshStandardMaterial color="#0f1012" roughness={1} />
+        <meshStandardMaterial color={crack.darker} roughness={1} />
       </mesh>
       <mesh position={[-0.12, 0.011, -0.16]} rotation={[-Math.PI / 2, 0.62, 0]}>
         <planeGeometry args={[0.42, 0.045]} />
-        <meshStandardMaterial color="#0d0e10" roughness={1} />
+        <meshStandardMaterial color={crack.darker} roughness={1} />
       </mesh>
       <mesh position={[0.34, 0.011, 0.1]} rotation={[-Math.PI / 2, -0.74, 0]}>
         <planeGeometry args={[0.44, 0.045]} />
-        <meshStandardMaterial color="#111215" roughness={1} />
+        <meshStandardMaterial color={crack.dark} roughness={1} />
       </mesh>
       <mesh position={[0.58, 0.011, -0.08]} rotation={[-Math.PI / 2, 0.48, 0]}>
         <planeGeometry args={[0.34, 0.04]} />
-        <meshStandardMaterial color="#15171a" roughness={1} />
+        <meshStandardMaterial color={crack.dark} roughness={1} />
       </mesh>
       <mesh position={[-0.54, 0.012, -0.12]} rotation={[-Math.PI / 2, 0.28, 0]}>
         <planeGeometry args={[0.2, 0.12]} />
-        <meshStandardMaterial color="#5e6470" roughness={1} transparent opacity={0.78} />
+        <meshStandardMaterial color={crack.chip} roughness={1} transparent opacity={0.78} />
       </mesh>
       <mesh position={[0.18, 0.012, 0.18]} rotation={[-Math.PI / 2, -0.34, 0]}>
         <planeGeometry args={[0.24, 0.11]} />
-        <meshStandardMaterial color="#525762" roughness={1} transparent opacity={0.74} />
+        <meshStandardMaterial color={crack.chip} roughness={1} transparent opacity={0.74} />
       </mesh>
     </group>
   );
@@ -273,31 +319,34 @@ function AutoClaimCanvasScene({
   selectedMarkerId,
   markers,
   onSelectMarker,
+  theme,
 }: {
   selectedMarkerId?: string;
   markers: SpatialMarker[];
   onSelectMarker?: (markerId: string | null) => void;
+  theme: SceneTheme;
 }) {
   const impactActive = selectedMarkerId === "acm-001" || selectedMarkerId === "acm-002";
   const corridorActive = selectedMarkerId === "acm-003";
   const estimateActive = selectedMarkerId === "acm-004";
   const stallRotation = 2.54;
+  const palette = AUTO_CLAIM_SCENE[theme];
 
   return (
     <>
-      <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#120f0d", 13, 24]} />
+      <color attach="background" args={[palette.background]} />
+      <fog attach="fog" args={[palette.fog, theme === "light" ? 15 : 13, theme === "light" ? 28 : 24]} />
 
-      <ambientLight intensity={1.22} color="#f6e7d9" />
+      <ambientLight intensity={theme === "light" ? 1.42 : 1.22} color={palette.ambient} />
       <directionalLight
         castShadow
         position={[8, 11, 6]}
-        intensity={2.2}
-        color="#fff0df"
+        intensity={theme === "light" ? 2.45 : 2.2}
+        color={palette.key}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <directionalLight position={[-6, 5, -6]} intensity={0.58} color="#8398b6" />
+      <directionalLight position={[-6, 5, -6]} intensity={theme === "light" ? 0.72 : 0.58} color={palette.fill} />
       <pointLight
         position={[0.58, 1.4, 1.18]}
         intensity={impactActive ? 1.9 : 0.92}
@@ -308,18 +357,18 @@ function AutoClaimCanvasScene({
       <group rotation={[0.04, -0.48, 0.02]} position={[0.24, -0.08, 0.12]}>
         <mesh position={[1.08, 0.01, -0.18]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[18, 18]} />
-          <meshStandardMaterial color="#2b313d" roughness={0.94} />
+          <meshStandardMaterial color={palette.floor} roughness={0.94} />
         </mesh>
 
-        <ParkingStripe position={[0.81, 0.04, -4.17]} size={[0.16, 3.4]} rotation={stallRotation} opacity={corridorActive ? 0.8 : 0.5} />
-        <ParkingStripe position={[2.71, 0.04, -2.87]} size={[0.16, 3.4]} rotation={stallRotation} opacity={estimateActive ? 0.9 : 0.62} />
-        <ParkingStripe position={[4.61, 0.04, -1.57]} size={[0.16, 3.4]} rotation={stallRotation} opacity={estimateActive ? 0.9 : 0.62} />
-        <ParkingStripe position={[6.51, 0.04, -0.27]} size={[0.16, 3.4]} rotation={stallRotation} opacity={0.48} />
+        <ParkingStripe position={[0.81, 0.04, -4.17]} size={[0.16, 3.4]} rotation={stallRotation} color={palette.stripe} opacity={corridorActive ? 0.8 : 0.5} />
+        <ParkingStripe position={[2.71, 0.04, -2.87]} size={[0.16, 3.4]} rotation={stallRotation} color={palette.stripe} opacity={estimateActive ? 0.9 : 0.62} />
+        <ParkingStripe position={[4.61, 0.04, -1.57]} size={[0.16, 3.4]} rotation={stallRotation} color={palette.stripe} opacity={estimateActive ? 0.9 : 0.62} />
+        <ParkingStripe position={[6.51, 0.04, -0.27]} size={[0.16, 3.4]} rotation={stallRotation} color={palette.stripe} opacity={0.48} />
 
-        <ParkingStripe position={[4.62, 0.04, -3.62]} size={[6.9, 0.12]} rotation={stallRotation} color="#84695d" opacity={0.26} />
-        <ParkingStripe position={[2.70, 0.04, -0.82]} size={[6.9, 0.12]} rotation={stallRotation} color="#7d6357" opacity={0.22} />
+        <ParkingStripe position={[4.62, 0.04, -3.62]} size={[6.9, 0.12]} rotation={stallRotation} color={palette.stripeWarm} opacity={0.26} />
+        <ParkingStripe position={[2.70, 0.04, -0.82]} size={[6.9, 0.12]} rotation={stallRotation} color={palette.stripeMuted} opacity={0.22} />
 
-        <RoadCrack position={[-2.44, 0, 2.2]} rotation={-0.18} />
+        <RoadCrack position={[-2.44, 0, 2.2]} rotation={-0.18} theme={theme} />
 
         <mesh position={[-2.52, 0.03, 2.04]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.4, 0.54, 48]} />
@@ -367,7 +416,7 @@ function AutoClaimCanvasScene({
           position={[2.7, 0, -0.82]}
           rotation={[0, 2.54, 0]}
           scale={1.38}
-          tint="#495469"
+          tint={palette.sedanTint}
         />
         <SceneModel
           url={`${KENNEY_VEHICLE_BASE}/debris-bumper.glb`}
@@ -421,6 +470,7 @@ export function AutoClaimKenneyScene({
   const controlsRef = useRef<any>(null);
   const eventSourceRef = useRef<HTMLDivElement | null>(null);
   const eventSource = eventSourceRef as unknown as RefObject<HTMLElement>;
+  const { resolvedTheme } = useTheme();
 
   return (
     <div
@@ -453,6 +503,7 @@ export function AutoClaimKenneyScene({
             selectedMarkerId={selectedMarkerId}
             markers={markers}
             onSelectMarker={onSelectMarker}
+            theme={resolvedTheme}
           />
         </Suspense>
         <OrbitControls

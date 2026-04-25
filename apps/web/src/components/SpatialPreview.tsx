@@ -2,6 +2,7 @@ import { useRef, useMemo, useState, useCallback, useEffect } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Edges, ContactShadows, Html } from "@react-three/drei";
 import * as THREE from "three";
+import { useTheme } from "../theme/theme";
 
 /* ── Camera ──────────────────────────── */
 const INITIAL_CAM: [number, number, number] = [24, 18, 24];
@@ -12,6 +13,35 @@ const FOREST = "#2a6b4a";
 const AMBER = "#c49a3c";
 const BASE_COLOR = "#222120";
 const GRID_COLOR = "#2e2c2a";
+
+type SceneTheme = "light" | "dark";
+
+const PREVIEW_SCENE = {
+  dark: {
+    background: "#1a1918",
+    fog: "#1a1918",
+    ground: BASE_COLOR,
+    groundEdge: "#3a3735",
+    grid: GRID_COLOR,
+    path: "#302e2c",
+    key: "#faf5ed",
+    fill: "#e8e4dc",
+    point: "#fff5eb",
+    shadow: "#000",
+  },
+  light: {
+    background: "#f3efe7",
+    fog: "#e9e2d8",
+    ground: "#d8d0c4",
+    groundEdge: "#b5aa9b",
+    grid: "#c8bcac",
+    path: "#b9ad9c",
+    key: "#fffaf0",
+    fill: "#bec8d2",
+    point: "#fff5e5",
+    shadow: "#6f665c",
+  },
+} satisfies Record<SceneTheme, Record<string, string>>;
 
 /* ─────────────────────────────────────── *
  *  Scene data                             *
@@ -367,10 +397,18 @@ function ScanPulse() {
 function Scene({
   activePin,
   onSelectPin,
+  theme,
 }: {
   activePin: number | null;
   onSelectPin: (i: number | null) => void;
+  theme: SceneTheme;
 }) {
+  const palette = PREVIEW_SCENE[theme];
+  const paths = useMemo(
+    () => PATHS.map((path) => ({ ...path, color: palette.path })),
+    [palette.path]
+  );
+
   return (
     <>
       <group>
@@ -380,16 +418,16 @@ function Scene({
           onClick={() => onSelectPin(null)}
         >
           <boxGeometry args={[14, 0.12, 14]} />
-          <meshStandardMaterial color={BASE_COLOR} roughness={0.95} />
-          <Edges threshold={15} color="#3a3735" />
+          <meshStandardMaterial color={palette.ground} roughness={0.95} />
+          <Edges threshold={15} color={palette.groundEdge} />
         </mesh>
 
         <gridHelper
-          args={[14, 28, GRID_COLOR, GRID_COLOR]}
+          args={[14, 28, palette.grid, palette.grid]}
           position={[0, 0.006, 0]}
         />
 
-        {PATHS.map((p, i) => (
+        {paths.map((p, i) => (
           <Box key={`path-${i}`} {...p} />
         ))}
         {STRUCTURES.map((s, i) => (
@@ -423,22 +461,22 @@ function Scene({
       </group>
 
       {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[8, 12, 6]} intensity={1.0} color="#faf5ed" />
+      <ambientLight intensity={theme === "light" ? 0.72 : 0.5} />
+      <directionalLight position={[8, 12, 6]} intensity={theme === "light" ? 1.22 : 1.0} color={palette.key} />
       <directionalLight
         position={[-5, 8, -4]}
-        intensity={0.3}
-        color="#e8e4dc"
+        intensity={theme === "light" ? 0.48 : 0.3}
+        color={palette.fill}
       />
-      <pointLight position={[0, 6, 0]} intensity={0.2} color="#fff5eb" />
+      <pointLight position={[0, 6, 0]} intensity={theme === "light" ? 0.3 : 0.2} color={palette.point} />
 
       <ContactShadows
         position={[0, -0.005, 0]}
-        opacity={0.2}
+        opacity={theme === "light" ? 0.16 : 0.2}
         scale={16}
         blur={2.5}
         far={5}
-        color="#000"
+        color={palette.shadow}
       />
     </>
   );
@@ -638,6 +676,7 @@ function AnnotationSidebar({
 const RESUME_DELAY = 4_000;
 
 export function SpatialPreview() {
+  const { resolvedTheme } = useTheme();
   const [activePin, setActivePin] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1.4);
   const [hovered, setHovered] = useState(false);
@@ -687,6 +726,7 @@ export function SpatialPreview() {
 
   const activeAnnotation = activePin !== null ? ANNOTATIONS[activePin] : null;
   const autoRotate = activePin === null && !userInteracting && !hovered;
+  const palette = PREVIEW_SCENE[resolvedTheme];
 
   return (
     <>
@@ -694,19 +734,20 @@ export function SpatialPreview() {
         camera={{ position: INITIAL_CAM, fov: 26, near: 0.1, far: 120 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false }}
-        style={{ background: "#1a1918" }}
+        style={{ background: palette.background }}
         onPointerMissed={() => setActivePin(null)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <fog attach="fog" args={["#1a1918", 30, 60]} />
+        <color attach="background" args={[palette.background]} />
+        <fog attach="fog" args={[palette.fog, resolvedTheme === "light" ? 34 : 30, resolvedTheme === "light" ? 68 : 60]} />
         <CameraZoom target={zoom} />
         <CameraReturn
           returning={returning}
           orbitRef={orbitRef}
           onComplete={() => setReturning(false)}
         />
-        <Scene activePin={activePin} onSelectPin={setActivePin} />
+        <Scene activePin={activePin} onSelectPin={setActivePin} theme={resolvedTheme} />
         <OrbitControls
           ref={orbitRef}
           enableZoom={false}

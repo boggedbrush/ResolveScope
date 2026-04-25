@@ -4,6 +4,7 @@ import { Html, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import type { SpatialMarker } from "../../types/case";
+import { useTheme } from "../../theme/theme";
 
 const HOME_CAMERA: [number, number, number] = [10.2, 7.8, 14.4];
 const SCENE_GROUP_ROTATION: [number, number, number] = [0, -0.52, 0];
@@ -16,6 +17,29 @@ const SITE_MARKER_POSITIONS: Record<string, [number, number, number]> = {
   "sm-003": [1.9, 3.14, -0.9],
   "sm-004": [0.12, 0.12, -2.55],
 };
+
+type SceneTheme = "light" | "dark";
+
+const SITE_SCENE = {
+  dark: {
+    background: "#05070a",
+    fog: "#10151d",
+    ambient: "#edf4ff",
+    key: "#f3f7ff",
+    fill: "#8fa8c7",
+    warm: "#ffad7b",
+    cool: "#7eb7ff",
+  },
+  light: {
+    background: "#eef2f4",
+    fog: "#d9e0e6",
+    ambient: "#ffffff",
+    key: "#ffffff",
+    fill: "#9db0c6",
+    warm: "#d8895b",
+    cool: "#4f8ed5",
+  },
+} satisfies Record<SceneTheme, Record<string, string>>;
 
 function severityColor(severity: SpatialMarker["severity"]) {
   if (severity === "critical") return "#b12828";
@@ -176,37 +200,41 @@ function SiteInspectionCanvasScene({
   selectedMarkerId,
   markers,
   onSelectMarker,
+  theme,
 }: {
   selectedMarkerId?: string;
   markers: SpatialMarker[];
   onSelectMarker?: (markerId: string | null) => void;
+  theme: SceneTheme;
 }) {
+  const palette = SITE_SCENE[theme];
+
   return (
     <>
-      <color attach="background" args={["#05070a"]} />
-      <fog attach="fog" args={["#10151d", 13, 25]} />
+      <color attach="background" args={[palette.background]} />
+      <fog attach="fog" args={[palette.fog, theme === "light" ? 15 : 13, theme === "light" ? 29 : 25]} />
 
-      <ambientLight intensity={1.08} color="#edf4ff" />
+      <ambientLight intensity={theme === "light" ? 1.34 : 1.08} color={palette.ambient} />
       <directionalLight
         castShadow
         position={[8, 12, 7]}
-        intensity={2.0}
-        color="#f3f7ff"
+        intensity={theme === "light" ? 2.35 : 2.0}
+        color={palette.key}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <directionalLight position={[-5, 4, -4]} intensity={0.48} color="#8fa8c7" />
+      <directionalLight position={[-5, 4, -4]} intensity={theme === "light" ? 0.66 : 0.48} color={palette.fill} />
       <pointLight
         position={[-2.8, 7.2, -2.4]}
         intensity={selectedMarkerId === "sm-001" ? 1.55 : 0.42}
         distance={12}
-        color="#ffad7b"
+        color={palette.warm}
       />
       <pointLight
         position={[4.2, 4.8, -1.6]}
         intensity={selectedMarkerId === "sm-003" ? 1.45 : 0.38}
         distance={12}
-        color="#7eb7ff"
+        color={palette.cool}
       />
 
       <group rotation={SCENE_GROUP_ROTATION} position={SCENE_GROUP_POSITION}>
@@ -245,6 +273,7 @@ export function SiteInspectionKenneyScene({
   const controlsRef = useRef<any>(null);
   const eventSourceRef = useRef<HTMLDivElement | null>(null);
   const eventSource = eventSourceRef as unknown as RefObject<HTMLElement>;
+  const { resolvedTheme } = useTheme();
 
   return (
     <div
@@ -277,6 +306,7 @@ export function SiteInspectionKenneyScene({
             selectedMarkerId={selectedMarkerId}
             markers={markers}
             onSelectMarker={onSelectMarker}
+            theme={resolvedTheme}
           />
         </Suspense>
         <OrbitControls
