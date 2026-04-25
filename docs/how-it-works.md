@@ -5,20 +5,20 @@
 Every case follows the same loop, regardless of domain:
 
 ```
-Intake → Extraction → Review → (Spatial annotation) → Export
+Intake -> Extraction -> Review -> (Spatial annotation) -> Export
 ```
 
 **1. Intake**
-A case is created with a template : auto claim, fleet safety, site inspection, or custom. Evidence is attached: documents, photos, video clips, field notes. The template defines which fields matter for this case type.
+A case is created with a template : auto claim, fleet safety, site inspection, consumer quality, compliance audit, or custom. Evidence is attached: documents, photos, video clips, field notes, CSV data, and review notes. The template defines which fields matter for this case type.
 
 **2. Extraction**
-AI reads the attached evidence and populates structured fields: severity, summary, key observations, next steps, and any template-specific fields. Extraction runs against the evidence, not from memory. The raw evidence stays visible alongside the AI output.
+The demo shows AI-style extraction from attached evidence into structured fields: severity, summary, key observations, next steps, and any template-specific fields. Extraction is seeded in the frontend, and the raw evidence stays visible alongside the generated output.
 
 **3. Review**
 A human reviewer sees the AI-populated fields side by side with the source evidence. Every field can be overridden. Every override is logged with a reason. Nothing is finalized without explicit approval.
 
 **4. Spatial annotation** *(field and inspection workflows)*
-For cases involving physical locations : vehicle damage, site defects, inspection findings : a spatial annotation panel lets reviewers pin evidence to a scene. The 360° view or lightweight 3D model shows where on the vehicle, building, or asset each finding originated.
+For cases involving physical locations : vehicle damage, site defects, inspection findings : a spatial annotation panel lets reviewers pin evidence to a scene. The 360 view or lightweight 3D model shows where on the vehicle, building, or asset each finding originated.
 
 **5. Export**
 The approved case generates a stakeholder report: a formatted brief with structured fields, evidence links, the override log, and the audit trail. The same data is available as a JSON bundle for downstream integration.
@@ -27,13 +27,15 @@ The approved case generates a stakeholder report: a formatted brief with structu
 
 ## How seeded demos map to the product story
 
-The live demo runs on seeded frontend data : there is no live AI inference in the deployed version. The seeded data is designed to show realistic case state at each stage of the workflow.
+The live demo runs on fictional seeded frontend data : there is no live AI inference in the deployed version. The seeded data is designed to show realistic case state at each stage of the workflow.
 
 | Demo | Seed state | What it demonstrates |
 |---|---|---|
 | Auto claim | Evidence attached, extraction complete, one override applied | Full workspace with AI extraction + human correction |
 | Fleet safety | Multi-stage handoff, escalation flag | Structured timeline, severity routing |
 | Site inspection | Field observations, spatial pins | 360° spatial annotation, punch list generation |
+| Consumer quality complaint | Product, order, batch, support, and reviewer evidence | Quality triage with documents, CSV data, image evidence, and notes |
+| Compliance audit review | Policy, approval, checklist, missing evidence, screenshot, and remediation note | Governed review workflow with provenance and follow-up state |
 
 Each demo is accessible from the [dashboard](https://resolvescope.pages.dev/dashboard) or directly via `/demo/:id`. Each has a corresponding stakeholder report at `/report/:id`.
 
@@ -49,7 +51,7 @@ The evidence-to-action loop exists because the alternative : scattered evidence,
 - Decisions are hard to defend when supporting evidence is not linked
 - Spatial context (where on a vehicle, a site, a product) is lost entirely
 
-The core product insight is that the workflow is the same across claims, safety incidents, inspections, and quality reviews. The template layer makes it domain-adaptable without making it domain-generic.
+The core product insight is that the workflow is the same across claims, safety incidents, inspections, quality reviews, and audit reviews. The template layer makes it domain-adaptable without making it domain-generic.
 
 ---
 

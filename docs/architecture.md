@@ -43,7 +43,7 @@ Each stage is tracked. Overrides are logged. Nothing becomes final without expli
 - Human review with override tracking and audit log
 - Spatial/360° annotation panel (Three.js / React Three Fiber)
 - Stakeholder report view with JSON export
-- Seeded case data for three demo workflows
+- Seeded case data for five demo workflows
 - Cloudflare Pages deployment
 
 **Architectural direction (not yet deployed):**

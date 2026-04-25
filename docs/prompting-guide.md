@@ -42,6 +42,10 @@ The skill system keeps specialized guidance modular. Rather than cramming everyt
 
 The principle: load guidance at the granularity of the task, not the granularity of the repo.
 
+The skill files and `skills-lock.json` are committed intentionally. For this hackathon project, the build workflow is part of the deliverable: reviewers can inspect which instructions shaped the implementation and where those instructions came from.
+
+Local agent settings are not part of that workflow record. Files like `.agents/settings.local.json` describe one machine's permissions and should stay untracked, just like secrets and local environment files.
+
 ---
 
 ## How implementation tasks are sliced

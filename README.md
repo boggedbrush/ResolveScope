@@ -25,7 +25,7 @@ Built for operational teams that cannot afford to get it wrong.
 
 <img alt="Status" src="https://img.shields.io/badge/status-live-16a34a?style=flat-square" />
 <img alt="Stack" src="https://img.shields.io/badge/stack-React%2019%20%7C%20TypeScript%20%7C%20Cloudflare-0f172a?style=flat-square" />
-<img alt="AI" src="https://img.shields.io/badge/AI-Gemini%20Flash-5B21B6?style=flat-square" />
+<img alt="Demo data" src="https://img.shields.io/badge/demo-seeded%20AI%20workflow-5B21B6?style=flat-square" />
 <img alt="License" src="https://img.shields.io/badge/license-MIT-059669?style=flat-square" />
 
 <br><br>
@@ -56,22 +56,26 @@ Developed with Codex as the primary implementation agent, guided by <code>AGENTS
 | [**`/demo/auto-claim`**](https://resolvescope.pages.dev/demo/auto-claim) | Auto claim workspace: evidence, AI extraction, spatial review |
 | [**`/demo/fleet-safety`**](https://resolvescope.pages.dev/demo/fleet-safety) | Fleet safety incident workspace |
 | [**`/demo/site-inspection`**](https://resolvescope.pages.dev/demo/site-inspection) | Site inspection: field observations, spatial annotation |
+| [**`/demo/consumer-quality`**](https://resolvescope.pages.dev/demo/consumer-quality) | Consumer quality complaint workspace |
+| [**`/demo/compliance-audit`**](https://resolvescope.pages.dev/demo/compliance-audit) | Compliance audit review workspace |
 | [**`/report/auto-claim`**](https://resolvescope.pages.dev/report/auto-claim) | Stakeholder report: formatted case brief for external review |
 | [**`/report/fleet-safety`**](https://resolvescope.pages.dev/report/fleet-safety) | Fleet safety stakeholder report |
 | [**`/report/site-inspection`**](https://resolvescope.pages.dev/report/site-inspection) | Site inspection stakeholder report |
+| [**`/report/consumer-quality`**](https://resolvescope.pages.dev/report/consumer-quality) | Consumer quality stakeholder report |
+| [**`/report/compliance-audit`**](https://resolvescope.pages.dev/report/compliance-audit) | Compliance audit stakeholder report |
 | [**`/architecture`**](https://resolvescope.pages.dev/architecture) | Architecture: system design, data model, infrastructure direction |
 
 </div>
 
 <br>
 
-> **Note:** The frontend demo is live. Current demo surfaces run on seeded frontend data. The Workers API, D1, R2, Queues, and Durable Objects layers are part of the architectural direction; not yet deployed.
+> **Note:** The frontend demo is live. Current demo surfaces run on fictional seeded frontend data. There are no live AI calls in the deployed demo. The Workers API, D1, R2, Queues, and Durable Objects layers are part of the architectural direction; not yet deployed.
 
 ---
 
 ## Suggested Reviewer Flow
 
-Five stops. Start to finish in under ten minutes.
+Six stops. Start to finish in under ten minutes.
 
 <br>
 
@@ -82,12 +86,15 @@ Product framing, problem statement, and the core workflow at a glance.
 The operational view. Browse seeded cases across types, statuses, and priorities.
 
 **Step 3 → [Auto claim workspace](https://resolvescope.pages.dev/demo/auto-claim)**
-Open a case. Review evidence, structured AI extraction, and spatial annotation side by side.
+Open a case. Review evidence, structured seeded extraction, and spatial annotation side by side.
 
 **Step 4 → [Stakeholder report](https://resolvescope.pages.dev/report/auto-claim)**
 The output. An export-ready case brief formatted for external review.
 
-**Step 5 → [Architecture page](https://resolvescope.pages.dev/architecture)**
+**Step 5 → [Quality and audit demos](https://resolvescope.pages.dev/dashboard)**
+Scan the two newer workflows: consumer quality complaint and compliance audit review.
+
+**Step 6 → [Architecture page](https://resolvescope.pages.dev/architecture)**
 The system behind it. Data model, infrastructure direction, and design decisions.
 
 ---
@@ -100,11 +107,11 @@ Operational teams face the same failure mode repeatedly:
 
 The evidence exists (photos, documents, notes, field observations, video), but it lives in email threads, shared drives, and chat. No single record. No clear approval. No audit trail.
 
-ResolveScope is the case-centered workspace that fixes this. Every piece of evidence flows into a structured, reviewable, exportable case file. AI assists with extraction and summarization. Humans approve before anything becomes final.
+ResolveScope is the case-centered workspace that fixes this. Every piece of evidence flows into a structured, reviewable, exportable case file. The demo uses seeded AI-style extraction to show the workflow shape. Humans approve before anything becomes final.
 
 The core loop is the same regardless of domain:
 
-**Structured intake → AI extraction → human review → export.**
+**Structured intake → assisted extraction → human review → export.**
 
 The template layer makes it adaptable without making it generic.
 
@@ -130,7 +137,7 @@ The template layer makes it adaptable without making it generic.
 ## Product Surfaces
 
 - **Evidence intake**: documents, images, video, and field notes into a unified case workspace
-- **AI-assisted extraction**: structured fields, timeline construction, summaries, and draft actions
+- **AI-assisted extraction workflow**: structured fields, timeline construction, summaries, and draft actions shown with seeded demo data
 - **Human-in-the-loop review**: every AI output is reviewable and editable before it becomes final
 - **Spatial and 360° annotation**: inspectable scenes with evidence pins for field and inspection workflows
 - **Stakeholder-ready outputs**: formatted case briefs and shareable report views
@@ -175,6 +182,22 @@ The template layer makes it adaptable without making it generic.
 <td><a href="docs/how-to-use-skills.md"><strong>How to use skills</strong></a></td>
 <td>How agent skills are discovered, installed, and invoked in this repo; when to let them trigger naturally vs. when to force them explicitly.</td>
 </tr>
+<tr>
+<td><a href="WORKFLOW.md"><strong>Workflow</strong></a></td>
+<td>Why agent instructions and skills are committed, what local state is excluded, and how to reproduce the workflow safely.</td>
+</tr>
+<tr>
+<td><a href="CONTRIBUTING.md"><strong>Contributing</strong></a></td>
+<td>Local setup, validation expectations, and contribution guidelines.</td>
+</tr>
+<tr>
+<td><a href="SECURITY.md"><strong>Security</strong></a></td>
+<td>How to report vulnerabilities and what is out of scope for the seeded demo.</td>
+</tr>
+<tr>
+<td><a href="NOTICE.md"><strong>Notice</strong></a></td>
+<td>Attribution notes for third-party assets, generated demo evidence, and committed workflow skills.</td>
+</tr>
 </table>
 
 </div>
@@ -199,6 +222,8 @@ Requires Node.js 20+ and npm 10+.
 The frontend is live at **[resolvescope.pages.dev](https://resolvescope.pages.dev)** on Cloudflare Pages.
 
 The Workers API, D1, R2, Queues, and Durable Objects layers are part of the architectural direction. Current demo surfaces run on seeded frontend data.
+
+No live AI provider is required to run the current app.
 
 ---
 

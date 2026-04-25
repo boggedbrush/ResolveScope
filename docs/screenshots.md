@@ -19,7 +19,10 @@ Recommended viewport: **1440 × 900** or **1280 × 800** for desktop captures.
 | Workspace : extraction | `/demo/auto-claim` | Extraction panel with structured fields populated |
 | Workspace : review | `/demo/auto-claim` | Review panel with an override applied |
 | Workspace : spatial | `/demo/site-inspection` | Spatial annotation panel with a scene and evidence pins |
+| Workspace : quality | `/demo/consumer-quality` | Evidence list with documents, CSV data, notes, and image evidence |
+| Workspace : audit | `/demo/compliance-audit` | Audit evidence and screenshot item visible |
 | Stakeholder report | `/report/auto-claim` | Full report view, above and below the fold |
+| New report routes | `/report/consumer-quality`, `/report/compliance-audit` | Report checklist, evidence, and generated fields |
 | Architecture page | `/architecture` | System diagram and data model section |
 
 ---

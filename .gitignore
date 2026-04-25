@@ -16,6 +16,10 @@ tmp/
 .dev.vars.*
 .wrangler-state/
 
+# local agent state
+.agents/settings.local.json
+.playwright-cli/
+
 # environment files
 .env
 .env.*
@@ -31,6 +35,9 @@ pnpm-debug.log*
 # testing
 playwright-report/
 test-results/
+
+# TypeScript
+*.tsbuildinfo
 
 # editor / OS
 .DS_Store
