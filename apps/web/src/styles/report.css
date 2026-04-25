@@ -741,8 +741,8 @@
 }
 
 .report-checklist-item--done {
-  background: #f0faf5;
-  border-color: rgba(42, 107, 74, 0.15);
+  background: var(--status-success-bg);
+  border-color: color-mix(in srgb, var(--status-success-fg) 26%, var(--border-light));
 }
 
 .report-checklist-item__icon {
@@ -752,7 +752,7 @@
 }
 
 .report-checklist-item--done .report-checklist-item__icon {
-  color: var(--forest);
+  color: var(--status-success-fg);
 }
 
 .report-checklist-item__label {
