@@ -20,14 +20,26 @@ import type {
 interface Props {
   seedData: SeedCaseData;
   demoId: string;
+  onDeleteCase?: () => void;
+  localCaseLabel?: string;
+  topbarLabel?: string;
+  showResetDemo?: boolean;
 }
 
 function makeAuditId(): string {
   return `audit-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function WorkspaceDemoPage({ seedData, demoId }: Props) {
+export function WorkspaceDemoPage({
+  seedData,
+  demoId,
+  onDeleteCase,
+  localCaseLabel,
+  topbarLabel,
+  showResetDemo = true,
+}: Props) {
   const template = getTemplate(seedData.caseMeta.templateId);
+  const displayTemplateLabel = topbarLabel ?? template.label;
 
   // Original values snapshot : used to detect overrides
   const originalValues: Record<string, string> = {
@@ -201,13 +213,29 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
       <header className="demo-topbar">
         <div className="demo-topbar__left">
           <span className="demo-topbar__badge section-label">
-            {template.label}
+            {displayTemplateLabel}
           </span>
         </div>
         <div className="demo-topbar__right">
-          <button className="btn btn--outline demo-topbar__back" onClick={handleResetDemo}>
-            Reset demo
-          </button>
+          {localCaseLabel && (
+            <span className="demo-topbar__local-label">
+              {localCaseLabel}
+            </span>
+          )}
+          {onDeleteCase && (
+            <button
+              type="button"
+              className="btn btn--outline demo-topbar__delete"
+              onClick={onDeleteCase}
+            >
+              Delete case
+            </button>
+          )}
+          {showResetDemo && (
+            <button className="btn btn--outline demo-topbar__back" onClick={handleResetDemo}>
+              Reset demo
+            </button>
+          )}
         </div>
       </header>
 
@@ -225,7 +253,7 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
           onAddEvidence={handleAddEvidence}
           caseId={caseMeta.id}
           caseTitle={caseMeta.title}
-          template={template.label}
+          template={displayTemplateLabel}
           status={caseMeta.status}
           priority={caseMeta.priority}
           severity={caseMeta.severity}

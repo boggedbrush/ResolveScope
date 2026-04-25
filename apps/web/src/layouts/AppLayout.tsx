@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { ThemeControl } from "../components/ThemeControl";
 import { DEMO_SEED_MAP } from "../data/demoResolver";
 import { getDemoCaseState, useDemoStateVersion } from "../data/demoState";
+import { loadLocalCases, useLocalCaseVersion } from "../data/localCases";
 
 function LayersIcon() {
   return (
@@ -73,6 +74,7 @@ const SIDEBAR_COLLAPSED_KEY = "resolvescope:sidebar-collapsed";
 
 export function AppLayout() {
   useDemoStateVersion();
+  useLocalCaseVersion();
   const location = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -83,7 +85,14 @@ export function AppLayout() {
     window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(isSidebarCollapsed));
   }, [isSidebarCollapsed]);
 
-  const caseWorkspaces = SIDEBAR_DEMOS.map(({ demoId, path, label }) => {
+  const localCaseWorkspaces = loadLocalCases().map((localCase) => ({
+    demoId: localCase.id,
+    path: `/cases/${localCase.id}`,
+    title: displayCaseId(localCase.id),
+    subject: localCase.subject || "Local draft",
+  }));
+
+  const demoCaseWorkspaces = SIDEBAR_DEMOS.map(({ demoId, path, label }) => {
     const state = getDemoCaseState(demoId, DEMO_SEED_MAP[demoId]);
     return {
       demoId,
@@ -92,8 +101,11 @@ export function AppLayout() {
       subject: label,
     };
   });
+  const caseWorkspaces = [...localCaseWorkspaces, ...demoCaseWorkspaces];
   const isWorkspaceRoute =
-    location.pathname.startsWith("/demo/") || location.pathname.startsWith("/cases/");
+    location.pathname.startsWith("/demo/") ||
+    location.pathname.startsWith("/cases/") ||
+    location.pathname === "/dashboard/settings";
 
   return (
     <div className={`app-layout${isSidebarCollapsed ? " app-layout--sidebar-collapsed" : ""}`}>

@@ -80,8 +80,8 @@ export const siteInspectionSeedData: SeedCaseData = {
     status: "in-review",
     priority: "high",
     severity: "elevated",
-    createdAt: "2024-11-04T08:00:00Z",
-    updatedAt: "2024-11-06T16:45:00Z",
+    createdAt: "2025-11-04T08:00:00Z",
+    updatedAt: "2025-11-06T16:45:00Z",
     owner: "Alex Reyes",
     subject: "Hargrove Commercial Properties",
     unit: "Building A : 1140 Eastside Blvd, Unit Campus",
@@ -92,7 +92,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "document",
       name: "Inspection Brief : Hargrove Building A.pdf",
       uploadedBy: "Client Portal (Hargrove PM)",
-      uploadedAt: "2024-11-04T08:00:00Z",
+      uploadedAt: "2025-11-04T08:00:00Z",
       description:
         "Client-submitted inspection brief. Hargrove PM reports recurring damp patches in Level 1 northeast corridor and visible facade cracking noticed by tenants. Requests full exterior envelope assessment ahead of winter season.",
       mimeType: "application/pdf",
@@ -103,7 +103,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "document",
       name: "Inspection Checklist : Exterior Envelope.pdf",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T09:30:00Z",
+      uploadedAt: "2025-11-05T09:30:00Z",
       description:
         "Completed pre-inspection checklist for exterior envelope survey. Covers facade, roof edge, windows, ground plane, drainage, and entry areas. 47 of 52 line items satisfactory. 5 items flagged for documentation.",
       mimeType: "application/pdf",
@@ -114,7 +114,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "image",
       name: "Photo 01 : Roof Flashing North Parapet.png",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T10:15:00Z",
+      uploadedAt: "2025-11-05T10:15:00Z",
       description:
         "Close-up of north parapet at roof level. Metal cap flashing has lifted approximately 40mm from the substrate at the wall-roof junction. Sealant at seam is fully cracked and missing in two sections. Water staining visible on interior parapet face.",
       mimeType: "image/png",
@@ -125,7 +125,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "image",
       name: "Photo 02 : Level 2 Spandrel Crack Detail.png",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T10:48:00Z",
+      uploadedAt: "2025-11-05T10:48:00Z",
       description:
         "Diagonal crack on Level 2 masonry spandrel panel between Window Column C and Column D. Crack runs from upper-left to lower-right at approximately 30 degrees from vertical, 14 inches in length, 3mm width at widest point. No previous repair attempts visible.",
       mimeType: "image/png",
@@ -136,7 +136,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "image",
       name: "Photo 03 : Southeast Corner Overview.png",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T11:20:00Z",
+      uploadedAt: "2025-11-05T11:20:00Z",
       description:
         "Wide-angle view of southeast building corner from ground level. Shows water staining and efflorescence running vertically from Level 1 window head to ground plane, approximately 6 sq ft affected. Staining pattern consistent with head flashing failure at right-most window of ground floor bank.",
       mimeType: "image/png",
@@ -147,7 +147,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "note",
       name: "Inspector Field Note : Water Intrusion SE Corner",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T11:35:00Z",
+      uploadedAt: "2025-11-05T11:35:00Z",
       description:
         "Field note: probed wall surface at staining zone with moisture meter : reading 32% at 25mm depth, significantly above 16% baseline for dry masonry. Suggests active or recent moisture infiltration. No interior access available for this visit but recommend interior ceiling check on Level 1 northeast.",
       mimeType: "text/plain",
@@ -157,7 +157,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "image",
       name: "Photo 04 : Back Entrance Trip Hazard.png",
       uploadedBy: "Alex Reyes (field inspector)",
-      uploadedAt: "2024-11-05T12:05:00Z",
+      uploadedAt: "2025-11-05T12:05:00Z",
       description:
         "Back entrance threshold showing heaved concrete section. Measurement probe in frame indicates 40–42mm height differential at the joint. Tree root visible in adjacent landscaping bed. Hazard marked with cones by building maintenance on day of inspection.",
       mimeType: "image/png",
@@ -168,7 +168,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       type: "note",
       name: "Supervisor Review Note : A. Chen",
       uploadedBy: "A. Chen (senior inspector)",
-      uploadedAt: "2024-11-06T16:45:00Z",
+      uploadedAt: "2025-11-06T16:45:00Z",
       description:
         "Senior inspector review note: concur with field findings. Recommend fast-tracking structural engineer review for spandrel crack (sm-002) and roof flashing repair (sm-001) ahead of projected November rain events. Trip hazard (sm-004) must be addressed within 5 business days per client liability policy. Water intrusion (sm-003) is non-critical but should be included in remediation scope.",
       mimeType: "text/plain",
@@ -182,7 +182,7 @@ export const siteInspectionSeedData: SeedCaseData = {
       siteSummary: {
         type: "text",
         content:
-          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2024 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the back entrance threshold. Overall site condition is rated Elevated : no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
+          "Exterior envelope inspection of Hargrove Building A (1140 Eastside Blvd) completed on November 5, 2025 by inspector Alex Reyes. The three-story commercial office building presents four primary deficiencies: (1) lifted metal flashing at the north parapet with active sealant failure, (2) a diagonal masonry crack on the Level 2 spandrel panel requiring structural assessment, (3) water intrusion staining at the southeast corner consistent with window head flashing failure, and (4) a raised concrete trip hazard at the back entrance threshold. Overall site condition is rated Elevated : no immediate structural collapse risk, but two findings (roof flashing and spandrel crack) require prompt remediation before the winter wet season.",
       },
       siteInfo: {
         type: "unit-info",
@@ -194,22 +194,22 @@ export const siteInspectionSeedData: SeedCaseData = {
           { label: "Construction", value: "Masonry facade, steel frame" },
           { label: "Year Built", value: "1998 (approx.)" },
           { label: "Inspector", value: "Alex Reyes" },
-          { label: "Inspection Date", value: "November 5, 2024" },
-          { label: "Review Completed", value: "November 6, 2024" },
+          { label: "Inspection Date", value: "November 5, 2025" },
+          { label: "Review Completed", value: "November 6, 2025" },
         ],
       },
       inspectionTimeline: {
         type: "timeline",
         entries: [
-          { time: "2024-11-04 08:00", event: "Inspection brief received from Hargrove PM via client portal" },
-          { time: "2024-11-05 09:30", event: "Inspector Alex Reyes arrives on site; pre-inspection checklist initiated" },
-          { time: "2024-11-05 10:15", event: "North parapet flashing deficiency identified and photographed" },
-          { time: "2024-11-05 10:48", event: "Level 2 spandrel crack documented; tagged for structural review" },
-          { time: "2024-11-05 11:20", event: "Southeast corner water staining photographed and probed" },
-          { time: "2024-11-05 11:35", event: "Field note recorded : moisture reading 32% at SE staining zone" },
-          { time: "2024-11-05 12:05", event: "Main entry trip hazard measured and photographed; building maintenance notified" },
-          { time: "2024-11-05 13:00", event: "On-site inspection concluded; all evidence uploaded to case portal" },
-          { time: "2024-11-06 16:45", event: "Senior inspector A. Chen reviews findings and adds supervisory note" },
+          { time: "2025-11-04 08:00", event: "Inspection brief received from Hargrove PM via client portal" },
+          { time: "2025-11-05 09:30", event: "Inspector Alex Reyes arrives on site; pre-inspection checklist initiated" },
+          { time: "2025-11-05 10:15", event: "North parapet flashing deficiency identified and photographed" },
+          { time: "2025-11-05 10:48", event: "Level 2 spandrel crack documented; tagged for structural review" },
+          { time: "2025-11-05 11:20", event: "Southeast corner water staining photographed and probed" },
+          { time: "2025-11-05 11:35", event: "Field note recorded : moisture reading 32% at SE staining zone" },
+          { time: "2025-11-05 12:05", event: "Main entry trip hazard measured and photographed; building maintenance notified" },
+          { time: "2025-11-05 13:00", event: "On-site inspection concluded; all evidence uploaded to case portal" },
+          { time: "2025-11-06 16:45", event: "Senior inspector A. Chen reviews findings and adds supervisory note" },
         ],
       },
       findings: {
@@ -241,31 +241,31 @@ export const siteInspectionSeedData: SeedCaseData = {
             action:
               "Engage licensed structural engineer to assess Level 2 spandrel crack and provide remediation specification or clearance.",
             owner: "Hargrove Property Manager",
-            due: "2024-11-15",
+            due: "2025-11-15",
           },
           {
             action:
               "Commission roofing contractor to re-bed and seal north parapet flashing, minimum 6 linear feet of remediation. Complete before next significant rain event.",
             owner: "Hargrove Property Manager",
-            due: "2024-11-12",
+            due: "2025-11-12",
           },
           {
             action:
               "Repair back entrance threshold : grind or re-pour heaved concrete section to achieve flush ≤6mm transition. Install interim hazard signage within 24 hours.",
             owner: "Building Maintenance",
-            due: "2024-11-08",
+            due: "2025-11-08",
           },
           {
             action:
               "Repair window head flashing at SE corner Level 1 window bank; include repointing of affected masonry joints. Confirm moisture readings post-repair.",
             owner: "Hargrove Property Manager",
-            due: "2024-11-22",
+            due: "2025-11-22",
           },
           {
             action:
               "Schedule Level 1 interior ceiling check in northeast corridor to confirm extent of moisture infiltration from SE corner deficiency.",
             owner: "Alex Reyes (lead inspector)",
-            due: "2024-11-20",
+            due: "2025-11-20",
           },
         ],
       },

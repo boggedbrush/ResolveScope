@@ -78,8 +78,8 @@ export const autoClaimSeedData: SeedCaseData = {
     status: "in-review",
     priority: "medium",
     severity: "moderate",
-    createdAt: "2024-11-12T17:14:00Z",
-    updatedAt: "2024-11-13T19:32:00Z",
+    createdAt: "2025-11-12T17:14:00Z",
+    updatedAt: "2025-11-13T19:32:00Z",
     owner: "Alex Chen",
     subject: "Maria Rivera",
     unit: "2021 Honda CR-V (Sage Green)",
@@ -91,7 +91,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "document",
       name: "Intake Form : CLM-2024-00847.pdf",
       uploadedBy: "Maria Rivera (claimant portal)",
-      uploadedAt: "2024-11-12T17:14:00Z",
+      uploadedAt: "2025-11-12T17:14:00Z",
       description:
         "Claimant-submitted intake form describing a low-speed contact in Westfield Plaza Lot C while steering around a cone-marked pavement crack beside the right-side parking stalls.",
       mimeType: "application/pdf",
@@ -102,7 +102,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "image",
       name: "Damage Photo 1 : Front Bumper.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
-      uploadedAt: "2024-11-12T17:17:00Z",
+      uploadedAt: "2025-11-12T17:17:00Z",
       description:
         "Front-right bumper showing a scrape approximately 14 inches across the lower fascia, dark paint transfer, and a detached lower trim piece resting near the contact area.",
       mimeType: "image/jpeg",
@@ -113,7 +113,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "image",
       name: "Damage Photo 2 : Headlight Assembly.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
-      uploadedAt: "2024-11-12T17:18:00Z",
+      uploadedAt: "2025-11-12T17:18:00Z",
       description:
         "Cracked right headlight housing at the same corner as the bumper contact. Internal reflector appears intact, but the housing fracture supports full assembly replacement.",
       mimeType: "image/jpeg",
@@ -124,7 +124,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "image",
       name: "Scene Photo : Parking Lot Overview.jpg",
       uploadedBy: "Maria Rivera (claimant portal)",
-      uploadedAt: "2024-11-12T17:20:00Z",
+      uploadedAt: "2025-11-12T17:20:00Z",
       description:
         "Wide-angle shot of Westfield Plaza Lot C showing temporary cones, a cracked section of pavement, and adjacent stall markings where the claimant reported steering left before contact.",
       mimeType: "image/jpeg",
@@ -135,7 +135,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "note",
       name: "Adjuster Note : Initial Review",
       uploadedBy: "Alex Chen (adjuster)",
-      uploadedAt: "2024-11-13T18:05:00Z",
+      uploadedAt: "2025-11-13T18:05:00Z",
       description:
         "Damage is consistent with a low-speed reverse-out contact from the adjacent stall in Lot C. The bumper scrape, headlight crack, detached trim piece, and cone-marked road crack all line up with Rivera shifting around the pavement hazard as the sedan entered the lane. No frame or structural involvement suspected. Repair estimate expected $800–$1,400. No police report filed; incident deemed non-reportable per state threshold.",
       mimeType: "text/plain",
@@ -145,7 +145,7 @@ export const autoClaimSeedData: SeedCaseData = {
       type: "document",
       name: "Repair Estimate : AutoBody Plus.pdf",
       uploadedBy: "Alex Chen (adjuster)",
-      uploadedAt: "2024-11-13T19:32:00Z",
+      uploadedAt: "2025-11-13T19:32:00Z",
       description:
         "Third-party estimate from AutoBody Plus. Itemized: bumper fascia replacement $540, headlight assembly $320, and paint blend work $210. Total: $1,070 before applicable deductible.",
       mimeType: "application/pdf",
@@ -159,19 +159,19 @@ export const autoClaimSeedData: SeedCaseData = {
       incidentSummary: {
         type: "text",
         content:
-          "On November 11, 2024 at approximately 2:15 PM, claimant Maria Rivera's 2021 Honda CR-V sustained cosmetic damage to the front-right bumper fascia and right headlight assembly in Westfield Plaza Lot C. Rivera reported moving slowly past the right-side stalls and steering around a cone-marked crack in the pavement when a dark sedan began backing out from the adjacent stall and clipped the SUV's front-right corner. Scene reconstruction from cone placement, cracked-road geometry, paint transfer, and a detached trim piece supports that hazard-avoidance and reverse-out contact narrative. The other driver was not identified on-site. No injuries were reported. No police report was filed, consistent with the state's non-reportable threshold. The vehicle remained operable. A third-party repair estimate of $1,070 has been received.",
+          "On November 11, 2025 at approximately 2:15 PM, claimant Maria Rivera's 2021 Honda CR-V sustained cosmetic damage to the front-right bumper fascia and right headlight assembly in Westfield Plaza Lot C. Rivera reported moving slowly past the right-side stalls and steering around a cone-marked crack in the pavement when a dark sedan began backing out from the adjacent stall and clipped the SUV's front-right corner. Scene reconstruction from cone placement, cracked-road geometry, paint transfer, and a detached trim piece supports that hazard-avoidance and reverse-out contact narrative. The other driver was not identified on-site. No injuries were reported. No police report was filed, consistent with the state's non-reportable threshold. The vehicle remained operable. A third-party repair estimate of $1,070 has been received.",
       },
       timeline: {
         type: "timeline",
         entries: [
-          { time: "2024-11-11 14:15", event: "Incident occurs as claimant steers around cone-marked road damage in Lot C" },
-          { time: "2024-11-11 14:45", event: "Claimant discovers damage upon returning to vehicle" },
-          { time: "2024-11-11 15:02", event: "Claimant photographs damage on-site" },
-          { time: "2024-11-12 12:14", event: "Claim submitted via claimant portal" },
-          { time: "2024-11-12 12:20", event: "3 scene and damage photos uploaded by claimant" },
-          { time: "2024-11-13 13:05", event: "Adjuster Alex Chen logs initial review note" },
-          { time: "2024-11-13 13:40", event: "Scene reconstructed from cone placement, cracked pavement, and paint transfer : reverse-out sedan inferred as other party" },
-          { time: "2024-11-13 14:32", event: "Repair estimate received from AutoBody Plus ($1,070)" },
+          { time: "2025-11-11 14:15", event: "Incident occurs as claimant steers around cone-marked road damage in Lot C" },
+          { time: "2025-11-11 14:45", event: "Claimant discovers damage upon returning to vehicle" },
+          { time: "2025-11-11 15:02", event: "Claimant photographs damage on-site" },
+          { time: "2025-11-12 12:14", event: "Claim submitted via claimant portal" },
+          { time: "2025-11-12 12:20", event: "3 scene and damage photos uploaded by claimant" },
+          { time: "2025-11-13 13:05", event: "Adjuster Alex Chen logs initial review note" },
+          { time: "2025-11-13 13:40", event: "Scene reconstructed from cone placement, cracked pavement, and paint transfer : reverse-out sedan inferred as other party" },
+          { time: "2025-11-13 14:32", event: "Repair estimate received from AutoBody Plus ($1,070)" },
         ],
       },
       parties: {

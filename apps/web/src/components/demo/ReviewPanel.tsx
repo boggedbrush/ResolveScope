@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ApprovalRequirements } from "./ApprovalRequirements";
 import { checkApproval } from "../../utils/approval";
@@ -71,6 +72,7 @@ export function ReviewPanel({
   onApprove,
   onExportJson,
 }: Props) {
+  const [showReportWarning, setShowReportWarning] = useState(false);
   const isApproved = caseStatus === "approved";
   const canExport = isApproved && extraction !== null;
   const { reviewFieldLabels } = template;
@@ -266,11 +268,55 @@ export function ReviewPanel({
             to={reportPath}
             className="btn btn--outline review-actions__export"
             aria-label="View stakeholder report"
+            onClick={(event) => {
+              if (isApproved) return;
+
+              event.preventDefault();
+              setShowReportWarning(true);
+            }}
           >
             View report
           </Link>
         </div>
       </div>
+
+      {showReportWarning && (
+        <div
+          className="local-case-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="workspace-report-warning-title"
+        >
+          <div className="local-case-modal__panel">
+            <div className="local-case-modal__header">
+              <p className="local-case-modal__eyebrow">Report not checked off</p>
+              <h2 id="workspace-report-warning-title">
+                You have not checked off this report yet.
+              </h2>
+              <p>
+                This case has not been approved, so the stakeholder report may
+                include draft fields or unchecked review items.
+              </p>
+            </div>
+            <div className="local-case-modal__actions">
+              <button
+                type="button"
+                className="btn btn--outline"
+                onClick={() => setShowReportWarning(false)}
+              >
+                Stay here
+              </button>
+              <Link
+                to={reportPath}
+                className="btn btn--primary"
+                onClick={() => setShowReportWarning(false)}
+              >
+                View draft report
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Audit log */}
       <div className="audit-log">
