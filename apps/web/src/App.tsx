@@ -47,15 +47,15 @@ export function App() {
     <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
-        <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
-        <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
         <Route path="/report/:demoId" element={<CaseReportPage />} />
         <Route path="/architecture" element={<ArchitecturePage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/settings" element={<DashboardSettings />} />
           <Route path="/cases/:id" element={<CaseWorkspace />} />
+          <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
+          <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
+          <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
         </Route>
       </Routes>
     </Suspense>

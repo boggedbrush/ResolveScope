@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ThemeControl } from "../components/ThemeControl";
 import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
 import { ReviewPanel } from "../components/demo/ReviewPanel";
@@ -202,9 +200,6 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
     <div className={`demo-page${hasSpatial ? " demo-page--with-spatial" : ""}`}>
       <header className="demo-topbar">
         <div className="demo-topbar__left">
-          <Link to="/dashboard" className="btn btn--outline demo-topbar__back">
-            ← Dashboard
-          </Link>
           <span className="demo-topbar__badge section-label">
             {template.label}
           </span>
@@ -213,7 +208,6 @@ export function WorkspaceDemoPage({ seedData, demoId }: Props) {
           <button className="btn btn--outline demo-topbar__back" onClick={handleResetDemo}>
             Reset demo
           </button>
-          <ThemeControl className="demo-topbar__theme" />
         </div>
       </header>
 

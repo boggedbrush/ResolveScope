@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { ThemeControl } from "../components/ThemeControl";
 import { DEMO_SEED_MAP } from "../data/demoResolver";
 import { getDemoCaseState, useDemoStateVersion } from "../data/demoState";
@@ -24,6 +25,35 @@ function GridIcon() {
   );
 }
 
+function SidebarLeftIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21.97 15V9C21.97 4 19.97 2 14.97 2H8.96997C3.96997 2 1.96997 4 1.96997 9V15C1.96997 20 3.96997 22 8.96997 22H14.97C19.97 22 21.97 20 21.97 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7.96997 2V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14.97 9.43994L12.41 11.9999L14.97 14.5599" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function SidebarRightIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21.97 15V9C21.97 4 19.97 2 14.97 2H8.96997C3.96997 2 1.96997 4 1.96997 9V15C1.96997 20 3.96997 22 8.96997 22H14.97C19.97 22 21.97 20 21.97 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14.97 2V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7.96997 9.43994L10.53 11.9999L7.96997 14.5599" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function DashboardBackIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+      <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 10H16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const SIDEBAR_DEMOS = [
   { demoId: "auto-claim", path: "/demo/auto-claim", label: "Auto claim" },
   { demoId: "fleet-safety", path: "/demo/fleet-safety", label: "Fleet incident" },
@@ -34,8 +64,19 @@ function displayCaseId(caseId: string): string {
   return caseId.replace("-2024-", "-2026-");
 }
 
+const SIDEBAR_COLLAPSED_KEY = "resolvescope:sidebar-collapsed";
+
 export function AppLayout() {
   useDemoStateVersion();
+  const location = useLocation();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "true";
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
 
   const caseWorkspaces = SIDEBAR_DEMOS.map(({ demoId, path, label }) => {
     const state = getDemoCaseState(demoId, DEMO_SEED_MAP[demoId]);
@@ -46,15 +87,38 @@ export function AppLayout() {
       subject: label,
     };
   });
+  const isWorkspaceRoute =
+    location.pathname.startsWith("/demo/") || location.pathname.startsWith("/cases/");
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout${isSidebarCollapsed ? " app-layout--sidebar-collapsed" : ""}`}>
       <aside className="app-sidebar">
         <div className="app-sidebar__logo">
-          <NavLink to="/" className="app-sidebar__wordmark">
-            <img src="/logo-mark.svg" alt="" aria-hidden="true" className="app-sidebar__logo-mark" />
-            <span className="app-sidebar__wordmark-text">Resolve<span>Scope</span></span>
-          </NavLink>
+          {isWorkspaceRoute ? (
+            <NavLink
+              to="/dashboard"
+              className="app-sidebar__workspace-back"
+              title="Back to dashboard"
+            >
+              <DashboardBackIcon />
+              <span>Dashboard</span>
+            </NavLink>
+          ) : (
+            <NavLink to="/" className="app-sidebar__wordmark">
+              <img src="/logo-mark.svg" alt="" aria-hidden="true" className="app-sidebar__logo-mark" />
+              <span className="app-sidebar__wordmark-text">Resolve<span>Scope</span></span>
+            </NavLink>
+          )}
+          <button
+            type="button"
+            className="app-sidebar__collapse"
+            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!isSidebarCollapsed}
+            onClick={() => setIsSidebarCollapsed((value) => !value)}
+            title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isSidebarCollapsed ? <SidebarRightIcon /> : <SidebarLeftIcon />}
+          </button>
         </div>
 
         <nav className="app-sidebar__nav">
@@ -64,6 +128,7 @@ export function AppLayout() {
               <li key={workspace.demoId}>
                 <NavLink
                   to={workspace.path}
+                  title={`${workspace.title} · ${workspace.subject}`}
                   className={({ isActive }) =>
                     `app-sidebar__nav-item app-sidebar__nav-item--case${isActive ? " app-sidebar__nav-item--active" : ""}`
                   }
@@ -87,6 +152,7 @@ export function AppLayout() {
           <ThemeControl className="app-sidebar__theme" />
           <NavLink
             to="/dashboard/settings"
+            title="Settings"
             className={({ isActive }) =>
               `app-sidebar__nav-item app-sidebar__nav-item--muted${isActive ? " app-sidebar__nav-item--active" : ""}`
             }
