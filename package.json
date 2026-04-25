@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "dev:web": "npm run dev --workspace apps/web",
+    "dev:web": "npm run dev --workspace apps/web -- --host 0.0.0.0",
     "dev:worker": "npm run dev --workspace apps/worker",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",

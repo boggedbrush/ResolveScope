@@ -11,6 +11,11 @@
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
+    "gpt-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "computedHash": "cc8f0c601d8240a124e1d11634351a2be7b8a72fd807c75e5b6bf7afcd5ddee0"
+    },
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",

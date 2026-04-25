@@ -27,25 +27,21 @@ const CAPABILITIES = [
     title: "Case workspace",
     body: "Create and manage cases by template. Assign status, priority, severity, and ownership from a single timeline view.",
     accent: false,
-    num: "01",
   },
   {
     title: "AI extraction",
     body: "Summarize documents into case briefs. Extract entities, dates, timelines, defects, and action items automatically.",
     accent: true,
-    num: "02",
   },
   {
     title: "Human review",
     body: "Inspect AI-generated fields before finalization. Use checklist approval and audit history to keep reviewer decisions visible.",
     accent: false,
-    num: "03",
   },
   {
     title: "Export and reporting",
     body: "Open stakeholder report views, print or save PDFs from the browser, and download approved JSON bundles.",
     accent: true,
-    num: "04",
   },
 ];
 
@@ -163,7 +159,7 @@ export function Landing() {
   useScrollReveal();
 
   return (
-    <>
+    <main className="landing-page">
       {/* ── Nav ─────────────────────────── */}
       <nav className="nav nav--landing">
         <div className="container nav__inner">
@@ -206,12 +202,10 @@ export function Landing() {
         <div className="hero__banner-wrap">
           <CodexBanner />
         </div>
-        <div className="container hero__grid">
-          <div>
-            <h1 className="display-xl">
-              AI case management.
-              <br />
-              Evidence becomes <em>action.</em>
+        <div className="hero__stage">
+          <div className="hero__copy reveal">
+            <h1 className="display-xl hero__headline">
+              Turn scattered evidence into approved case files.
             </h1>
             <p className="body-lg hero__subtitle">
               ResolveScope turns scattered documents, photos, and field notes
@@ -232,7 +226,7 @@ export function Landing() {
               </a>
             </div>
           </div>
-          <div className="hero__visual">
+          <div className="hero__visual reveal delay-1">
             <HeroDemo />
           </div>
         </div>
@@ -242,9 +236,9 @@ export function Landing() {
       <section className="proof" id="proof">
         <div className="container">
           <div className="proof__header reveal">
-            <p className="section-label">How it works</p>
+            <p className="eyebrow">Evidence pipeline</p>
             <h2 className="display-lg">
-              Raw evidence. <em>Decision-ready output.</em>
+              Raw evidence becomes a reviewable record
             </h2>
           </div>
           <div className="proof__panel reveal delay-1">
@@ -301,7 +295,7 @@ export function Landing() {
               <ul className="proof__output-list">
                 <li className="proof__output-item">PDF case summary report</li>
                 <li className="proof__output-item">Structured JSON bundle</li>
-                <li className="proof__output-item">Shareable stakeholder view</li>
+                <li className="proof__output-item">Local stakeholder report view</li>
                 <li className="proof__output-item">Full audit trail preserved</li>
               </ul>
               <div className="proof__output-action">
@@ -317,9 +311,9 @@ export function Landing() {
       <section className="capabilities" id="capabilities">
         <div className="container">
           <div className="capabilities__header reveal">
-            <p className="section-label section-label--light">Core capabilities</p>
+            <p className="eyebrow eyebrow--dark">Review loop</p>
             <h2 className="display-lg capabilities__title">
-              The full loop, <em>in one platform</em>
+              Intake, extract, approve, export
             </h2>
           </div>
           <div className="capabilities__grid">
@@ -328,7 +322,6 @@ export function Landing() {
                 key={c.title}
                 className={`capability__card reveal delay-${(i % 3) + 1} ${c.accent ? "capability__card--forest" : "capability__card--copper"}`}
               >
-                <span className="capability__num">{c.num}</span>
                 <div
                   className={`capability__icon${c.accent ? " capability__icon--green" : ""}`}
                 >
@@ -359,9 +352,7 @@ export function Landing() {
               <SpatialPreview />
             </Suspense>
             <div className="spatial__overlay">
-              <p className="section-label section-label--light">
-                Spatial review
-              </p>
+              <p className="eyebrow eyebrow--dark">Spatial review</p>
               <h2 className="display-lg">
                 See evidence <em>in context</em>
               </h2>
@@ -383,7 +374,7 @@ export function Landing() {
       <section className="arch-cta">
         <div className="container arch-cta__inner reveal">
           <div className="arch-cta__text">
-            <p className="section-label">Under the hood</p>
+            <p className="eyebrow">System design</p>
             <h2 className="display-lg">
               Built for <em>real workflows</em>
             </h2>
@@ -402,7 +393,7 @@ export function Landing() {
       {/* ── Final CTA ───────────────────── */}
       <section className="cta-final" id="cta">
         <div className="container">
-          <p className="section-label reveal">Ready to start</p>
+          <p className="eyebrow reveal">Try the workflow</p>
           <h2 className="display-lg reveal delay-1">
             The operational layer between
             <br />
@@ -471,6 +462,6 @@ export function Landing() {
           </ul>
         </div>
       </footer>
-    </>
+    </main>
   );
 }

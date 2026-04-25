@@ -76,7 +76,6 @@ function ArrowIcon() {
 
 const COMPONENTS = [
   {
-    num: "01",
     title: "Case Workspace",
     body: "Template-driven case structure. Status, priority, severity, and ownership from a single timeline view.",
     icon: (
@@ -88,7 +87,6 @@ const COMPONENTS = [
     ),
   },
   {
-    num: "02",
     title: "Evidence Library",
     body: "Upload PDFs, images, video, and freeform notes. Originals preserved with source linkage to every extracted field.",
     icon: (
@@ -101,7 +99,6 @@ const COMPONENTS = [
     ),
   },
   {
-    num: "03",
     title: "AI Extraction Engine",
     body: "Summarize documents, extract entities and timelines, classify defects, and generate action items automatically.",
     icon: (
@@ -112,7 +109,6 @@ const COMPONENTS = [
     ),
   },
   {
-    num: "04",
     title: "Human Review Gate",
     body: "Every AI-generated field requires explicit human approval before finalization. Edits tracked with full audit history.",
     icon: (
@@ -124,7 +120,6 @@ const COMPONENTS = [
     ),
   },
   {
-    num: "05",
     title: "Spatial Review",
     body: "Annotations placed directly on 360° environments and 3D assets. Pins tied to evidence entries and case findings.",
     icon: (
@@ -136,9 +131,8 @@ const COMPONENTS = [
     ),
   },
   {
-    num: "06",
     title: "Stakeholder Report",
-    body: "Polished PDF output and shareable read-only case views. Structured JSON bundles for downstream systems.",
+    body: "Browser print/save report views and approved structured JSON bundles for downstream review.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -153,39 +147,72 @@ const CF_SERVICES = [
   {
     name: "Pages",
     tag: "Hosting",
-    body: "Static asset delivery and SPA hosting. Zero cold starts for the frontend.",
+    body: "Static SPA delivery for the frontend.",
   },
   {
     name: "Workers",
     tag: "Compute",
-    body: "Edge-deployed serverless functions for API routing, evidence processing, and report generation.",
+    body: "API routing, evidence processing, and report generation at the edge.",
   },
   {
     name: "D1",
     tag: "Database",
-    body: "SQLite-compatible relational store for case records, evidence metadata, and audit history.",
+    body: "Case records, evidence metadata, and audit history.",
   },
   {
     name: "R2",
     tag: "Storage",
-    body: "Object storage for raw evidence files : documents, images, and video originals.",
+    body: "Raw documents, images, and video originals.",
   },
   {
     name: "Queues",
     tag: "Async",
-    body: "Async job dispatch for extraction pipelines. Decouples intake from processing.",
+    body: "Async extraction jobs decoupled from intake.",
   },
   {
     name: "Durable Objects",
     tag: "State",
-    body: "Coordinated state for active case sessions and real-time review collaboration.",
+    body: "Active case session and review state.",
   },
   {
     name: "KV",
     tag: "Cache",
-    body: "Fast lookups for user sessions, feature flags, and case index data.",
+    body: "Fast lookups for sessions, flags, and case indexes.",
   },
 ];
+
+const INFRA_MAP = [
+  {
+    stage: "Client",
+    note: "The public application loads quickly and keeps the browser experience simple.",
+    services: ["Pages"],
+  },
+  {
+    stage: "Edge work",
+    note: "Requests, extraction jobs, and report generation move through the edge runtime.",
+    services: ["Workers", "Queues"],
+  },
+  {
+    stage: "Case state",
+    note: "Case records, active sessions, and fast lookup data stay separated by responsibility.",
+    services: ["D1", "Durable Objects", "KV"],
+  },
+  {
+    stage: "Evidence",
+    note: "Original evidence files remain in object storage while records keep source references.",
+    services: ["R2"],
+  },
+];
+
+function getCloudflareService(name: string) {
+  const service = CF_SERVICES.find((s) => s.name === name);
+
+  if (!service) {
+    throw new Error(`Unknown Cloudflare service: ${name}`);
+  }
+
+  return service;
+}
 
 const TRUST_STEPS = [
   {
@@ -220,7 +247,7 @@ function ArchDiagram() {
     { label: "Extraction", sub: "AI structuring" },
     { label: "Human\nReview", sub: "Approval gate" },
     { label: "Audit &\nProvenance", sub: "Chain of custody" },
-    { label: "Export /\nCase Bundle", sub: "PDF · JSON · Share" },
+    { label: "Export /\nCase Bundle", sub: "Report · JSON" },
   ];
 
   const nodeW = 108;
@@ -350,7 +377,7 @@ export function ArchitecturePage() {
   useScrollReveal();
 
   return (
-    <>
+    <main className="arch-page">
       {/* ── Nav ─────────────────────────── */}
       <nav className="nav nav--landing">
         <div className="container nav__inner">
@@ -387,37 +414,55 @@ export function ArchitecturePage() {
       <section className="arch-hero">
         <div className="container">
           <div className="arch-hero__inner">
-            <p className="section-label reveal">Architecture</p>
-            <h1 className="display-xl reveal delay-1">
-              Under the Hood
-            </h1>
-            <p className="body-lg arch-hero__sub reveal delay-2">
-              A systems-level view of how ResolveScope processes evidence,
-              enforces governance, and produces audit-ready outputs.
-            </p>
-            <div className="arch-hero__links reveal delay-3">
-              <a href="#overview" className="btn btn--primary">
-                Explore the system <ArrowIcon />
-              </a>
-              <Link to="/" className="btn btn--outline">
-                Back to product
-              </Link>
+            <div className="arch-hero__copy">
+              <p className="eyebrow reveal">System architecture</p>
+              <h1 className="display-xl arch-hero__title reveal delay-1">
+                A governed evidence pipeline, built for review.
+              </h1>
+              <p className="body-lg arch-hero__sub reveal delay-2">
+                ResolveScope turns loose evidence into structured case files
+                through explicit intake, extraction, human approval,
+                provenance, and export boundaries.
+              </p>
+              <div className="arch-hero__links reveal delay-3">
+                <a href="#overview" className="btn btn--primary">
+                  Explore the system <ArrowIcon />
+                </a>
+                <Link to="/" className="btn btn--outline">
+                  Back to product
+                </Link>
+              </div>
+            </div>
+            <div className="arch-hero__artifact reveal delay-2" aria-hidden="true">
+              <div className="arch-artifact__bar">
+                <span>case-pipeline.yaml</span>
+                <span>human-gated</span>
+              </div>
+              <div className="arch-artifact__body">
+                <span>intake:</span>
+                <strong>evidence.originals.preserve()</strong>
+                <span>extract:</span>
+                <strong>ai.draft_fields()</strong>
+                <span>review:</span>
+                <strong>approval.required = true</strong>
+                <span>export:</span>
+                <strong>bundle.only_after_approval()</strong>
+              </div>
             </div>
           </div>
         </div>
-        <div className="arch-hero__rule" />
       </section>
 
       {/* ── System Overview ─────────────── */}
       <section id="overview">
         <div className="container">
           <div className="arch-section-header reveal">
-            <p className="section-label">System overview</p>
+            <p className="eyebrow">Evidence lifecycle</p>
             <h2 className="display-lg">
               Evidence lifecycle, <em>end to end</em>
             </h2>
             <p className="body-lg arch-section-sub">
-              Every piece of evidence passes through a defined, traceable lifecycle :
+              Every piece of evidence passes through a defined, traceable lifecycle:
               from initial intake through structured extraction, human review,
               provenance recording, and final export.
             </p>
@@ -437,23 +482,27 @@ export function ArchitecturePage() {
       <section className="arch-components" id="components">
         <div className="container">
           <div className="arch-section-header arch-section-header--compact reveal">
-            <p className="section-label">Platform components</p>
+            <p className="eyebrow">Platform components</p>
             <h2 className="display-lg">
-              Six surfaces, <em>one system</em>
+              Fewer moving parts, <em>clearer boundaries</em>
             </h2>
+            <p className="body-lg arch-section-sub">
+              Each surface owns one job in the case lifecycle, so evidence,
+              review decisions, spatial context, and exports stay traceable.
+            </p>
           </div>
-          <div className="arch-components__grid">
-            {COMPONENTS.map((c, i) => (
-              <div key={c.num} className={`arch-comp-card reveal delay-${(i % 3) + 1}`}>
-                <div className="arch-comp-card__top">
-                  <span className="arch-comp-card__num">{c.num}</span>
-                  <span className="arch-comp-card__icon">{c.icon}</span>
+          <ol className="arch-component-ledger reveal delay-1">
+            {COMPONENTS.map((c, index) => (
+              <li key={c.title} className="arch-component-row">
+                <div className="arch-component-row__index">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <i aria-hidden="true">{c.icon}</i>
                 </div>
-                <h3 className="arch-comp-card__title">{c.title}</h3>
-                <p className="arch-comp-card__body">{c.body}</p>
-              </div>
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -461,24 +510,53 @@ export function ArchitecturePage() {
       <section className="arch-infra" id="infrastructure">
         <div className="container">
           <div className="arch-section-header reveal">
-            <p className="section-label arch-label--forest">Infrastructure</p>
+            <p className="eyebrow arch-label--forest">Infrastructure</p>
             <h2 className="display-lg arch-infra__heading">
               Cloudflare-native, <em>edge-first</em>
             </h2>
             <p className="body-lg arch-section-sub">
-              ResolveScope is designed around Cloudflare's edge platform : stateless
+              ResolveScope is designed around Cloudflare's edge platform: stateless
               compute, distributed storage, and coordinated state running close to users.
             </p>
           </div>
 
-          <div className="arch-cf-grid">
-            {CF_SERVICES.map((s, i) => (
-              <div key={s.name} className={`arch-cf-card reveal delay-${(i % 3) + 1}`}>
-                <div className="arch-cf-card__top">
-                  <span className="arch-cf-card__name">{s.name}</span>
-                  <span className="arch-cf-card__tag">{s.tag}</span>
+          <div className="arch-wiremap reveal delay-1">
+            {INFRA_MAP.map((group) => (
+              <article key={group.stage} className="arch-wiremap__lane">
+                <div className="arch-wiremap__stage">
+                  <span>{group.stage}</span>
+                  <p>{group.note}</p>
                 </div>
-                <p className="arch-cf-card__body">{s.body}</p>
+                <div className="arch-wiremap__services">
+                  {group.services.map((serviceName) => {
+                    const service = getCloudflareService(serviceName);
+
+                    return (
+                      <article key={service.name} className="arch-wiremap-service">
+                        <div className="arch-wiremap-service__header">
+                          <h3>{service.name}</h3>
+                          <span>{service.tag}</span>
+                        </div>
+                        <p>{service.body}</p>
+                      </article>
+                    );
+                  })}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="arch-infra-strip reveal delay-3">
+            {[
+              ["intake", "browser"],
+              ["process", "edge"],
+              ["preserve", "storage"],
+              ["review", "human gate"],
+              ["export", "bundle"],
+            ].map(([label, detail]) => (
+              <div key={label} className="arch-infra-strip__cell">
+                <span>{label}</span>
+                <strong>{detail}</strong>
               </div>
             ))}
           </div>
@@ -489,13 +567,13 @@ export function ArchitecturePage() {
       <section id="ai-trust">
         <div className="container">
           <div className="arch-section-header reveal">
-            <p className="section-label">AI routing & trust</p>
+            <p className="eyebrow">AI routing and trust</p>
             <h2 className="display-lg">
               AI assists. <em>Humans decide.</em>
             </h2>
             <p className="body-lg arch-section-sub">
               Every AI output is provisional until a human approves it. The trust model
-              is a four-step gate : not a setting, not a toggle.
+              is a four-step gate: not a setting, not a toggle.
             </p>
           </div>
 
@@ -528,7 +606,7 @@ export function ArchitecturePage() {
       {/* ── Final CTA ───────────────────── */}
       <section className="cta-final">
         <div className="container">
-          <p className="section-label reveal">Explore</p>
+          <p className="eyebrow reveal">Explore</p>
           <h2 className="display-lg reveal delay-1">
             See the system <em>in action</em>
           </h2>
@@ -557,11 +635,21 @@ export function ArchitecturePage() {
             Evidence-to-action infrastructure. MIT License.
           </p>
           <ul className="footer__links">
-            <li><a href="#">GitHub</a></li>
-            <li><a href="#">Documentation</a></li>
+            <li>
+              <a
+                href="https://github.com/boggedbrush/ResolveScope?ref=resolvescope.pages.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            </li>
+            <li>
+              <Link to="/">Product</Link>
+            </li>
           </ul>
         </div>
       </footer>
-    </>
+    </main>
   );
 }
