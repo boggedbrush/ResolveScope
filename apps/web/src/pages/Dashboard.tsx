@@ -83,6 +83,10 @@ const DOMAIN_COLORS: Record<string, string> = {
   "Property & Facilities": "slate",
 };
 
+function displayCaseId(caseId: string): string {
+  return caseId.replace("-2024-", "-2026-");
+}
+
 export function Dashboard() {
   useDemoStateVersion();
 
@@ -104,34 +108,98 @@ export function Dashboard() {
     };
   });
 
-  const activeCount = rows.filter(
+  const activeRows = rows.filter(
     (c) => c.status === "open" || c.status === "in-review"
-  ).length;
+  );
+  const completedRows = rows.filter(
+    (c) => c.status === "approved" || c.status === "exported"
+  );
 
   function handleResetAllDemos() {
     resetAllDemoCaseStates(DEMO_SEED_MAP);
   }
 
-  return (
-    <div className="dashboard">
-      <div className="dashboard__header">
-        <div>
-          <h1 className="dashboard__title">Cases</h1>
-          <p className="dashboard__subtitle">
-            {rows.length} cases · {activeCount} active
-          </p>
-        </div>
-        <div className="dashboard__actions">
-          <button className="btn btn--outline btn--sm" onClick={handleResetAllDemos}>
-            Reset demos
-          </button>
-          <button className="btn btn--primary btn--sm" disabled>
-            New case
-          </button>
-        </div>
-      </div>
+  function renderCaseRows(caseRows: CaseRow[]) {
+    return caseRows.map((c) => {
+      const domainColor = DOMAIN_COLORS[c.domain] ?? "copper";
+      return (
+        <tr key={c.id}>
+          <td>
+            <Link
+              to={c.demoPath ?? `/cases/${c.id}`}
+              className="case-table__title-link"
+            >
+              {c.title}
+            </Link>
+            <div className="case-table__sub">
+              {displayCaseId(c.id)}
+              {c.subject && (
+                <span className="case-table__subject">
+                  · {c.subject}
+                </span>
+              )}
+            </div>
+          </td>
+          <td>
+            <div className="case-table__template">
+              <span
+                className={`case-table__template-name case-table__template-name--${domainColor}`}
+              >
+                {c.template}
+              </span>
+              <span className="case-table__domain">{c.domain}</span>
+            </div>
+          </td>
+          <td>
+            <span className={`badge badge--priority-${c.priority}`}>
+              {PRIORITY_LABELS[c.priority]}
+            </span>
+          </td>
+          <td>
+            <span className={`badge badge--status-${c.status}`}>
+              {STATUS_LABELS[c.status]}
+            </span>
+          </td>
+          <td className="case-table__evidence-count">
+            {c.evidenceCount}
+          </td>
+          <td className="case-table__date">{c.updatedAt}</td>
+          <td className="case-table__actions">
+            {c.reportPath && (
+              <Link
+                to={c.reportPath}
+                className="case-table__report-link"
+              >
+                View report
+              </Link>
+            )}
+          </td>
+        </tr>
+      );
+    });
+  }
 
-      <div className="dashboard__table-wrap">
+  return (
+    <main className="dashboard" aria-labelledby="dashboard-title">
+      <section className="dashboard__table-section" id="case-queue">
+        <div className="dashboard__header">
+          <div>
+            <h2 className="dashboard__title">Case queue</h2>
+            <p className="dashboard__subtitle">
+              {activeRows.length} active {activeRows.length === 1 ? "case" : "cases"}
+            </p>
+          </div>
+          <div className="dashboard__actions">
+            <button className="btn btn--outline btn--sm" onClick={handleResetAllDemos}>
+              Reset demos
+            </button>
+            <button className="btn btn--primary btn--sm" disabled>
+              New case
+            </button>
+          </div>
+        </div>
+
+        <div className="dashboard__table-wrap">
         <table className="case-table">
           <thead>
             <tr>
@@ -144,67 +212,47 @@ export function Dashboard() {
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            {rows.map((c) => {
-              const domainColor = DOMAIN_COLORS[c.domain] ?? "copper";
-              return (
-                <tr key={c.id}>
-                  <td>
-                    <Link
-                      to={c.demoPath ?? `/cases/${c.id}`}
-                      className="case-table__title-link"
-                    >
-                      {c.title}
-                    </Link>
-                    <div className="case-table__sub">
-                      {c.id}
-                      {c.subject && (
-                        <span className="case-table__subject">
-                          · {c.subject}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="case-table__template">
-                      <span
-                        className={`case-table__template-name case-table__template-name--${domainColor}`}
-                      >
-                        {c.template}
-                      </span>
-                      <span className="case-table__domain">{c.domain}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`badge badge--priority-${c.priority}`}>
-                      {PRIORITY_LABELS[c.priority]}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge badge--status-${c.status}`}>
-                      {STATUS_LABELS[c.status]}
-                    </span>
-                  </td>
-                  <td className="case-table__evidence-count">
-                    {c.evidenceCount}
-                  </td>
-                  <td className="case-table__date">{c.updatedAt}</td>
-                  <td className="case-table__actions">
-                    {c.reportPath && (
-                      <Link
-                        to={c.reportPath}
-                        className="case-table__report-link"
-                      >
-                        View report
-                      </Link>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
+          <tbody>{renderCaseRows(activeRows)}</tbody>
         </table>
-      </div>
-    </div>
+        </div>
+      </section>
+
+      <section className="dashboard__table-section dashboard__table-section--completed">
+        <div className="dashboard__header">
+          <div>
+            <h2 className="dashboard__title">Completed cases</h2>
+            <p className="dashboard__subtitle">
+              {completedRows.length} completed {completedRows.length === 1 ? "case" : "cases"}
+            </p>
+          </div>
+        </div>
+
+        {completedRows.length > 0 ? (
+          <div className="dashboard__table-wrap dashboard__table-wrap--completed">
+            <table className="case-table">
+              <thead>
+                <tr>
+                  <th>Case</th>
+                  <th>Template</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Evidence</th>
+                  <th>Updated</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>{renderCaseRows(completedRows)}</tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="dashboard-empty">
+            <h3>No completed cases yet</h3>
+            <p>
+              Approved or exported demo cases will move here after review.
+            </p>
+          </div>
+        )}
+      </section>
+    </main>
   );
 }
