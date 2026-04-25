@@ -54,6 +54,7 @@ export const consumerQualitySeedData: SeedCaseData = {
       description:
         "Internal product reference sheet for Hydrating Face Cream 50 ml. Includes expected texture, packaging configuration, storage guidance, and quality hold criteria.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/consumer-quality/product-reference-hydrating-face-cream.pdf",
     },
     {
       id: "cqev-003",
@@ -64,6 +65,7 @@ export const consumerQualitySeedData: SeedCaseData = {
       description:
         "Order metadata for ORD-882145. Shows shipment from Fulfillment Center 3 on March 12, 2026 with standard parcel service and delivery on March 16, 2026.",
       mimeType: "text/csv",
+      previewUrl: "/assets/consumer-quality/order-metadata-ord-882145.csv",
     },
     {
       id: "cqev-004",
@@ -74,6 +76,7 @@ export const consumerQualitySeedData: SeedCaseData = {
       description:
         "Batch record snapshot for lot HC-26-0417B. Release checks show fill weight, seal integrity, and appearance within expected range at release.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/consumer-quality/batch-record-hc-26-0417b.pdf",
     },
     {
       id: "cqev-005",

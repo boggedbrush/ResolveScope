@@ -1,0 +1,5 @@
+check_id,requirement,evidence_present,source,notes
+AC-07-01,Manager approval,Yes,Approval Summary Workspace V-214,Approval date present
+AC-07-02,Business owner sign-off,No,Approval Summary Workspace V-214,Field blank in sampled packet
+AC-07-03,Quarterly review checklist,Yes,Quarterly Checklist Access Review,Checklist completed with one exception
+AC-07-04,Reviewer disposition,Pending,Remediation Note Owner Outreach,Awaiting recheck after sign-off is attached

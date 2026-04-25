@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { EvidenceItem, EvidenceType } from "../../types/case";
 import { EvidenceTypeIcon } from "./EvidenceTypeIcon";
+import { FileViewerOverlay } from "./FileViewerOverlay";
 import { ImageViewerOverlay } from "./ImageViewerOverlay";
 import { NoteViewerOverlay } from "./NoteViewerOverlay";
 import { PdfViewerOverlay } from "./PdfViewerOverlay";
@@ -23,6 +24,16 @@ const TYPE_LABELS: Record<EvidenceType, string> = {
   note: "Note",
   video: "Video",
 };
+
+function getEvidenceTypeLabel(item: EvidenceItem): string {
+  if (item.mimeType === "text/csv") return "Data";
+  return TYPE_LABELS[item.type];
+}
+
+function getEvidenceTypeClass(item: EvidenceItem): string {
+  if (item.mimeType === "text/csv") return "data";
+  return item.type;
+}
 
 function fmtDate(iso: string): string {
   return new Date(iso).toLocaleString("en-US", {
@@ -47,8 +58,12 @@ export function EvidencePanel({
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activePdf, setActivePdf] = useState<{ title: string; src: string } | null>(null);
+  const [activeFile, setActiveFile] = useState<{ title: string; src: string; label: string } | null>(null);
   const [activeImage, setActiveImage] = useState<{ title: string; src: string } | null>(null);
   const [activeNote, setActiveNote] = useState<EvidenceItem | null>(null);
+  const [isNoteComposerOpen, setIsNoteComposerOpen] = useState(false);
+  const [noteTitle, setNoteTitle] = useState("");
+  const [noteBody, setNoteBody] = useState("");
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -56,6 +71,7 @@ export function EvidencePanel({
     const newItems: EvidenceItem[] = files.map((f) => {
       const type: EvidenceType = f.type.startsWith("image/") ? "image" : "document";
       const isPdf = f.type === "application/pdf";
+      const isPreviewableFile = isPdf || f.type === "text/csv" || f.type.startsWith("text/");
       return {
         id: `ev-upload-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         type,
@@ -65,11 +81,32 @@ export function EvidencePanel({
         description: "Uploaded via file picker.",
         mimeType: f.type,
         previewUrl:
-          f.type.startsWith("image/") || isPdf ? URL.createObjectURL(f) : undefined,
+          f.type.startsWith("image/") || isPreviewableFile ? URL.createObjectURL(f) : undefined,
       };
     });
     onAddEvidence(newItems);
     e.target.value = "";
+  }
+
+  function handleAddNote(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const body = noteBody.trim();
+    if (!body) return;
+
+    onAddEvidence([
+      {
+        id: `ev-note-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        type: "note",
+        name: noteTitle.trim() || "Reviewer Note",
+        uploadedBy,
+        uploadedAt: new Date().toISOString(),
+        description: body,
+        mimeType: "text/plain",
+      },
+    ]);
+    setNoteTitle("");
+    setNoteBody("");
+    setIsNoteComposerOpen(false);
   }
 
   const statusClass = status;
@@ -99,18 +136,28 @@ export function EvidencePanel({
           Evidence
           <span className="demo-panel__count">{evidence.length}</span>
         </h3>
-        <button
-          className="btn btn--outline demo-panel__add-btn"
-          onClick={() => fileInputRef.current?.click()}
-          aria-label="Add evidence file"
-        >
-          + Add
-        </button>
+        <div className="demo-panel__evidence-actions" aria-label="Add evidence">
+          <button
+            type="button"
+            className="btn btn--outline demo-panel__add-btn"
+            onClick={() => setIsNoteComposerOpen(true)}
+          >
+            Add note
+          </button>
+          <button
+            type="button"
+            className="btn btn--outline demo-panel__add-btn"
+            onClick={() => fileInputRef.current?.click()}
+            aria-label="Upload evidence file"
+          >
+            Upload file
+          </button>
+        </div>
         <input
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/*,.pdf,.txt,.doc,.docx"
+          accept="image/*,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx"
           style={{ display: "none" }}
           onChange={handleFileChange}
         />
@@ -123,13 +170,14 @@ export function EvidencePanel({
             <div className="evidence-item__icon" aria-hidden="true">
               <EvidenceTypeIcon
                 type={item.type}
-                className={`evidence-item__icon-svg evidence-item__icon-svg--${item.type}`}
+                mimeType={item.mimeType}
+                className={`evidence-item__icon-svg evidence-item__icon-svg--${getEvidenceTypeClass(item)}`}
               />
             </div>
             <div className="evidence-item__body">
               <div className="evidence-item__row">
-                <span className="evidence-item__type-badge">
-                  {TYPE_LABELS[item.type]}
+                <span className={`evidence-item__type-badge evidence-item__type-badge--${getEvidenceTypeClass(item)}`}>
+                  {getEvidenceTypeLabel(item)}
                 </span>
                 <span className="evidence-item__name">{item.name}</span>
               </div>
@@ -157,9 +205,16 @@ export function EvidencePanel({
                   <a
                     href={item.previewUrl}
                     onClick={(event) => {
-                      if (item.mimeType !== "application/pdf") return;
                       event.preventDefault();
-                      setActivePdf({ title: item.name, src: item.previewUrl! });
+                      if (item.mimeType === "application/pdf") {
+                        setActivePdf({ title: item.name, src: item.previewUrl! });
+                        return;
+                      }
+                      setActiveFile({
+                        title: item.name,
+                        src: item.previewUrl!,
+                        label: item.mimeType === "text/csv" ? "CSV" : "File",
+                      });
                     }}
                     className="evidence-item__file-link"
                   >
@@ -192,6 +247,14 @@ export function EvidencePanel({
           onClose={() => setActivePdf(null)}
         />
       )}
+      {activeFile && (
+        <FileViewerOverlay
+          title={activeFile.title}
+          src={activeFile.src}
+          label={activeFile.label}
+          onClose={() => setActiveFile(null)}
+        />
+      )}
       {activeImage && (
         <ImageViewerOverlay
           title={activeImage.title}
@@ -207,6 +270,68 @@ export function EvidencePanel({
           uploadedAt={activeNote.uploadedAt}
           onClose={() => setActiveNote(null)}
         />
+      )}
+      {isNoteComposerOpen && (
+        <div
+          className="note-viewer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Add evidence note"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setIsNoteComposerOpen(false);
+          }}
+        >
+          <form className="note-viewer__shell note-composer" onSubmit={handleAddNote}>
+            <div className="note-viewer__header">
+              <div className="note-viewer__meta">
+                <span className="note-viewer__eyebrow">New evidence</span>
+                <h2 className="note-viewer__title">Add note</h2>
+              </div>
+              <button
+                type="button"
+                className="note-viewer__close"
+                onClick={() => setIsNoteComposerOpen(false)}
+                aria-label="Close note composer"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+            <div className="note-viewer__body">
+              <label className="note-composer__field">
+                <span>Title</span>
+                <input
+                  value={noteTitle}
+                  onChange={(event) => setNoteTitle(event.target.value)}
+                  placeholder="Reviewer Note"
+                />
+              </label>
+              <label className="note-composer__field">
+                <span>Note</span>
+                <textarea
+                  value={noteBody}
+                  onChange={(event) => setNoteBody(event.target.value)}
+                  placeholder="Add context, observations, or follow-up notes..."
+                  rows={7}
+                  required
+                />
+              </label>
+            </div>
+            <div className="note-composer__footer">
+              <button
+                type="button"
+                className="btn btn--outline"
+                onClick={() => setIsNoteComposerOpen(false)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn--primary" disabled={!noteBody.trim()}>
+                Add note
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </aside>
   );

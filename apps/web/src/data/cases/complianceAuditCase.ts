@@ -44,6 +44,7 @@ export const complianceAuditSeedData: SeedCaseData = {
       description:
         "Internal policy excerpt describing required evidence for vendor workspace access reviews, including manager approval, business owner sign-off, and quarterly checklist completion.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/compliance-audit/access-review-policy-excerpt.pdf",
     },
     {
       id: "caev-002",
@@ -54,6 +55,7 @@ export const complianceAuditSeedData: SeedCaseData = {
       description:
         "Approval summary for vendor workspace V-214. Shows manager approval and renewal date, but business owner sign-off field is blank.",
       mimeType: "application/pdf",
+      previewUrl: "/assets/compliance-audit/approval-summary-workspace-v-214.pdf",
     },
     {
       id: "caev-003",
@@ -74,16 +76,18 @@ export const complianceAuditSeedData: SeedCaseData = {
       description:
         "Audit intake flag identifying one missing documentation item: business owner sign-off for vendor workspace V-214.",
       mimeType: "text/csv",
+      previewUrl: "/assets/compliance-audit/missing-documentation-flag-mdf-219.csv",
     },
     {
       id: "caev-005",
       type: "document",
-      name: "Quarterly Checklist : Access Review.xlsx",
+      name: "Quarterly Checklist : Access Review.csv",
       uploadedBy: "Control owner",
       uploadedAt: "2026-04-09T10:05:00Z",
       description:
         "Completed quarterly access review checklist. Most evidence items are checked complete, with one exception noted for pending business owner sign-off.",
-      mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      mimeType: "text/csv",
+      previewUrl: "/assets/compliance-audit/quarterly-access-review-checklist.csv",
     },
     {
       id: "caev-006",

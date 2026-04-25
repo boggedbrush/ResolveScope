@@ -1,0 +1,2 @@
+order_id,customer_name,product,sku,batch_lot_id,quantity,ship_date,delivery_date,fulfillment_center,carrier,package_condition
+ORD-882145,Jordan Ellis,Hydrating Face Cream 50 ml,HFC-50-HY,HC-26-0417B,1,2026-03-12,2026-03-16,Fulfillment Center 3,Standard parcel,Outer package intact per support transcript
