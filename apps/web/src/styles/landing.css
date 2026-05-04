@@ -390,6 +390,122 @@
   }
 }
 
+/* ── Inactivity demo prompt ────────────── */
+
+.demo-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(184, 90, 48, 0.18), transparent 42%),
+    color-mix(in oklab, var(--bg) 38%, rgba(14, 18, 15, 0.48));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: demoPromptFade 0.18s var(--ease) both;
+}
+
+.demo-prompt__dialog {
+  width: min(440px, 100%);
+  border: 1px solid color-mix(in oklab, var(--border) 78%, var(--copper) 22%);
+  border-radius: 12px;
+  padding: clamp(22px, 5vw, 30px);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--copper-subtle) 54%, transparent), transparent 58%),
+    var(--bg-card);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+  color: var(--text);
+}
+
+.demo-prompt__eyebrow {
+  margin: 0 0 10px;
+  color: var(--copper);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.demo-prompt__dialog h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.demo-prompt__dialog p:not(.demo-prompt__eyebrow) {
+  margin: 14px 0 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.demo-prompt__preference {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.demo-prompt__preference input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--copper);
+  cursor: pointer;
+}
+
+.demo-prompt__preference input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.demo-prompt__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.demo-prompt__actions .btn {
+  min-height: 46px;
+  justify-content: center;
+  padding: 12px 18px;
+}
+
+.demo-prompt__primary {
+  flex: 1 1 168px;
+}
+
+.demo-prompt__secondary {
+  flex: 1 1 140px;
+}
+
+@keyframes demoPromptFade {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-prompt {
+    animation: none;
+  }
+}
+
 /* ── Hero ──────────────────────────────── */
 
 .hero {

@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import { HeroDemo } from "../components/HeroDemo";
 import { CodexBanner } from "../components/CodexBanner";
@@ -17,6 +17,9 @@ const LANDING_NAV_ITEMS: MobileNavItem[] = [
   { label: "Spatial Review", href: "#spatial" },
   { label: "Architecture", to: "/architecture" },
 ];
+
+const DEMO_PROMPT_STORAGE_KEY = "resolvescope.demoPromptDismissed";
+const DEMO_PROMPT_INACTIVITY_MS = 30000;
 
 /* ═══════════════════════════════════════════
    Section data
@@ -112,6 +115,67 @@ function useScrollReveal() {
   }, []);
 }
 
+function useDemoPrompt() {
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [doNotShowAgain, setDoNotShowAgain] = useState(false);
+
+  useEffect(() => {
+    if (isVisible || isDismissed) {
+      return;
+    }
+
+    if (window.localStorage.getItem(DEMO_PROMPT_STORAGE_KEY) === "true") {
+      return;
+    }
+
+    let timer = window.setTimeout(() => {
+      setIsVisible(true);
+    }, DEMO_PROMPT_INACTIVITY_MS);
+
+    const resetTimer = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        setIsVisible(true);
+      }, DEMO_PROMPT_INACTIVITY_MS);
+    };
+
+    const activityEvents = ["pointerdown", "keydown", "scroll", "touchstart"];
+    activityEvents.forEach((eventName) => {
+      window.addEventListener(eventName, resetTimer, { passive: true });
+    });
+
+    return () => {
+      window.clearTimeout(timer);
+      activityEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, resetTimer);
+      });
+    };
+  }, [isDismissed, isVisible]);
+
+  const dismiss = () => {
+    if (doNotShowAgain) {
+      window.localStorage.setItem(DEMO_PROMPT_STORAGE_KEY, "true");
+    }
+    setIsDismissed(true);
+    setIsVisible(false);
+  };
+
+  const rememberPreference = () => {
+    if (doNotShowAgain) {
+      window.localStorage.setItem(DEMO_PROMPT_STORAGE_KEY, "true");
+    }
+  };
+
+  return {
+    dismiss,
+    doNotShowAgain,
+    isVisible,
+    rememberPreference,
+    setDoNotShowAgain,
+  };
+}
+
 /* ═══════════════════════════════════════════
    Icons (inline SVG)
    ═══════════════════════════════════════════ */
@@ -157,6 +221,7 @@ function ArrowIcon() {
 
 export function Landing() {
   useScrollReveal();
+  const demoPrompt = useDemoPrompt();
 
   return (
     <main className="landing-page">
@@ -497,6 +562,51 @@ export function Landing() {
           </ul>
         </div>
       </footer>
+
+      {demoPrompt.isVisible ? (
+        <div className="demo-prompt" role="presentation">
+          <div
+            className="demo-prompt__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="demo-prompt-title"
+            aria-describedby="demo-prompt-description"
+          >
+            <p className="demo-prompt__eyebrow">Demo available</p>
+            <h2 id="demo-prompt-title">Ready to review a case file?</h2>
+            <p id="demo-prompt-description">
+              Open the ResolveScope demo to see evidence intake, human review,
+              approval, and export in one workflow.
+            </p>
+            <label className="demo-prompt__preference">
+              <input
+                type="checkbox"
+                checked={demoPrompt.doNotShowAgain}
+                onChange={(event) =>
+                  demoPrompt.setDoNotShowAgain(event.target.checked)
+                }
+              />
+              <span>Do not show again</span>
+            </label>
+            <div className="demo-prompt__actions">
+              <button
+                type="button"
+                className="btn btn--outline demo-prompt__secondary"
+                onClick={demoPrompt.dismiss}
+              >
+                No thank you
+              </button>
+              <Link
+                to="/dashboard"
+                className="btn btn--primary demo-prompt__primary"
+                onClick={demoPrompt.rememberPreference}
+              >
+                Try the Demo <ArrowIcon />
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
