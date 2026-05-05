@@ -3,6 +3,10 @@ import { ThemeControl } from "../components/ThemeControl";
 import { resolveDemoCase } from "../data/demoResolver";
 import { getDemoCaseState, useDemoStateVersion } from "../data/demoState";
 import { getTemplate } from "../templates/index";
+import {
+  FIRST_DEMO_DASHBOARD_SIDEBAR_TOUR_PENDING_KEY,
+  FIRST_DEMO_REPORT_TOUR_PENDING_KEY,
+} from "../utils/onboardingTutorial";
 import type {
   SectionData,
   EvidenceItem,
@@ -387,6 +391,19 @@ export function CaseReportPage() {
 
   const hasSpatial = (spatialMarkers ?? []).length > 0;
   const isApproved = caseMeta.status === "approved";
+  const hasPendingDashboardReturn =
+    demoId === "auto-claim" &&
+    window.localStorage.getItem(FIRST_DEMO_REPORT_TOUR_PENDING_KEY) === "true";
+
+  function prepareDashboardSidebarReturn() {
+    if (!hasPendingDashboardReturn) return;
+
+    window.localStorage.removeItem(FIRST_DEMO_REPORT_TOUR_PENDING_KEY);
+    window.localStorage.setItem(
+      FIRST_DEMO_DASHBOARD_SIDEBAR_TOUR_PENDING_KEY,
+      "true"
+    );
+  }
 
   const completedChecklist = Object.values(review.checklist).filter(
     Boolean
@@ -400,9 +417,24 @@ export function CaseReportPage() {
         <div className="report-topbar__left">
           <Link
             to={`/demo/${demoId}`}
-            className="btn btn--outline btn--sm report-topbar__btn"
+            className="btn btn--outline btn--sm report-topbar__btn report-topbar__workspace-link"
           >
             Return to workspace
+          </Link>
+          <Link
+            to="/dashboard"
+            className={`btn btn--outline btn--sm report-topbar__btn report-topbar__dashboard-link${
+              hasPendingDashboardReturn ? " report-topbar__btn--return-cta" : ""
+            }`}
+            data-tour="report-return-dashboard"
+            onClick={prepareDashboardSidebarReturn}
+          >
+            Return to dashboard
+            {hasPendingDashboardReturn && (
+              <span className="report-topbar__return-bubble" aria-hidden="true">
+                When you're done, let's return to the dashboard.
+              </span>
+            )}
           </Link>
           <span className="section-label report-topbar__template">
             {template.label}

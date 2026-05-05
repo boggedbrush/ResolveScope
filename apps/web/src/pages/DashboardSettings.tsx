@@ -1,10 +1,15 @@
 import { DEMO_SEED_MAP } from "../data/demoResolver";
 import { resetAllDemoCaseStates } from "../data/demoState";
 import { ThemeControl } from "../components/ThemeControl";
+import { resetOnboardingTutorials } from "../utils/onboardingTutorial";
 
 export function DashboardSettings() {
   function handleResetAllDemos() {
     resetAllDemoCaseStates(DEMO_SEED_MAP);
+  }
+
+  function handleResetTutorials() {
+    resetOnboardingTutorials();
   }
 
   return (
@@ -44,6 +49,16 @@ export function DashboardSettings() {
             </div>
             <button className="btn btn--outline btn--sm" onClick={handleResetAllDemos}>
               Reset demos
+            </button>
+          </div>
+
+          <div className="settings-action">
+            <div>
+              <h3>Guided tutorial</h3>
+              <p>Show the dashboard and first-demo walkthrough again in this browser.</p>
+            </div>
+            <button className="btn btn--outline btn--sm" onClick={handleResetTutorials}>
+              Reset tutorial
             </button>
           </div>
         </section>

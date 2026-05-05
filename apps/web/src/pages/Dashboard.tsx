@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { OnboardingTutorial } from "../components/OnboardingTutorial";
 import { DEMO_SEED_MAP } from "../data/demoResolver";
 import { getDemoCaseState, resetAllDemoCaseStates, useDemoStateVersion } from "../data/demoState";
 import {
@@ -10,6 +11,10 @@ import {
   type LocalCaseRecord,
 } from "../data/localCases";
 import type { CaseStatus, Priority } from "../types/case";
+import {
+  DASHBOARD_ONBOARDING_DISMISSED_KEY,
+  FIRST_DEMO_DASHBOARD_SIDEBAR_TOUR_PENDING_KEY,
+} from "../utils/onboardingTutorial";
 
 type CasePriority = Priority;
 
@@ -146,6 +151,53 @@ const EMPTY_LOCAL_CASE_FORM: LocalCaseFormState = {
   priority: "medium",
 };
 
+const DASHBOARD_ONBOARDING_STEPS = [
+  {
+    label: "Case queue",
+    title: "This is your review queue.",
+    body: "Start here to see which evidence packages are active, what template they use, and which ones still need reviewer attention.",
+    targetSelector: "[data-tour='dashboard-case-queue']",
+    placement: "bottom" as const,
+    primaryLabel: "Show first case",
+  },
+  {
+    label: "Triage signals",
+    title: "Scan priority before opening anything.",
+    body: "Priority, status, evidence count, and update date give you a quick sense of where human review should go next.",
+    targetSelector: "[data-tour='dashboard-first-row']",
+    placement: "bottom" as const,
+    primaryLabel: "Show where to click",
+  },
+  {
+    label: "Open demo",
+    title: "Click this case title to enter the workflow.",
+    body: "The auto claim demo is the shortest path through evidence intake, AI extraction, human approval, and export controls.",
+    targetSelector: "[data-tour='dashboard-first-case']",
+    placement: "right" as const,
+    primaryLabel: "Open this case",
+    primaryAction: "click-target" as const,
+    completeOnTargetClick: true,
+    padding: 8,
+  },
+];
+const DASHBOARD_SIDEBAR_RETURN_STEPS = [
+  {
+    label: "Sidebar",
+    title: "Bring the workspace sidebar back.",
+    body: "Expand the sidebar once you are back at the dashboard so cases, settings, and workspace navigation are visible again.",
+    targetSelector: "[data-tour='app-sidebar-toggle']",
+    placement: "right" as const,
+    primaryLabel: (target: HTMLElement | null) =>
+      target?.getAttribute("aria-expanded") === "true"
+        ? "Shrink sidebar"
+        : "Expand sidebar",
+    primaryAction: "click-target" as const,
+    padding: 8,
+  },
+];
+const SIDEBAR_COLLAPSED_KEY = "resolvescope:sidebar-collapsed";
+const SIDEBAR_COLLAPSED_EVENT = "resolvescope:set-sidebar-collapsed";
+
 function displayCaseId(caseId: string): string {
   return caseId.replace("-2024-", "-2026-");
 }
@@ -153,6 +205,15 @@ function displayCaseId(caseId: string): string {
 export function Dashboard() {
   const navigate = useNavigate();
   const [showDesktopWarning, setShowDesktopWarning] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(
+    () => window.localStorage.getItem(DASHBOARD_ONBOARDING_DISMISSED_KEY) !== "true"
+  );
+  const [showSidebarReturnTour, setShowSidebarReturnTour] = useState(
+    () =>
+      window.localStorage.getItem(
+        FIRST_DEMO_DASHBOARD_SIDEBAR_TOUR_PENDING_KEY
+      ) === "true"
+  );
   const [doNotAskAgain, setDoNotAskAgain] = useState(false);
   const [localCases, setLocalCases] = useState<LocalCaseRecord[]>(() => loadLocalCases());
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
@@ -185,6 +246,23 @@ export function Dashboard() {
       mobileQuery.removeEventListener("change", updateWarning);
     };
   }, []);
+
+  useEffect(() => {
+    if (!showSidebarReturnTour) return;
+
+    window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "true");
+    window.dispatchEvent(
+      new CustomEvent(SIDEBAR_COLLAPSED_EVENT, { detail: true })
+    );
+
+    const collapseTimer = window.setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent(SIDEBAR_COLLAPSED_EVENT, { detail: true })
+      );
+    }, 0);
+
+    return () => window.clearTimeout(collapseTimer);
+  }, [showSidebarReturnTour]);
 
   const rows = [
     ...localCases.map((row) => ({ ...row, isLocal: true })),
@@ -229,6 +307,20 @@ export function Dashboard() {
     navigate("/", { replace: true });
   }
 
+  function handleDismissOnboarding() {
+    window.localStorage.setItem(DASHBOARD_ONBOARDING_DISMISSED_KEY, "true");
+    setShowOnboarding(false);
+  }
+
+  function handleDismissSidebarReturnTour() {
+    window.localStorage.removeItem(
+      FIRST_DEMO_DASHBOARD_SIDEBAR_TOUR_PENDING_KEY
+    );
+    window.localStorage.setItem(DASHBOARD_ONBOARDING_DISMISSED_KEY, "true");
+    setShowOnboarding(false);
+    setShowSidebarReturnTour(false);
+  }
+
   function handleCreateCase() {
     const title = localCaseForm.title.trim();
     if (!title) return;
@@ -266,11 +358,15 @@ export function Dashboard() {
     return caseRows.map((c) => {
       const domainColor = DOMAIN_COLORS[c.domain] ?? "copper";
       return (
-        <tr key={c.id}>
+        <tr
+          key={c.id}
+          data-tour={c.demoPath === "/demo/auto-claim" ? "dashboard-first-row" : undefined}
+        >
           <td>
             <Link
               to={c.demoPath ?? `/cases/${c.id}`}
               className="case-table__title-link"
+              data-tour={c.demoPath === "/demo/auto-claim" ? "dashboard-first-case" : undefined}
             >
               {c.title}
             </Link>
@@ -343,6 +439,22 @@ export function Dashboard() {
 
   return (
     <main className="dashboard" aria-labelledby="dashboard-title">
+      {showOnboarding && !showDesktopWarning && !showSidebarReturnTour && (
+        <OnboardingTutorial
+          title="Dashboard guided tour"
+          steps={DASHBOARD_ONBOARDING_STEPS}
+          onDismiss={handleDismissOnboarding}
+        />
+      )}
+
+      {showSidebarReturnTour && !showDesktopWarning && (
+        <OnboardingTutorial
+          title="Dashboard sidebar guided tour"
+          steps={DASHBOARD_SIDEBAR_RETURN_STEPS}
+          onDismiss={handleDismissSidebarReturnTour}
+        />
+      )}
+
       {showDesktopWarning && (
         <div className="dashboard-mobile-warning" role="dialog" aria-modal="true" aria-labelledby="dashboard-mobile-warning-title">
           <div className="dashboard-mobile-warning__panel">
@@ -383,7 +495,7 @@ export function Dashboard() {
         </div>
       )}
 
-      <section className="dashboard__table-section" id="case-queue">
+      <section className="dashboard__table-section" id="case-queue" data-tour="dashboard-case-queue">
         <div className="dashboard__header">
           <div>
             <h2 className="dashboard__title">Case queue</h2>

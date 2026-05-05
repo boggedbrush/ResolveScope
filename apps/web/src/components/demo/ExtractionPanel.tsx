@@ -521,7 +521,7 @@ export function ExtractionPanel({
 
   if (isRunning) {
     return (
-      <div className="demo-panel demo-panel--extraction">
+      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction">
         <StreamingLoader label="Running extraction" />
       </div>
     );
@@ -529,7 +529,7 @@ export function ExtractionPanel({
 
   if (!extraction) {
     return (
-      <div className="demo-panel demo-panel--extraction">
+      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction">
         <div className="extraction-empty">
           <div className="extraction-empty__icon" aria-hidden="true">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -566,6 +566,7 @@ export function ExtractionPanel({
             className="btn btn--primary"
             onClick={onRunExtraction}
             aria-label="Run extraction on this case"
+            data-tour="demo-run-extraction"
           >
             Run Extraction
           </button>
@@ -576,7 +577,11 @@ export function ExtractionPanel({
 
   return (
     <>
-      <div className="demo-panel demo-panel--extraction">
+      <div
+        className="demo-panel demo-panel--extraction"
+        data-tour="demo-extraction"
+        data-tour-results="demo-extraction-results"
+      >
         <div className="demo-panel__section-header">
           <h3 className="demo-panel__section-title">Case Brief</h3>
           {streamDone && (

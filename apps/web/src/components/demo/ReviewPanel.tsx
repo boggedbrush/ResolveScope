@@ -24,6 +24,7 @@ interface Props {
   onSave: () => void;
   onApprove: () => void;
   reportPath: string;
+  onReportOpen?: () => void;
   onExportJson: () => void;
 }
 
@@ -68,6 +69,7 @@ export function ReviewPanel({
   onReviewChange,
   onOverrideReasonChange,
   reportPath,
+  onReportOpen,
   onSave,
   onApprove,
   onExportJson,
@@ -97,7 +99,7 @@ export function ReviewPanel({
     review.severity !== originalValues.severity;
 
   return (
-    <aside className="demo-panel demo-panel--review">
+    <aside className="demo-panel demo-panel--review" data-tour="demo-review">
       {/* Review header */}
       <div className="demo-panel__section-header">
         <h3 className="demo-panel__section-title">Review</h3>
@@ -201,82 +203,89 @@ export function ReviewPanel({
         </div>
       </div>
 
-      {/* Checklist : driven by template */}
-      <div className="review-checklist">
-        <h4 className="review-checklist__title">Review checklist</h4>
-        {template.checklistItems.map(({ key, label }) => (
-          <label key={key} className="review-check">
-            <input
-              type="checkbox"
-              checked={!!review.checklist[key]}
-              disabled={isApproved}
-              onChange={(e) => updateChecklist(key, e.target.checked)}
-            />
-            <span>{label}</span>
-          </label>
-        ))}
-      </div>
+      <div className="review-verification-flow" data-tour="demo-verify-results">
+        {/* Checklist : driven by template */}
+        <div className="review-checklist" data-tour="demo-checklist">
+          <h4 className="review-checklist__title">Review checklist</h4>
+          {template.checklistItems.map(({ key, label }) => (
+            <label key={key} className="review-check">
+              <input
+                type="checkbox"
+                checked={!!review.checklist[key]}
+                disabled={isApproved}
+                onChange={(e) => updateChecklist(key, e.target.checked)}
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
 
-      {/* Approval requirements + trust summary */}
-      {!isApproved && (
-        <ApprovalRequirements status={approvalStatus} />
-      )}
-
-      {/* Actions */}
-      <div className="review-actions">
+        {/* Approval requirements + trust summary */}
         {!isApproved && (
-          <button
-            className="btn btn--outline review-actions__save"
-            onClick={onSave}
-          >
-            Save edits
-          </button>
+          <ApprovalRequirements status={approvalStatus} />
         )}
-        {!isApproved && (
-          <button
-            className="btn review-actions__approve"
-            onClick={onApprove}
-            disabled={!approvalStatus.allowed}
-            aria-disabled={!approvalStatus.allowed}
-            title={
-              approvalStatus.allowed
-                ? "Approve this case"
-                : approvalStatus.blockers.join("; ")
-            }
-          >
-            Approve case
-          </button>
-        )}
-        <div className="review-actions__export-group">
-          <button
-            className="btn btn--outline review-actions__export"
-            onClick={onExportJson}
-            disabled={!canExport}
-            aria-disabled={!canExport}
-            aria-label="Download approved JSON case bundle"
-            title={
-              canExport
-                ? "Download approved JSON case bundle"
-                : extraction === null
-                  ? "Run extraction and approve this case before exporting JSON"
-                  : "Approve this case before exporting JSON"
-            }
-          >
-            Export JSON
-          </button>
-          <Link
-            to={reportPath}
-            className="btn btn--outline review-actions__export"
-            aria-label="View stakeholder report"
-            onClick={(event) => {
-              if (isApproved) return;
 
-              event.preventDefault();
-              setShowReportWarning(true);
-            }}
-          >
-            View report
-          </Link>
+        {/* Actions */}
+        <div className="review-actions" data-tour="demo-approval-actions">
+          {!isApproved && (
+            <button
+              className="btn btn--outline review-actions__save"
+              onClick={onSave}
+            >
+              Save edits
+            </button>
+          )}
+          {!isApproved && (
+            <button
+              className="btn review-actions__approve"
+              onClick={onApprove}
+              disabled={!approvalStatus.allowed}
+              aria-disabled={!approvalStatus.allowed}
+              data-tour="demo-approve-case"
+              title={
+                approvalStatus.allowed
+                  ? "Approve this case"
+                  : approvalStatus.blockers.join("; ")
+              }
+            >
+              Approve case
+            </button>
+          )}
+          <div className="review-actions__export-group">
+            <button
+              className="btn btn--outline review-actions__export"
+              onClick={onExportJson}
+              disabled={!canExport}
+              aria-disabled={!canExport}
+              aria-label="Download approved JSON case bundle"
+              title={
+                canExport
+                  ? "Download approved JSON case bundle"
+                  : extraction === null
+                    ? "Run extraction and approve this case before exporting JSON"
+                    : "Approve this case before exporting JSON"
+              }
+            >
+              Export JSON
+            </button>
+            <Link
+              to={reportPath}
+              className="btn btn--outline review-actions__export"
+              aria-label="View stakeholder report"
+              data-tour="demo-print-results"
+              onClick={(event) => {
+                if (isApproved) {
+                  onReportOpen?.();
+                  return;
+                }
+
+                event.preventDefault();
+                setShowReportWarning(true);
+              }}
+            >
+              View report
+            </Link>
+          </div>
         </div>
       </div>
 

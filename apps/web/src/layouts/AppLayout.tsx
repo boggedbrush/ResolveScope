@@ -71,6 +71,7 @@ function displayCaseId(caseId: string): string {
 }
 
 const SIDEBAR_COLLAPSED_KEY = "resolvescope:sidebar-collapsed";
+const SIDEBAR_COLLAPSED_EVENT = "resolvescope:set-sidebar-collapsed";
 
 export function AppLayout() {
   useDemoStateVersion();
@@ -84,6 +85,25 @@ export function AppLayout() {
   useEffect(() => {
     window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(isSidebarCollapsed));
   }, [isSidebarCollapsed]);
+
+  useEffect(() => {
+    const handleSidebarCollapsedChange = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      setIsSidebarCollapsed(event.detail === true);
+    };
+
+    window.addEventListener(
+      SIDEBAR_COLLAPSED_EVENT,
+      handleSidebarCollapsedChange
+    );
+
+    return () => {
+      window.removeEventListener(
+        SIDEBAR_COLLAPSED_EVENT,
+        handleSidebarCollapsedChange
+      );
+    };
+  }, []);
 
   const localCaseWorkspaces = loadLocalCases().map((localCase) => ({
     demoId: localCase.id,
@@ -129,6 +149,7 @@ export function AppLayout() {
           <button
             type="button"
             className="app-sidebar__collapse"
+            data-tour="app-sidebar-toggle"
             aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-expanded={!isSidebarCollapsed}
             onClick={() => setIsSidebarCollapsed((value) => !value)}

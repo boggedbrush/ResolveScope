@@ -241,6 +241,7 @@ function MarkerPin({
           onClick={handleSelect}
           aria-label={`Inspect ${marker.label}`}
           aria-pressed={isActive}
+          data-tour="demo-spatial-pin"
         >
           {markerNumber}
         </button>

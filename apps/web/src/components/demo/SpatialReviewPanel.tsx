@@ -485,6 +485,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
         isCompactViewport ? "spatial-panel--compact" : "",
       ].filter(Boolean).join(" ")}
       aria-label="Spatial annotation review"
+      data-tour="demo-spatial-review"
     >
       <div className="spatial-panel__body spatial-panel__body--single">
         <div className="spatial-panel__scene-wrap">
@@ -544,7 +545,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
               ))}
             </div>
 
-            <div className="spatial__canvas-wrap spatial-panel__canvas-shell">
+            <div className="spatial__canvas-wrap spatial-panel__canvas-shell" data-tour="demo-spatial-scene">
               <div
                 className="spatial-panel__scene-surface spatial-panel__scene-surface--landing"
                 ref={sceneSurfaceRef}
@@ -650,7 +651,9 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                   )}
                 </div>
 
-                <div className={`spatial__sidebar spatial-panel__sidebar${selectedMarker ? " spatial__sidebar--open" : ""}`}>
+                <div
+                  className={`spatial__sidebar spatial-panel__sidebar${selectedMarker ? " spatial__sidebar--open" : ""}`}
+                >
                   {selectedMarker && (
                     <div className="spatial-marker-detail spatial-marker-detail--sidebar" key={selectedMarker.id}>
                       <div className="spatial__sidebar-header">
@@ -721,7 +724,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                       )}
 
                       {relatedEvidence.length > 0 && (
-                        <div className="spatial-marker-detail__evidence">
+                        <div className="spatial-marker-detail__evidence" data-tour="demo-pinned-evidence">
                           <span className="spatial-marker-detail__evidence-label">Supporting evidence</span>
                           <ul className="spatial-marker-detail__evidence-list">
                             {relatedEvidence.map((ev) => (

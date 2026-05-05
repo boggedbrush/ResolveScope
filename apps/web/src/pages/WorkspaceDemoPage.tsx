@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { OnboardingTutorial, type OnboardingStep } from "../components/OnboardingTutorial";
 import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
 import { ReviewPanel } from "../components/demo/ReviewPanel";
@@ -7,6 +8,10 @@ import { getDemoCaseState, resetDemoCaseState, updateDemoCaseState } from "../da
 import { getTemplate } from "../templates/index";
 import { runMockExtraction } from "../utils/mockExtraction";
 import { downloadCaseBundle } from "../utils/exportCaseBundle";
+import {
+  FIRST_DEMO_ONBOARDING_DISMISSED_KEY,
+  FIRST_DEMO_REPORT_TOUR_PENDING_KEY,
+} from "../utils/onboardingTutorial";
 import { applyOverride, updateOverrideReason, describeOverrides } from "../utils/reviewOverrides";
 import type {
   EvidenceItem,
@@ -25,6 +30,85 @@ interface Props {
   topbarLabel?: string;
   showResetDemo?: boolean;
 }
+
+const FIRST_DEMO_ONBOARDING_STEPS = [
+  {
+    label: "Spatial review",
+    title: "Spatial Review of current evidence.",
+    body: "Click any numbered pin in the 3D scene to inspect where evidence anchors to the incident reconstruction. The tour continues after a pin is selected.",
+    targetSelector: "[data-tour='demo-spatial-scene']",
+    completionSelector: "[data-tour='demo-spatial-pin']",
+    placement: "left" as const,
+    primaryLabel: "Waiting for pin click",
+    completeOnTargetClick: true,
+    requireTargetClick: true,
+    padding: 10,
+  },
+  {
+    label: "Pinned evidence",
+    title: "Look at the evidence pinned to that point.",
+    body: "The side panel connects the selected 3D finding to source files, photos, and notes. This is how the spatial view stays tied to reviewable evidence.",
+    targetSelector: "[data-tour='demo-pinned-evidence']",
+    placement: "right" as const,
+    primaryLabel: "Add more evidence",
+    padding: 10,
+  },
+  {
+    label: "Add evidence",
+    title: "Add evidence when the case needs more context.",
+    body: "Use Add note for reviewer observations or Upload file for new source material. Added evidence stays in the case timeline and audit history.",
+    targetSelector: "[data-tour='demo-add-evidence']",
+    placement: "right" as const,
+    primaryLabel: "Show AI extraction",
+    padding: 8,
+  },
+  {
+    label: "Run extraction",
+    title: "Run AI extraction from this panel.",
+    body: "This panel turns the attached evidence into a structured starting point. Click Run Extraction here to generate the draft case brief.",
+    targetSelector: "[data-tour='demo-extraction']",
+    primaryTargetSelector: "[data-tour='demo-run-extraction']",
+    waitForSelectorBeforeAdvance: "[data-tour-results='demo-extraction-results']",
+    placement: "left" as const,
+    primaryLabel: "Run extraction",
+    waitingLabel: "Running extraction",
+    primaryAction: "click-target" as const,
+    padding: 8,
+  },
+  {
+    label: "Read results",
+    title: "Read the extracted case brief.",
+    body: "Review the generated summary, timeline, findings, recommendations, and provenance before treating the output as decision support.",
+    targetSelector: "[data-tour='demo-extraction']",
+    placement: "left" as const,
+    primaryLabel: "Verify results",
+    padding: 10,
+  },
+  {
+    label: "Verify results",
+    title: "Verify the result before approval.",
+    body: "Check each review item against the evidence, then click Approve case. The tour waits here until that human approval step is complete.",
+    targetSelector: "[data-tour='demo-verify-results']",
+    completionSelector: "[data-tour='demo-approve-case']",
+    placement: "left" as const,
+    primaryLabel: "Approve after checklist",
+    completeOnTargetClick: true,
+    requireTargetClick: true,
+    padding: 10,
+  },
+  {
+    label: "Print results",
+    title: "Print or save the reviewed results.",
+    body: "Open the stakeholder report. From that report view, use Print / Save PDF to produce the reviewed handoff.",
+    targetSelector: "[data-tour='demo-print-results']",
+    placement: "left" as const,
+    primaryLabel: "Open report",
+    primaryAction: "click-target" as const,
+    padding: 8,
+  },
+];
+const SIDEBAR_COLLAPSED_KEY = "resolvescope:sidebar-collapsed";
+const SIDEBAR_COLLAPSED_EVENT = "resolvescope:set-sidebar-collapsed";
 
 function makeAuditId(): string {
   return `audit-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -52,8 +136,30 @@ export function WorkspaceDemoPage({
     getDemoCaseState(demoId, seedData)
   );
   const [isExtracting, setIsExtracting] = useState(false);
+  const [showFirstDemoOnboarding, setShowFirstDemoOnboarding] = useState(
+    () =>
+      demoId === "auto-claim" &&
+      window.localStorage.getItem(FIRST_DEMO_ONBOARDING_DISMISSED_KEY) !== "true"
+  );
 
   const { caseMeta, evidence, extraction, review, overrides, auditLog } = demoState;
+
+  useEffect(() => {
+    if (!showFirstDemoOnboarding) return;
+
+    window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "true");
+    window.dispatchEvent(
+      new CustomEvent(SIDEBAR_COLLAPSED_EVENT, { detail: true })
+    );
+
+    const collapseTimer = window.setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent(SIDEBAR_COLLAPSED_EVENT, { detail: true })
+      );
+    }, 0);
+
+    return () => window.clearTimeout(collapseTimer);
+  }, [showFirstDemoOnboarding]);
 
   function commitDemoState(updater: (prev: DemoCaseState) => DemoCaseState): DemoCaseState {
     const nextState = updater(demoState);
@@ -206,10 +312,36 @@ export function WorkspaceDemoPage({
     setIsExtracting(false);
   }
 
+  function handleDismissFirstDemoOnboarding() {
+    window.localStorage.setItem(FIRST_DEMO_ONBOARDING_DISMISSED_KEY, "true");
+    setShowFirstDemoOnboarding(false);
+  }
+
+  function handleFirstDemoPrimaryAction(step: OnboardingStep) {
+    if (step.label !== "Print results") return;
+
+    window.localStorage.setItem(FIRST_DEMO_REPORT_TOUR_PENDING_KEY, "true");
+  }
+
+  function handleFirstDemoReportOpen() {
+    if (demoId !== "auto-claim" || !showFirstDemoOnboarding) return;
+
+    window.localStorage.setItem(FIRST_DEMO_REPORT_TOUR_PENDING_KEY, "true");
+  }
+
   const hasSpatial = (demoState.spatialMarkers ?? []).length > 0;
 
   return (
     <div className={`demo-page${hasSpatial ? " demo-page--with-spatial" : ""}`}>
+      {showFirstDemoOnboarding && (
+        <OnboardingTutorial
+          title="Auto claim guided tour"
+          steps={FIRST_DEMO_ONBOARDING_STEPS}
+          onDismiss={handleDismissFirstDemoOnboarding}
+          onBeforePrimaryAction={handleFirstDemoPrimaryAction}
+        />
+      )}
+
       <header className="demo-topbar">
         <div className="demo-topbar__left">
           <span className="demo-topbar__badge section-label">
@@ -282,6 +414,7 @@ export function WorkspaceDemoPage({
           onSave={handleSave}
           onApprove={handleApprove}
           onExportJson={handleExportJson}
+          onReportOpen={handleFirstDemoReportOpen}
         />
       </main>
     </div>

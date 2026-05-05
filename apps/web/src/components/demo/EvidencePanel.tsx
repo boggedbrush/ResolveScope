@@ -114,7 +114,7 @@ export function EvidencePanel({
   const severityClass = severity.replace(/-/g, "");
 
   return (
-    <aside className="demo-panel demo-panel--evidence">
+    <aside className="demo-panel demo-panel--evidence" data-tour="demo-evidence">
       {/* Case header */}
       <div className="demo-case-header">
         <div className="demo-case-header__meta">
@@ -137,7 +137,11 @@ export function EvidencePanel({
           Evidence
           <span className="demo-panel__count">{evidence.length}</span>
         </h3>
-        <div className="demo-panel__evidence-actions" aria-label="Add evidence">
+        <div
+          className="demo-panel__evidence-actions"
+          aria-label="Add evidence"
+          data-tour="demo-add-evidence"
+        >
           <button
             type="button"
             className="btn btn--outline demo-panel__add-btn"
