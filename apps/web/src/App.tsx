@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import { RouteSeo } from "./components/RouteSeo";
 import { AppLayout } from "./layouts/AppLayout";
 
 const Landing = lazy(() =>
@@ -51,25 +52,46 @@ const ArchitecturePage = lazy(() =>
     default: m.ArchitecturePage,
   }))
 );
+const ChallengeEntryPage = lazy(() =>
+  import("./pages/ChallengeEntryPage").then((m) => ({
+    default: m.ChallengeEntryPage,
+  }))
+);
+const CreatorPage = lazy(() =>
+  import("./pages/CreatorPage").then((m) => ({
+    default: m.CreatorPage,
+  }))
+);
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage").then((m) => ({
+    default: m.NotFoundPage,
+  }))
+);
 
 export function App() {
   return (
-    <Suspense fallback={null}>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/report/:demoId" element={<CaseReportPage />} />
-        <Route path="/architecture" element={<ArchitecturePage />} />
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/settings" element={<DashboardSettings />} />
-          <Route path="/cases/:id" element={<CaseWorkspace />} />
-          <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
-          <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
-          <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
-          <Route path="/demo/consumer-quality" element={<ConsumerQualityDemoPage />} />
-          <Route path="/demo/compliance-audit" element={<ComplianceAuditDemoPage />} />
-        </Route>
-      </Routes>
-    </Suspense>
+    <>
+      <RouteSeo />
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/report/:demoId" element={<CaseReportPage />} />
+          <Route path="/architecture" element={<ArchitecturePage />} />
+          <Route path="/codex-creator-challenge" element={<ChallengeEntryPage />} />
+          <Route path="/creator" element={<CreatorPage />} />
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/settings" element={<DashboardSettings />} />
+            <Route path="/cases/:id" element={<CaseWorkspace />} />
+            <Route path="/demo/auto-claim" element={<AutoClaimDemoPage />} />
+            <Route path="/demo/fleet-safety" element={<FleetSafetyDemoPage />} />
+            <Route path="/demo/site-inspection" element={<SiteInspectionDemoPage />} />
+            <Route path="/demo/consumer-quality" element={<ConsumerQualityDemoPage />} />
+            <Route path="/demo/compliance-audit" element={<ComplianceAuditDemoPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }

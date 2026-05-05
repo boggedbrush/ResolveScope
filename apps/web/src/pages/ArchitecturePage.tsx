@@ -9,6 +9,8 @@ const ARCHITECTURE_NAV_ITEMS: MobileNavItem[] = [
   { label: "Capabilities", to: "/#capabilities" },
   { label: "Spatial Review", to: "/#spatial" },
   { label: "Architecture", to: "/architecture" },
+  { label: "Challenge", to: "/codex-creator-challenge" },
+  { label: "Creator", to: "/creator" },
 ];
 
 /* ═══════════════════════════════════════════
@@ -672,7 +674,7 @@ export function ArchitecturePage() {
             Resolve<span>Scope</span>
           </div>
           <p className="footer__text">
-            Evidence-to-action infrastructure. MIT License.
+            Evidence-to-action infrastructure. OpenAI Handshake Codex Creator Challenge entry by Carleton Lees. MIT License.
           </p>
           <ul className="footer__links">
             <li>
@@ -686,6 +688,12 @@ export function ArchitecturePage() {
             </li>
             <li>
               <Link to="/">Product</Link>
+            </li>
+            <li>
+              <Link to="/codex-creator-challenge">Challenge entry</Link>
+            </li>
+            <li>
+              <Link to="/creator">Creator</Link>
             </li>
           </ul>
         </div>

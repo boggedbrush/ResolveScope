@@ -16,6 +16,8 @@ const LANDING_NAV_ITEMS: MobileNavItem[] = [
   { label: "Capabilities", href: "#capabilities" },
   { label: "Spatial Review", href: "#spatial" },
   { label: "Architecture", to: "/architecture" },
+  { label: "Challenge", to: "/codex-creator-challenge" },
+  { label: "Creator", to: "/creator" },
 ];
 
 const DEMO_PROMPT_STORAGE_KEY = "resolvescope.demoPromptDismissed";
@@ -305,7 +307,7 @@ export function Landing() {
         <div className="hero__stage">
           <div className="hero__copy reveal">
             <h1 className="display-xl hero__headline">
-              Turn scattered evidence into approved case files.
+              ResolveScope turns scattered evidence into approved case files.
             </h1>
             <p className="body-lg hero__subtitle">
               ResolveScope turns scattered documents, photos, and field notes
@@ -526,7 +528,7 @@ export function Landing() {
             Resolve<span>Scope</span>
           </div>
           <p className="footer__text">
-            Evidence-to-action infrastructure. Built for the OpenAI × Handshake Codex Creator Challenge. MIT License.
+            Evidence-to-action infrastructure. Built for the OpenAI × Handshake Codex Creator Challenge by Carleton Lees. MIT License.
           </p>
           <ul className="footer__links">
             <li>
@@ -540,6 +542,12 @@ export function Landing() {
             </li>
             <li>
               <Link to="/architecture">Architecture</Link>
+            </li>
+            <li>
+              <Link to="/codex-creator-challenge">Challenge entry</Link>
+            </li>
+            <li>
+              <Link to="/creator">Creator</Link>
             </li>
             <li>
               <a

@@ -4,18 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ResolveScope : AI Case Management for Claims &amp; Inspections</title>
+    <title>ResolveScope | Evidence-to-Action Case Management</title>
     <meta
       name="description"
-      content="AI case management that turns scattered evidence into structured, reviewable case files and export-ready reports. Built for claims, safety, and inspections."
+      content="ResolveScope turns scattered documents, images, notes, and spatial evidence into structured case files with AI-assisted extraction, human review, approval, and export."
     />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="ResolveScope, evidence-to-action case management, AI case review, spatial evidence review, OpenAI Codex Creator Challenge, Handshake Creator Challenge, Handhake Creator Challenge, Carleton Lees" />
     <meta name="theme-color" content="#FAFAF7" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://resolvescope.pages.dev/" />
-    <meta property="og:title" content="ResolveScope : AI Case Management for Claims &amp; Inspections" />
-    <meta property="og:description" content="AI case management that turns scattered evidence into structured, reviewable case files and export-ready reports. Built for claims, safety, and inspections." />
+    <meta property="og:title" content="ResolveScope | Evidence-to-Action Case Management" />
+    <meta property="og:description" content="ResolveScope turns scattered documents, images, notes, and spatial evidence into structured case files with AI-assisted extraction, human review, approval, and export." />
     <meta property="og:image" content="https://resolvescope.pages.dev/assets/resolvescope-social-preview.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -24,8 +26,8 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ResolveScope : AI Case Management for Claims &amp; Inspections" />
-    <meta name="twitter:description" content="Turn scattered evidence into structured, reviewable case files and export-ready reports. AI extraction with human-in-the-loop review." />
+    <meta name="twitter:title" content="ResolveScope | Evidence-to-Action Case Management" />
+    <meta name="twitter:description" content="ResolveScope turns scattered evidence into structured, reviewable, export-ready case files with AI-assisted extraction and human review." />
     <meta name="twitter:image" content="https://resolvescope.pages.dev/assets/resolvescope-social-preview.png" />
     <meta name="twitter:image:alt" content="ResolveScope spatial evidence review workspace preview" />
 
@@ -33,7 +35,7 @@
     <link rel="canonical" href="https://resolvescope.pages.dev/" />
 
     <!-- Structured Data -->
-    <script type="application/ld+json">
+    <script type="application/ld+json" data-route-jsonld="true">
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -48,13 +50,23 @@
           }
         },
         {
+          "@type": "Person",
+          "@id": "https://resolvescope.pages.dev/creator#carleton-lees",
+          "name": "Carleton Lees",
+          "url": "https://resolvescope.pages.dev/creator"
+        },
+        {
           "@type": "WebApplication",
           "@id": "https://resolvescope.pages.dev/#webapp",
           "name": "ResolveScope",
           "url": "https://resolvescope.pages.dev/",
-          "description": "AI-powered case management software for insurance claims, fleet safety incidents, site inspections, and quality workflows. Structured evidence intake, AI extraction, human review, and export-ready reports.",
+          "description": "ResolveScope turns scattered documents, images, notes, and spatial evidence into structured case files with AI-assisted extraction, human review, approval, and export.",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web",
+          "keywords": "ResolveScope, evidence-to-action case management, AI case review, spatial evidence review, OpenAI Codex Creator Challenge, Handshake Creator Challenge, Handhake Creator Challenge, Carleton Lees",
+          "creator": {
+            "@id": "https://resolvescope.pages.dev/creator#carleton-lees"
+          },
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -94,8 +106,8 @@
   <body>
     <div id="root"></div>
     <noscript>
-      <h1>ResolveScope : AI Case Management for Claims, Safety &amp; Inspections</h1>
-      <p>ResolveScope turns scattered documents, photos, and field notes into structured, reviewable case files : with AI extraction, human-in-the-loop review, and export-ready reports.</p>
+      <h1>ResolveScope turns scattered evidence into approved case files.</h1>
+      <p>ResolveScope turns scattered documents, photos, notes, and spatial evidence into structured, reviewable case files with AI-assisted extraction, human review, approval, and export.</p>
       <h2>How it works</h2>
       <p>Upload evidence. AI extracts key fields, dates, findings, and action items. Reviewers inspect and approve the structured output. Export polished PDF reports or structured JSON bundles for downstream systems.</p>
       <h2>Core capabilities</h2>
@@ -113,6 +125,8 @@
         <li>Site inspections and field observations</li>
         <li>Quality review and consumer-care triage</li>
       </ul>
+      <h2>Challenge context</h2>
+      <p>ResolveScope was created by Carleton Lees for the OpenAI Handshake Codex Creator Challenge.</p>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
