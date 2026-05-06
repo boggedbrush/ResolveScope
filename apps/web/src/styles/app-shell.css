@@ -738,6 +738,11 @@
   border-right: 1px solid var(--border);
 }
 
+.demo-panel--extraction[data-tour-scroll="allow"] {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .demo-panel--review {
   background: var(--bg);
 }
@@ -3286,6 +3291,9 @@
 
 .spatial-marker-detail--sidebar {
   min-height: 100%;
+  max-height: min(74vh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .spatial-marker-detail__header {

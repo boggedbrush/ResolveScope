@@ -521,7 +521,7 @@ export function ExtractionPanel({
 
   if (isRunning) {
     return (
-      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction">
+      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction" data-tour-scroll="allow">
         <StreamingLoader label="Running extraction" />
       </div>
     );
@@ -529,7 +529,7 @@ export function ExtractionPanel({
 
   if (!extraction) {
     return (
-      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction">
+      <div className="demo-panel demo-panel--extraction" data-tour="demo-extraction" data-tour-scroll="allow">
         <div className="extraction-empty">
           <div className="extraction-empty__icon" aria-hidden="true">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -581,6 +581,7 @@ export function ExtractionPanel({
         className="demo-panel demo-panel--extraction"
         data-tour="demo-extraction"
         data-tour-results="demo-extraction-results"
+        data-tour-scroll="allow"
       >
         <div className="demo-panel__section-header">
           <h3 className="demo-panel__section-title">Case Brief</h3>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OnboardingTutorial, type OnboardingStep } from "../components/OnboardingTutorial";
 import { EvidencePanel } from "../components/demo/EvidencePanel";
 import { ExtractionPanel } from "../components/demo/ExtractionPanel";
@@ -70,9 +70,10 @@ const FIRST_DEMO_ONBOARDING_STEPS = [
     primaryTargetSelector: "[data-tour='demo-run-extraction']",
     waitForSelectorBeforeAdvance: "[data-tour-results='demo-extraction-results']",
     placement: "left" as const,
-    primaryLabel: "Run extraction",
+    primaryLabel: "Click run extraction",
     waitingLabel: "Running extraction",
     primaryAction: "click-target" as const,
+    requireTargetClick: true,
     padding: 8,
   },
   {
@@ -91,9 +92,10 @@ const FIRST_DEMO_ONBOARDING_STEPS = [
     targetSelector: "[data-tour='demo-verify-results']",
     completionSelector: "[data-tour='demo-approve-case']",
     placement: "left" as const,
-    primaryLabel: "Approve after checklist",
+    primaryLabel: "Approve case",
+    primaryAction: "click-target" as const,
+    primaryTargetSelector: "[data-tour='demo-approve-case']",
     completeOnTargetClick: true,
-    requireTargetClick: true,
     padding: 10,
   },
   {
@@ -136,6 +138,8 @@ export function WorkspaceDemoPage({
     getDemoCaseState(demoId, seedData)
   );
   const [isExtracting, setIsExtracting] = useState(false);
+  const extractionRunIdRef = useRef(0);
+  const didResetTutorialExtractionRef = useRef(false);
   const [showFirstDemoOnboarding, setShowFirstDemoOnboarding] = useState(
     () =>
       demoId === "auto-claim" &&
@@ -160,6 +164,36 @@ export function WorkspaceDemoPage({
 
     return () => window.clearTimeout(collapseTimer);
   }, [showFirstDemoOnboarding]);
+
+  useEffect(() => {
+    if (didResetTutorialExtractionRef.current) return;
+    if (!showFirstDemoOnboarding || demoId !== "auto-claim") return;
+
+    didResetTutorialExtractionRef.current = true;
+
+    if (demoState.extraction === null && !isExtracting) return;
+
+    extractionRunIdRef.current += 1;
+    setIsExtracting(false);
+    commitDemoState((prev) => {
+      if (prev.extraction === null) return prev;
+
+      return {
+        ...prev,
+        extraction: null,
+        caseMeta: touchCaseMeta({
+          ...prev.caseMeta,
+          status: seedData.caseMeta.status,
+        }),
+      };
+    });
+  }, [
+    demoId,
+    demoState.extraction,
+    isExtracting,
+    seedData.caseMeta.status,
+    showFirstDemoOnboarding,
+  ]);
 
   function commitDemoState(updater: (prev: DemoCaseState) => DemoCaseState): DemoCaseState {
     const nextState = updater(demoState);
@@ -192,9 +226,13 @@ export function WorkspaceDemoPage({
   }
 
   async function handleRunExtraction() {
+    const runId = extractionRunIdRef.current + 1;
+    extractionRunIdRef.current = runId;
     setIsExtracting(true);
     try {
       const result = await runMockExtraction(seedData.extraction);
+      if (extractionRunIdRef.current !== runId) return;
+
       commitDemoState((prev) =>
         appendAudit(
           {
@@ -206,7 +244,9 @@ export function WorkspaceDemoPage({
         )
       );
     } finally {
-      setIsExtracting(false);
+      if (extractionRunIdRef.current === runId) {
+        setIsExtracting(false);
+      }
     }
   }
 
@@ -307,6 +347,7 @@ export function WorkspaceDemoPage({
   }
 
   function handleResetDemo() {
+    extractionRunIdRef.current += 1;
     const resetState = resetDemoCaseState(demoId, seedData);
     setDemoState(resetState);
     setIsExtracting(false);

@@ -746,6 +746,12 @@
     border-right: 1px solid var(--border);
   }
 
+  .demo-panel--extraction[data-tour-scroll="allow"] {
+    max-height: min(74vh, 760px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
   .demo-panel__section-header {
     align-items: flex-start;
     flex-wrap: wrap;

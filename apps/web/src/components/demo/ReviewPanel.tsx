@@ -99,7 +99,11 @@ export function ReviewPanel({
     review.severity !== originalValues.severity;
 
   return (
-    <aside className="demo-panel demo-panel--review" data-tour="demo-review">
+    <aside
+      className="demo-panel demo-panel--review"
+      data-tour="demo-review"
+      data-tour-scroll="allow"
+    >
       {/* Review header */}
       <div className="demo-panel__section-header">
         <h3 className="demo-panel__section-title">Review</h3>

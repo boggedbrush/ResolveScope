@@ -655,7 +655,12 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                   className={`spatial__sidebar spatial-panel__sidebar${selectedMarker ? " spatial__sidebar--open" : ""}`}
                 >
                   {selectedMarker && (
-                    <div className="spatial-marker-detail spatial-marker-detail--sidebar" key={selectedMarker.id}>
+                    <div
+                      className="spatial-marker-detail spatial-marker-detail--sidebar"
+                      key={selectedMarker.id}
+                      data-tour="demo-pinned-evidence"
+                      data-tour-scroll="allow"
+                    >
                       <div className="spatial__sidebar-header">
                         <div className="spatial-marker-detail__header">
                           <span className={`spatial-marker-detail__severity spatial-marker-detail__severity--${selectedMarker.severity}`}>
@@ -724,7 +729,7 @@ export function SpatialReviewPanel({ markers, evidence, templateId }: Props) {
                       )}
 
                       {relatedEvidence.length > 0 && (
-                        <div className="spatial-marker-detail__evidence" data-tour="demo-pinned-evidence">
+                        <div className="spatial-marker-detail__evidence">
                           <span className="spatial-marker-detail__evidence-label">Supporting evidence</span>
                           <ul className="spatial-marker-detail__evidence-list">
                             {relatedEvidence.map((ev) => (

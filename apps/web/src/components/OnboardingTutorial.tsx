@@ -107,6 +107,16 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
   );
 }
 
+function isDisabledActionTarget(element: HTMLElement): boolean {
+  return (
+    (element instanceof HTMLButtonElement && element.disabled) ||
+    (element instanceof HTMLInputElement && element.disabled) ||
+    (element instanceof HTMLSelectElement && element.disabled) ||
+    (element instanceof HTMLTextAreaElement && element.disabled) ||
+    element.getAttribute("aria-disabled") === "true"
+  );
+}
+
 function getPopoverPoint(
   rect: Rect,
   placement: OnboardingStep["placement"],
@@ -183,7 +193,10 @@ export function OnboardingTutorial({
   onBeforePrimaryAction,
 }: OnboardingTutorialProps) {
   const coachmarkRef = useRef<HTMLElement | null>(null);
+  const activeTargetRef = useRef<HTMLElement | null>(null);
+  const stepTransitionTimersRef = useRef<number[]>([]);
   const [activeStep, setActiveStep] = useState(0);
+  const [stepTransitionPhase, setStepTransitionPhase] = useState<"idle" | "leaving" | "entering">("idle");
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
   const [targetStateToken, setTargetStateToken] = useState("");
@@ -195,6 +208,41 @@ export function OnboardingTutorial({
   const step = steps[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   const progressLabel = `${activeStep + 1} / ${steps.length}`;
+
+  const clearStepTransitionTimers = () => {
+    stepTransitionTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    stepTransitionTimersRef.current = [];
+  };
+
+  const goToStep = (nextStep: number) => {
+    const boundedStep = clamp(nextStep, 0, steps.length - 1);
+    if (boundedStep === activeStep) return;
+
+    clearStepTransitionTimers();
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setActiveStep(boundedStep);
+      setStepTransitionPhase("idle");
+      return;
+    }
+
+    setStepTransitionPhase("leaving");
+    stepTransitionTimersRef.current.push(
+      window.setTimeout(() => {
+        setActiveStep(boundedStep);
+        setStepTransitionPhase("entering");
+        stepTransitionTimersRef.current.push(
+          window.setTimeout(() => {
+            setStepTransitionPhase("idle");
+          }, 260)
+        );
+      }, 140)
+    );
+  };
 
   useEffect(() => {
     const originalBodyOverflow = document.body.style.overflow;
@@ -222,6 +270,13 @@ export function OnboardingTutorial({
 
     const preventWorkspaceScroll = (event: WheelEvent | TouchEvent) => {
       if (eventPathContains(event, coachmarkRef.current)) return;
+      const scrollTarget = event.target;
+      if (
+        scrollTarget instanceof HTMLElement &&
+        scrollTarget.closest("[data-tour-scroll='allow']")
+      ) {
+        return;
+      }
 
       event.preventDefault();
       event.stopPropagation();
@@ -230,6 +285,12 @@ export function OnboardingTutorial({
     const preventWorkspaceKeyScroll = (event: KeyboardEvent) => {
       if (!SCROLL_KEYS.has(event.key)) return;
       if (eventPathContains(event, coachmarkRef.current)) return;
+      if (
+        document.activeElement instanceof HTMLElement &&
+        document.activeElement.closest("[data-tour-scroll='allow']")
+      ) {
+        return;
+      }
       if (isInteractiveTarget(event.target)) return;
 
       event.preventDefault();
@@ -271,15 +332,25 @@ export function OnboardingTutorial({
   }, [activeStep, step]);
 
   useEffect(() => {
+    return () => {
+      clearStepTransitionTimers();
+      document
+        .querySelectorAll(".onboarding-tutorial__target")
+        .forEach((activeTarget) =>
+          activeTarget.classList.remove("onboarding-tutorial__target")
+        );
+      activeTargetRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
     setIsWaitingForAdvance(false);
-    document
-      .querySelectorAll(".onboarding-tutorial__target")
-      .forEach((activeTarget) =>
-        activeTarget.classList.remove("onboarding-tutorial__target")
-      );
 
     let target: HTMLElement | null = null;
     let didScrollTarget = false;
+    let activateFrame: number | null = null;
+    let targetFrame: number | null = null;
+    const refreshTimers: number[] = [];
 
     const updateTarget = () => {
       if (!target) {
@@ -299,55 +370,71 @@ export function OnboardingTutorial({
       );
 
       if (isRectOutOfView(rawRect)) {
-        target.scrollIntoView({
-          block: "center",
-          inline: "center",
-          behavior: "auto",
-        });
-        window.setTimeout(updateTarget, 80);
+        if (!didScrollTarget) {
+          const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches;
+
+          target.scrollIntoView({
+            block: "center",
+            inline: "center",
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+          });
+          didScrollTarget = true;
+        }
+
+        window.setTimeout(updateTarget, 180);
+        window.setTimeout(updateTarget, 420);
         return;
       }
 
       setTargetRect(getPaddedRect(rawRect, step.padding ?? 10));
     };
 
+    const scheduleTargetUpdate = () => {
+      if (targetFrame !== null) return;
+      targetFrame = window.requestAnimationFrame(() => {
+        targetFrame = null;
+        updateTarget();
+      });
+    };
+
     const activateTarget = () => {
       const nextTarget = document.querySelector<HTMLElement>(step.targetSelector);
       if (!nextTarget) {
+        activeTargetRef.current?.classList.remove("onboarding-tutorial__target");
+        activeTargetRef.current = null;
         setTargetElement(null);
         setTargetRect(null);
         return;
       }
 
       if (target !== nextTarget) {
-        target?.classList.remove("onboarding-tutorial__target");
+        activeTargetRef.current?.classList.remove("onboarding-tutorial__target");
         target = nextTarget;
+        activeTargetRef.current = nextTarget;
         setTargetElement(nextTarget);
         nextTarget.classList.add("onboarding-tutorial__target");
         didScrollTarget = false;
       }
 
-      if (!didScrollTarget) {
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-        nextTarget.scrollIntoView({
-          block: "center",
-          inline: "center",
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-        });
-        didScrollTarget = true;
-      }
-
       updateTarget();
     };
 
+    const scheduleActivateTarget = () => {
+      if (activateFrame !== null) return;
+      activateFrame = window.requestAnimationFrame(() => {
+        activateFrame = null;
+        activateTarget();
+      });
+    };
+
     const scheduleTargetRefresh = () => {
-      activateTarget();
-      window.setTimeout(activateTarget, 80);
-      window.setTimeout(activateTarget, 180);
-      window.setTimeout(activateTarget, 320);
+      refreshTimers.forEach((timer) => window.clearTimeout(timer));
+      refreshTimers.length = 0;
+      scheduleActivateTarget();
+      refreshTimers.push(window.setTimeout(scheduleActivateTarget, 140));
+      refreshTimers.push(window.setTimeout(scheduleActivateTarget, 320));
     };
 
     const handleTargetInteraction = (event: Event) => {
@@ -361,27 +448,23 @@ export function OnboardingTutorial({
     const targetObserver = new MutationObserver(activateTarget);
     targetObserver.observe(document.body, {
       attributes: true,
-      attributeFilter: ["aria-expanded", "aria-label", "class", "title"],
+      attributeFilter: ["aria-expanded", "aria-label", "title"],
       childList: true,
       subtree: true,
     });
 
-    window.addEventListener("resize", updateTarget);
-    window.addEventListener("scroll", activateTarget, true);
-    window.addEventListener("transitionend", scheduleTargetRefresh, true);
+    window.addEventListener("resize", scheduleTargetUpdate);
+    window.addEventListener("scroll", scheduleTargetUpdate, true);
     document.addEventListener("click", handleTargetInteraction, true);
 
     return () => {
-      document
-        .querySelectorAll(".onboarding-tutorial__target")
-        .forEach((activeTarget) =>
-          activeTarget.classList.remove("onboarding-tutorial__target")
-        );
       window.clearTimeout(measureTimer);
+      refreshTimers.forEach((timer) => window.clearTimeout(timer));
+      if (activateFrame !== null) window.cancelAnimationFrame(activateFrame);
+      if (targetFrame !== null) window.cancelAnimationFrame(targetFrame);
       targetObserver.disconnect();
-      window.removeEventListener("resize", updateTarget);
-      window.removeEventListener("scroll", activateTarget, true);
-      window.removeEventListener("transitionend", scheduleTargetRefresh, true);
+      window.removeEventListener("resize", scheduleTargetUpdate);
+      window.removeEventListener("scroll", scheduleTargetUpdate, true);
       document.removeEventListener("click", handleTargetInteraction, true);
     };
   }, [step]);
@@ -401,7 +484,7 @@ export function OnboardingTutorial({
         onDismiss();
         return;
       }
-      setActiveStep((current) => Math.min(current + 1, steps.length - 1));
+      goToStep(activeStep + 1);
     };
 
     completeIfReady();
@@ -417,6 +500,7 @@ export function OnboardingTutorial({
     isLastStep,
     isWaitingForAdvance,
     onDismiss,
+    activeStep,
     step.waitForSelectorBeforeAdvance,
     steps.length,
   ]);
@@ -439,7 +523,7 @@ export function OnboardingTutorial({
         onDismiss();
         return;
       }
-      setActiveStep((current) => Math.min(current + 1, steps.length - 1));
+      goToStep(activeStep + 1);
     };
 
     document.addEventListener("click", handleTargetClick, true);
@@ -450,10 +534,48 @@ export function OnboardingTutorial({
   }, [
     isLastStep,
     onDismiss,
+    activeStep,
     step.completeOnTargetClick,
     step.completionSelector,
     steps.length,
     targetElement,
+  ]);
+
+  useEffect(() => {
+    if (
+      step.primaryAction !== "click-target" ||
+      !step.primaryTargetSelector ||
+      !step.waitForSelectorBeforeAdvance
+    ) {
+      return;
+    }
+
+    const handlePrimaryTargetClick = (event: MouseEvent) => {
+      const clickedElement = event.target;
+      if (!(clickedElement instanceof Element)) return;
+      if (!clickedElement.closest(step.primaryTargetSelector!)) return;
+
+      if (document.querySelector(step.waitForSelectorBeforeAdvance!)) {
+        advance();
+        return;
+      }
+
+      setIsWaitingForAdvance(true);
+    };
+
+    document.addEventListener("click", handlePrimaryTargetClick, true);
+
+    return () => {
+      document.removeEventListener("click", handlePrimaryTargetClick, true);
+    };
+  }, [
+    activeStep,
+    isLastStep,
+    onDismiss,
+    step.primaryAction,
+    step.primaryTargetSelector,
+    step.waitForSelectorBeforeAdvance,
+    steps.length,
   ]);
 
   const popoverPoint = useMemo(
@@ -473,7 +595,7 @@ export function OnboardingTutorial({
       return;
     }
 
-    setActiveStep((current) => current + 1);
+    goToStep(activeStep + 1);
   }
 
   function handlePrimaryAction() {
@@ -502,6 +624,7 @@ export function OnboardingTutorial({
         }
         return;
       }
+      if (isDisabledActionTarget(actionTarget)) return;
 
       actionTarget.click();
       if (step.waitForSelectorBeforeAdvance) {
@@ -540,6 +663,7 @@ export function OnboardingTutorial({
   return (
     <div
       className="onboarding-tutorial"
+      data-transition={stepTransitionPhase}
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-tutorial-title"
@@ -572,41 +696,55 @@ export function OnboardingTutorial({
           } as CSSProperties
         }
       >
-        <div className="onboarding-tutorial__meta">
-          <span>{progressLabel}</span>
-          <span>{step.label}</span>
-        </div>
-        <h2 id="onboarding-tutorial-title">{step.title}</h2>
-        <p>{step.body}</p>
-
-        <div className="onboarding-tutorial__progress" aria-label={title}>
-          {steps.map((tourStep, index) => (
+        <div key={activeStep} className="onboarding-tutorial__step" aria-live="polite">
+          <div className="onboarding-tutorial__meta">
+            <span>{progressLabel}</span>
             <button
-              key={tourStep.label}
               type="button"
-              className={`onboarding-tutorial__dot${index === activeStep ? " onboarding-tutorial__dot--active" : ""}`}
-              onClick={() => setActiveStep(index)}
-              aria-label={`Go to ${tourStep.label}`}
-              aria-current={index === activeStep ? "step" : undefined}
-            />
-          ))}
-        </div>
+              className="onboarding-tutorial__skip"
+              onClick={onDismiss}
+            >
+              Skip
+            </button>
+          </div>
+          <h2 id="onboarding-tutorial-title">{step.title}</h2>
+          <p>{step.body}</p>
 
-        <div className="onboarding-tutorial__actions">
-          <button type="button" className="btn btn--outline" onClick={onDismiss}>
-            Skip
-          </button>
-          <button
-            type="button"
-            className={`btn btn--primary${step.requireTargetClick ? " onboarding-tutorial__required-action" : ""}`}
-            onClick={handlePrimaryAction}
-            disabled={step.requireTargetClick || isWaitingForAdvance}
-            aria-disabled={step.requireTargetClick || isWaitingForAdvance}
-          >
-            {isWaitingForAdvance
-              ? step.waitingLabel ?? "Working"
-              : primaryActionLabel ?? (isLastStep ? "Done" : "Next")}
-          </button>
+          <div className="onboarding-tutorial__progress" aria-label={title}>
+            {steps.map((tourStep, index) => (
+              <button
+                key={tourStep.label}
+                type="button"
+                className={`onboarding-tutorial__dot${index === activeStep ? " onboarding-tutorial__dot--active" : ""}`}
+                onClick={() => goToStep(index)}
+                aria-label={`Go to ${tourStep.label}`}
+                aria-current={index === activeStep ? "step" : undefined}
+              />
+            ))}
+          </div>
+
+          <div className="onboarding-tutorial__actions">
+            <button
+              type="button"
+              className="btn btn--outline"
+              onClick={() => goToStep(activeStep - 1)}
+              disabled={activeStep === 0 || isWaitingForAdvance}
+              aria-disabled={activeStep === 0 || isWaitingForAdvance}
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              className={`btn btn--primary${step.requireTargetClick ? " onboarding-tutorial__required-action" : ""}`}
+              onClick={handlePrimaryAction}
+              disabled={step.requireTargetClick || isWaitingForAdvance}
+              aria-disabled={step.requireTargetClick || isWaitingForAdvance}
+            >
+              {isWaitingForAdvance
+                ? step.waitingLabel ?? "Working"
+                : primaryActionLabel ?? (isLastStep ? "Done" : "Next")}
+            </button>
+          </div>
         </div>
       </section>
     </div>
