@@ -93,6 +93,312 @@
   white-space: nowrap;
 }
 
+.creator-portrait-card {
+  position: relative;
+  width: min(100%, 460px);
+  justify-self: end;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, var(--copper) 30%);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--bg-card) 82%, transparent), color-mix(in srgb, var(--bg-deep-alt) 16%, var(--bg-card))),
+    var(--bg-card);
+  box-shadow: 0 36px 120px color-mix(in srgb, var(--copper) 16%, transparent);
+  overflow: hidden;
+}
+
+.creator-portrait-card::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid color-mix(in srgb, var(--cream) 34%, transparent);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.creator-portrait-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.creator-portrait-card__caption {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--cream) 18%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-deep) 78%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.creator-portrait-card__caption span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.creator-portrait-card__caption strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 400;
+  line-height: 1;
+  text-align: right;
+}
+
+.creator-page {
+  overflow-x: hidden;
+}
+
+.creator-page .arch-hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+.creator-page .arch-hero__title {
+  max-width: min(1120px, 92vw);
+  font-size: clamp(3.1rem, 5vw, 5.6rem);
+}
+
+.creator-portrait-card {
+  transition:
+    transform 0.7s var(--ease),
+    border-color 0.3s var(--ease),
+    box-shadow 0.7s var(--ease);
+}
+
+.creator-portrait-card:hover {
+  transform: translateY(-8px) scale(1.015);
+  border-color: color-mix(in srgb, var(--copper) 62%, var(--border));
+  box-shadow: 0 48px 140px color-mix(in srgb, var(--copper) 22%, transparent);
+}
+
+.creator-portrait-card__image {
+  transition: transform 0.9s var(--ease), filter 0.9s var(--ease);
+}
+
+.creator-portrait-card:hover .creator-portrait-card__image {
+  transform: scale(1.045);
+  filter: contrast(1.08) saturate(1.05);
+}
+
+.creator-interest,
+.creator-desire,
+.creator-action {
+  padding: clamp(110px, 14vw, 190px) 0;
+}
+
+.creator-interest {
+  padding-bottom: clamp(64px, 8vw, 104px);
+}
+
+.creator-desire {
+  padding: clamp(44px, 6vw, 76px) 0 clamp(72px, 9vw, 120px);
+}
+
+.creator-section-header {
+  max-width: 1040px;
+}
+
+.creator-bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: 1px;
+  border: 1px solid var(--border-light);
+  background: var(--border-light);
+}
+
+.creator-bento__card {
+  grid-column: span 2;
+  min-height: clamp(260px, 24vw, 360px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: clamp(24px, 3vw, 42px);
+  background:
+    radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--forest) 15%, transparent), transparent 18rem),
+    var(--bg-card);
+  overflow: hidden;
+  transition:
+    transform 0.55s var(--ease),
+    background 0.55s var(--ease);
+}
+
+.creator-bento__card:hover {
+  transform: translateY(-6px);
+  background:
+    radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--copper) 18%, transparent), transparent 18rem),
+    var(--bg-card);
+}
+
+.creator-bento__card--wide {
+  grid-column: span 3;
+}
+
+.creator-bento__card--image {
+  position: relative;
+  isolation: isolate;
+  --creator-bento-image: url("/assets/site-inspection/southeast-corner-water-intrusion.png");
+  --creator-bento-position: center;
+}
+
+.creator-bento__card--image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-deep) 12%, transparent), color-mix(in srgb, var(--bg-card) 92%, transparent)),
+    linear-gradient(90deg, color-mix(in srgb, var(--bg-card) 82%, transparent), color-mix(in srgb, var(--bg-deep) 42%, transparent)),
+    var(--creator-bento-image);
+  background-size: cover;
+  background-position: var(--creator-bento-position);
+  filter: grayscale(1) contrast(1.18);
+  opacity: 0.36;
+  transform: scale(1.04);
+  transition: transform 0.8s var(--ease), opacity 0.8s var(--ease);
+}
+
+.creator-bento__card--image:hover::before {
+  opacity: 0.48;
+  transform: scale(1.1);
+}
+
+.creator-bento__card--evidence {
+  --creator-bento-image: url("/assets/auto-claim/lot-c-scene-overview.jpg");
+  --creator-bento-position: center 48%;
+}
+
+.creator-bento__card--context {
+  --creator-bento-image: url("/assets/site-inspection/southeast-corner-water-intrusion.png");
+  --creator-bento-position: center 34%;
+}
+
+.creator-bento__card--scope {
+  --creator-bento-image: url("/assets/compliance-audit/access-review-checklist-photo-v-214.png");
+  --creator-bento-position: center;
+}
+
+.creator-bento__card--quality {
+  --creator-bento-image: url("/assets/consumer-quality/texture-complaint-sample-hc-26-0417b.png");
+  --creator-bento-position: center;
+}
+
+.creator-bento__card--discipline {
+  --creator-bento-image: url("/assets/fleet-safety/dashcam-tablet-event.png");
+  --creator-bento-position: center;
+}
+
+.creator-bento__card h3,
+.creator-process__panel h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 2.8vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text);
+}
+
+.creator-bento__card p,
+.creator-process__panel p,
+.creator-desire__sticky p {
+  color: var(--text-secondary);
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+
+.creator-desire__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(44px, 6vw, 88px);
+  align-items: start;
+}
+
+.creator-desire__sticky {
+  position: sticky;
+  top: 132px;
+}
+
+.creator-desire__sticky h2 {
+  max-width: 760px;
+  margin-bottom: 20px;
+}
+
+.creator-process {
+  display: grid;
+  gap: 16px;
+}
+
+.creator-process__panel {
+  min-height: clamp(210px, 20vw, 250px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bg-card) 88%, transparent), color-mix(in srgb, var(--forest) 10%, var(--bg-card))),
+    var(--bg-card);
+  transform-origin: center bottom;
+  transition:
+    transform 0.55s var(--ease),
+    border-color 0.55s var(--ease);
+}
+
+.creator-process__panel:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: color-mix(in srgb, var(--copper) 50%, var(--border));
+}
+
+.creator-process__panel span {
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--copper);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.creator-action {
+  padding-top: 0;
+}
+
+.creator-action__panel {
+  padding: clamp(42px, 7vw, 88px);
+  border: 1px solid color-mix(in srgb, var(--border) 64%, var(--copper) 36%);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--copper) 24%, transparent), transparent 26rem),
+    radial-gradient(circle at 84% 100%, color-mix(in srgb, var(--forest) 20%, transparent), transparent 28rem),
+    var(--bg-card);
+}
+
+.creator-action__panel h2 {
+  max-width: 920px;
+  margin-top: 14px;
+}
+
+.creator-action__links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+}
+
 /* ── Section header ────────────────────── */
 
 .arch-section-header {
@@ -612,6 +918,29 @@
     max-width: 620px;
   }
 
+  .creator-portrait-card {
+    width: min(100%, 520px);
+    justify-self: start;
+  }
+
+  .creator-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .creator-bento__card,
+  .creator-bento__card--wide {
+    grid-column: span 1;
+  }
+
+  .creator-desire__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-desire__sticky {
+    position: relative;
+    top: auto;
+  }
+
   .arch-diagram-card {
     padding: 24px 20px 28px;
   }
@@ -630,6 +959,35 @@
   .arch-artifact__bar {
     flex-direction: column;
     gap: 6px;
+  }
+
+  .creator-portrait-card__caption {
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .creator-portrait-card__caption strong {
+    text-align: left;
+  }
+
+  .creator-page .arch-hero__title {
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
+  }
+
+  .creator-bento {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-bento__card,
+  .creator-bento__card--wide {
+    min-height: 240px;
+  }
+
+  .creator-action__links {
+    flex-direction: column;
   }
 
   .arch-trust-step {

@@ -89,6 +89,11 @@
   font-weight: 600;
 }
 
+.nav__links a[aria-current="page"] {
+  color: var(--copper);
+  font-weight: 600;
+}
+
 .nav__dropdown {
   position: relative;
 }

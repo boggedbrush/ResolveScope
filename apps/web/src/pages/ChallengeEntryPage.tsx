@@ -1,14 +1,54 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeControl } from "../components/ThemeControl";
 import { MobileNavMenu, type MobileNavItem } from "../components/MobileNavMenu";
 
 const CHALLENGE_NAV_ITEMS: MobileNavItem[] = [
   { label: "Product", to: "/" },
+  { label: "Challenge", to: "/codex-creator-challenge" },
   { label: "Architecture", to: "/architecture" },
   { label: "Creator", to: "/creator" },
 ];
 
+function useScrollReveal() {
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const els = document.querySelectorAll(".reveal");
+
+    if (prefersReduced) {
+      els.forEach((el) => el.classList.add("visible"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+
+    const timer = window.setTimeout(() => {
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    }, 100);
+
+    return () => {
+      window.clearTimeout(timer);
+      io.disconnect();
+    };
+  }, []);
+}
+
 export function ChallengeEntryPage() {
+  useScrollReveal();
+
   return (
     <main className="arch-page">
       <nav className="nav nav--landing">
@@ -23,6 +63,11 @@ export function ChallengeEntryPage() {
             <ul className="nav__links">
               <li>
                 <Link to="/">Product</Link>
+              </li>
+              <li>
+                <Link to="/codex-creator-challenge" aria-current="page">
+                  Challenge
+                </Link>
               </li>
               <li>
                 <Link to="/architecture">Architecture</Link>

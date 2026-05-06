@@ -438,6 +438,9 @@ export function ArchitecturePage() {
                   </a>
                 </div>
               </li>
+              <li>
+                <Link to="/creator">Creator</Link>
+              </li>
             </ul>
           </div>
           <div className="nav__zone nav__zone--right">
