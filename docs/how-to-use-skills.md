@@ -111,6 +111,14 @@ The specific conventions in this repo:
 - **Skills keep `AGENTS.md` lean.** Specialized guidance lives in skills, not in the main contract. This reduces context weight for tasks that don't need that guidance.
 - **Prompting and skills together form the build system.** `AGENTS.md` sets the rules. Skills carry the expertise. Task prompts define the scope and acceptance criteria. These three layers work together.
 
+### Final SEO closeout
+
+The final project pass used the `seo-audit` skill. It started as a comprehensive audit of the public website and became the closing implementation checklist for search visibility.
+
+That pass focused on route metadata, title tags, canonical URLs, sitemap scope, crawlability, indexability, structured data, keyword alignment, and 404 behavior. It also made the final public story easier to find for searches around ResolveScope, Carleton Lees, Codex, OpenAI, Handshake, the common Handhake misspelling, and the Creator Challenge.
+
+This is a useful pattern for future projects: use product and frontend skills while the experience is still being shaped, then use `seo-audit` as a final quality gate once the site has a stable story to index.
+
 ---
 
 ## Example usage patterns

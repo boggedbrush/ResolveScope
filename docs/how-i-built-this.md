@@ -41,6 +41,11 @@ The design system is hand-rolled. This was deliberate: utility frameworks produc
 **React Three Fiber for spatial annotation.**
 360° and spatial review is a genuine product differentiator : not decoration. The workspace includes a spatial panel because field and inspection workflows require spatial context. It's purposeful or it's not there.
 
+**SEO as the final project pass.**
+The last implementation step was a dedicated SEO closeout. The `seo-audit` skill was used to audit the public website, turn the findings into an implementation checklist, and verify that the final site could be understood by search crawlers as well as by human reviewers.
+
+That pass added route-specific metadata, canonical URLs, structured data, a tighter sitemap, indexability controls for demo-only routes, a proper 404 path, and focused content for ResolveScope, Carleton Lees, Codex, OpenAI, Handshake, and the Creator Challenge. It was intentionally done after the product and demo surfaces were stable, because SEO should describe the finished product story rather than steer the interface prematurely.
+
 ---
 
 ## Tradeoffs
