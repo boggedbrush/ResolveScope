@@ -201,6 +201,7 @@ export function OnboardingTutorial({
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
   const [targetStateToken, setTargetStateToken] = useState("");
   const [isWaitingForAdvance, setIsWaitingForAdvance] = useState(false);
+  const [isPrimaryActionTargetDisabled, setIsPrimaryActionTargetDisabled] = useState(false);
   const [coachmarkSize, setCoachmarkSize] = useState<Size>({
     width: POPOVER_WIDTH,
     height: POPOVER_HEIGHT,
@@ -578,6 +579,35 @@ export function OnboardingTutorial({
     steps.length,
   ]);
 
+  useEffect(() => {
+    if (step.primaryAction !== "click-target") {
+      setIsPrimaryActionTargetDisabled(false);
+      return;
+    }
+
+    const updatePrimaryActionState = () => {
+      const actionTarget = step.primaryTargetSelector
+        ? document.querySelector<HTMLElement>(step.primaryTargetSelector)
+        : targetElement;
+
+      setIsPrimaryActionTargetDisabled(
+        actionTarget ? isDisabledActionTarget(actionTarget) : true
+      );
+    };
+
+    updatePrimaryActionState();
+
+    const observer = new MutationObserver(updatePrimaryActionState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["aria-disabled", "disabled", "title"],
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect();
+  }, [step.primaryAction, step.primaryTargetSelector, targetElement, targetStateToken]);
+
   const popoverPoint = useMemo(
     () =>
       targetRect
@@ -737,8 +767,8 @@ export function OnboardingTutorial({
               type="button"
               className={`btn btn--primary${step.requireTargetClick ? " onboarding-tutorial__required-action" : ""}`}
               onClick={handlePrimaryAction}
-              disabled={step.requireTargetClick || isWaitingForAdvance}
-              aria-disabled={step.requireTargetClick || isWaitingForAdvance}
+              disabled={step.requireTargetClick || isWaitingForAdvance || isPrimaryActionTargetDisabled}
+              aria-disabled={step.requireTargetClick || isWaitingForAdvance || isPrimaryActionTargetDisabled}
             >
               {isWaitingForAdvance
                 ? step.waitingLabel ?? "Working"

@@ -561,15 +561,21 @@
 
 .onboarding-tutorial__actions .btn:disabled {
   cursor: default;
-  opacity: 0.78;
+  opacity: 1;
   transform: none;
   box-shadow: none;
 }
 
+.onboarding-tutorial__actions .btn--primary:disabled {
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  background: color-mix(in oklab, var(--bg-alt) 86%, #000 14%);
+  color: color-mix(in oklab, var(--text-secondary) 72%, transparent);
+}
+
 .onboarding-tutorial__actions .onboarding-tutorial__required-action:disabled {
-  border-color: color-mix(in oklab, var(--border) 68%, var(--copper) 32%);
-  background: color-mix(in oklab, var(--bg-card) 78%, transparent);
-  color: var(--text-secondary);
+  border-color: color-mix(in oklab, var(--border) 80%, transparent);
+  background: color-mix(in oklab, var(--bg-alt) 86%, #000 14%);
+  color: color-mix(in oklab, var(--text-secondary) 72%, transparent);
 }
 
 @keyframes onboarding-step-enter {
@@ -1171,8 +1177,23 @@
     bottom: 12px;
     top: auto !important;
     width: auto;
-    max-height: 46dvh;
+    max-height: min(58dvh, 520px);
     overflow: auto;
+  }
+
+  .onboarding-tutorial__step {
+    min-height: 0;
+  }
+
+  .onboarding-tutorial__actions {
+    position: sticky;
+    bottom: -1px;
+    padding-top: 12px;
+    background: linear-gradient(
+      to top,
+      var(--bg-card) 84%,
+      color-mix(in oklab, var(--bg-card) 72%, transparent)
+    );
   }
 
   .onboarding-tutorial__coachmark::before {
